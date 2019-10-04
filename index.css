@@ -8,6 +8,13 @@ body {
   --blue1: #3e80cc;
   --blue2: #316db3;
   --blue3: #245792;
+  /*
+  Material Blues
+  --blue: #2196f3;
+  --blue1: #1e88e5;
+  --blue2: #1976d2;
+  --blue3: #1565c0;
+  */
   padding: 0;
   margin: 0;
   font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
@@ -43,7 +50,7 @@ span { font-size: 1rem; }
 }
 .header h3 {
   margin: 0 0 12px;
-  color: var(--black1);
+  color: var(--black3);
 }
 
 .nav {
