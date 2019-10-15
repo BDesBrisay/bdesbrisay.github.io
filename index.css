@@ -49,7 +49,20 @@ span { font-size: 1rem; }
   background: linear-gradient(45deg, var(--electricblue), rgb(86, 194, 170));
   -webkit-clip-path: polygon(0 0, 100% 0, 100% 45%, 0 100%);
   otherclip-path: polygon(0 0, 100% 0, 100% 45%, 0 100%);
-  clip-path: polygon(0 0, 100% 0, 100% 250px, 370px 250px, 300px 100%,0 100%);
+  clip-path: polygon(
+    0 0, 
+    100% 0, 
+    100% 350px, 
+    calc(100% - 370px) 350px, 
+    calc(100% - 416px) 250px, 
+    370px 250px, 
+    300px 100%,
+    0 100%
+  );
+}
+.profileContain {
+  display: flex;
+  height: 250px;
 }
 .profile {
   height: 270px;
