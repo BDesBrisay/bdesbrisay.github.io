@@ -20,8 +20,6 @@ body {
   padding: 0;
   margin: 0;
   font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
-  background: var(--black0);
-  color: var(--white);
 }
 
 h1 { font-size: 4.5rem; }
@@ -39,29 +37,19 @@ span { font-size: 1rem; }
 }
 
 .header {
-  width: 100vw;
-  height: 100vh;
+  width: calc(100vw - 48px);
+  height: calc(100vh - 48px);
+  margin: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 0 60px;
+  justify-content: space-between;
+  padding: 0;
   box-sizing: border-box;
   text-align: center;
   position: relative;
   background: var(--black0);
-  /*-webkit-clip-path: polygon(0 0, 100% 0, 100% 45%, 0 100%);
-  otherclip-path: polygon(0 0, 100% 0, 100% 45%, 0 100%);
-  clip-path: polygon(
-    0 0, 
-    100% 0, 
-    100% 350px, 
-    calc(100% - 370px) 350px, 
-    calc(100% - 416px) 250px, 
-    370px 250px, 
-    300px 100%,
-    0 100%
-  );*/
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 64px));
 }
 .profileContain {
   display: flex;
@@ -76,6 +64,7 @@ span { font-size: 1rem; }
   bottom: -30px;
   transform: rotate(5deg);
   box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+  margin: auto 0 0;
 }
 .textContain {
   display: flex;
@@ -102,6 +91,7 @@ span { font-size: 1rem; }
   display: flex;
   align-items: center;
   justify-content: center;
+  margin: 0 0 auto;
 }
 .socialIcons > a {
   text-decoration: none;
@@ -111,7 +101,7 @@ span { font-size: 1rem; }
   height: 40px;
   width: 40px;
   border-radius: 20px;
-  font-size: 18px;
+  font-size: 20px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -119,38 +109,43 @@ span { font-size: 1rem; }
 
 .stats {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-evenly;
   width: 100%;
 }
 .stat {
   display: flex;
-  align-items: center;
   flex-direction: column;
+  flex: 1;
 }
 .statNum {
   color: white;
-  margin: 24px 0 0;
+  margin: 0;
   line-height: 120px;
 }
 .statLabel {
   background: var(--electricblue);
   color: white;
   margin: 0;
-  padding: 8px 16px;
+  padding: 16px;
   font-weight: bold;
+  font-size: 18px;
 }
 .stat-g {
   background: #0fb9b1;
+  padding-bottom: 76px;
 }
 .stat-b {
   background: var(--electricblue);
-}
-.stat-r {
-  background: #eb3b5a;
+  padding-bottom: 60px;
 }
 .stat-p {
   background: #8854d0;
+  padding-bottom: 44px;
+}
+.stat-r {
+  background: #eb3b5a;
+  padding-bottom: 28px;
 }
 
 
