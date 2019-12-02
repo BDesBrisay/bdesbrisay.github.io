@@ -37,19 +37,17 @@ span { font-size: 1rem; }
 }
 
 .header {
-  width: calc(100vw - 48px);
-  height: calc(100vh - 48px);
-  margin: 24px;
+  width: 100vw;
+  height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  padding: 0;
+  padding: 60px 0;
   box-sizing: border-box;
   text-align: center;
   position: relative;
   background: var(--black0);
-  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 calc(100% - 64px));
 }
 .profileContain {
   display: flex;
@@ -83,7 +81,7 @@ span { font-size: 1rem; }
   margin: 0;
   color: var(--white);
   z-index: 1;
-  background: var(--blue3);
+  background: #026bff80;
   padding: 8px 24px 6px;
 }
 
@@ -121,31 +119,73 @@ span { font-size: 1rem; }
 .statNum {
   color: white;
   margin: 0;
-  line-height: 120px;
+  line-height: 100px;
 }
 .statLabel {
-  background: var(--electricblue);
+  background: #833fd1;
   color: white;
   margin: 0;
-  padding: 16px;
+  padding: 0 16px;
+  height: 60px;
+  line-height: 62px;
   font-weight: bold;
   font-size: 18px;
 }
-.stat-g {
-  background: #0fb9b1;
-  padding-bottom: 76px;
+.statLabel > span {
+  background: rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60px;
+  width: 60px;
+  float: left;
+  margin-left: -16px;
+  font-size: 20px;
 }
-.stat-b {
-  background: var(--electricblue);
-  padding-bottom: 60px;
+
+.locationImage {
+  height: 200px;
+  width: 100%;
+  object-fit: cover;
+  object-position: top;
 }
-.stat-p {
-  background: #8854d0;
-  padding-bottom: 44px;
+.skills {
+  height: 200px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  padding: none;
+  text-align: center;
+  color: white;
+  font-weight: bold;
 }
-.stat-r {
-  background: #eb3b5a;
-  padding-bottom: 28px;
+.skill1 {
+  line-height: 83px;
+  font-size: 35px;
+  background: var(--black2);
+}
+.skill2 {
+  line-height: 66px;
+  font-size: 25px;
+  background: var(--black1);
+}
+.skill3 {
+  line-height: 51px;
+  font-size: 16px;
+  background: var(--black);
+}
+
+.actionButton {
+  background: rgb(0, 184, 107);
+  color: white;
+  font-weight: bold;
+  outline: none;
+  border: none;
+  padding: 10px 20px;
+  font-size: 18px;
+  font-family: inherit;
+  margin: auto 0 0;
 }
 
 
