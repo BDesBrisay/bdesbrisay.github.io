@@ -17,6 +17,15 @@
         stroke-width: 2px;
         opacity: 0.5;
       }
+      .ohlc:hover::after {
+        content: "Open: " attr(open);
+        position: relative;
+        z-index: 20;
+        height: 50px;
+        background: blue;
+        color: white;
+        width: 200px;
+      }
     </style>
     <script>
       var svg = d3.select("svg"),
@@ -96,7 +105,8 @@
           .selectAll("g")
           .data(data)
           .enter().append("g")
-          .attr("class", "ohlc");
+          .attr("class", "ohlc")
+          .attr("open", d.Open);
         
         ohlcs.append("path")
           .attr("class", "high-low")
