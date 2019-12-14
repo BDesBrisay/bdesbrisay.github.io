@@ -100,15 +100,13 @@
                 Math.ceil(d3.max(data, function(d) { return d.High; }))]);
         
         data = data.slice(0, data.length - 1);
-
-        console.log(data);
         
         var ohlcs = g.append("g").attr("class", "ohlcs")
           .selectAll("g")
           .data(data)
           .enter().append("g")
           .attr("class", "ohlc")
-          .attr("open", d.Open);
+          .attr("open", data[0].Open);
         
         ohlcs.append("path")
           .attr("class", "high-low")
