@@ -26,6 +26,18 @@
         color: white;
         width: 200px;
       }
+      .tooltip {	
+        position: absolute;			
+        text-align: center;			
+        width: 60px;					
+        height: 28px;					
+        padding: 2px;				
+        font: 12px sans-serif;		
+        background: lightsteelblue;	
+        border: 0px;		
+        border-radius: 8px;			
+        pointer-events: none;			
+      }
     </style>
     <script>
       var svg = d3.select("svg"),
@@ -34,16 +46,20 @@
           height = +svg.attr("height") - margin.top - margin.bottom,
           g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+      var div = d3.select("body").append("div")	
+        .attr("class", "tooltip")				
+        .style("opacity", 0);
+
       // parse day, abbreviated month name, year without century
       var parseTime = d3.timeParse("%d-%b-%y");
 
       var tickSize = 3;
         
       var x = d3.scaleTime()
-          .rangeRound([0, width]);
+        .rangeRound([0, width]);
 
       var y = d3.scaleLinear()
-          .rangeRound([height, 0]);
+        .rangeRound([height, 0]);
 
       var line = d3.line();
         
@@ -106,7 +122,20 @@
           .data(data)
           .enter().append("g")
           .attr("class", "ohlc")
-          .attr("open", data[0].Open);
+          .attr("open", data[0].Open)
+          .on("mouseover", function(d) {		
+            div.transition()		
+              .duration(200)		
+              .style("opacity", .9);		
+            div.html(formatTime(d.Open) + "<br/>"  + d.Close)	
+              .style("left", (d3.event.pageX) + "px")		
+              .style("top", (d3.event.pageY - 28) + "px");	
+            })					
+          .on("mouseout", function(d) {		
+            div.transition()		
+              .duration(500)		
+              .style("opacity", 0);	
+          });
         
         ohlcs.append("path")
           .attr("class", "high-low")
