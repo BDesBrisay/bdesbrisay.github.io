@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+  <head></head>
+  <body>
+    <svg width="960" height="500"></svg>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+      }
+      .high-low, .open, .close {
+        stroke-width: 2px;
+      }
+      .moving-average {
+        fill: none;
+        stroke: black;
+        stroke-width: 2px;
+        opacity: 0.5;
+      }
+    </style>
+    <script>
+      var svg = d3.select("svg"),
+          margin = {top: 75, right: 75, bottom: 75, left: 85},
+          width = +svg.attr("width") - margin.left - margin.right,
+          height = +svg.attr("height") - margin.top - margin.bottom,
+          g = svg.append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // parse day, abbreviated month name, year without century
+      var parseTime = d3.timeParse("%d-%b-%y");
+
+      var tickSize = 3;
+        
+      var x = d3.scaleTime()
+          .rangeRound([0, width]);
+
+      var y = d3.scaleLinear()
+          .rangeRound([height, 0]);
+
+      var line = d3.line();
+        
+      var highLowGenerator = function(d) {
+        var high = y(d.High);
+        var low = y(d.Low);
+        var time = x(d.Date);
+        
+        return line([[time, high], [time, low]]);
+      };
+        
+      var openGenerator = function(d) {
+        var open = y(d.Open);
+        var time = x(d.Date);
+        
+        return line([[time - tickSize, open],[time, open]]);
+      };
+        
+      var closeGenerator = function(d) {
+        var close = y(d.Close);
+        var time = x(d.Date);
+        
+        return line([[time, close],[time + tickSize, close]]);
+      };
+        
+      var movingAverageGenerator = d3.line()
+        .x(function(d) { return x(d.Date); })
+        .y(function(d) { return y(d.Average); });
+
+      var colour = function(d) {
+        if (d.Close < d.Open) {
+          return "red";
+        } else {
+          return "green";
+        }
+      };
+        
+      d3.csv("data.csv", function(d) {
+        d.Date = parseTime(d.Date);
+        d.Open = +d.Open;
+        d.Close = +d.Close;
+        d.High = +d.High;
+        d.Low = +d.Low;
+        return d;
+      }, function(error, data) {
+        if (error) throw error;
+        
+        data = data.slice(0, data.length / 2)
+
+        x.domain([d3.min(data, function(d) { return d.Date; }),
+                d3.max(data, function(d) { return d.Date; })]);
+        
+        y.domain([Math.floor(d3.min(data, function(d) { return d.Low; })),
+                Math.ceil(d3.max(data, function(d) { return d.High; }))]);
+        
+        data = data.slice(0, data.length - 1);
+        
+        var ohlcs = g.append("g").attr("class", "ohlcs")
+          .selectAll("g")
+          .data(data)
+          .enter().append("g")
+          .attr("class", "ohlc");
+        
+        ohlcs.append("path")
+          .attr("class", "high-low")
+          .attr("d", highLowGenerator)
+          .attr("stroke", colour);
+        
+        ohlcs.append("path")
+          .attr("class", "open")
+          .attr("d", openGenerator)
+          .attr("stroke", colour);
+        
+        ohlcs.append("path")
+          .attr("class", "close")
+          .attr("d", closeGenerator)
+          .attr("stroke", colour);
+        
+        var movingAverage = [];
+        var days = 5;
+        
+        data.forEach(function(d, i) {
+          var total = 0;
+          var count = 0;
+          for (var n = 0; n < days; n++) {
+            if (data[i + n]) {
+              total += data[i + n].Close;
+              count++;
+            }
+          };
+
+          var average = total / count;
+          var obj = {
+            "Date": d.Date,
+            "Average": average
+          }
+          movingAverage.push(obj);
+        });
+        
+        
+        var movingAverageLine = g.append("g")
+          .attr("class", "moving-average")
+          .append("path")
+          .datum(movingAverage)
+          .attr("d", movingAverageGenerator);
+        
+        var xAxis = g.append("g")
+          .attr("class", "x axis")
+          .attr("transform", "translate(0," + height + ")")
+          .style("font-family", "monospace")
+          .call(d3.axisBottom(x));
+
+        var yAxis = g.append("g")
+            .attr("class", "y axis")
+            .style("font-family", "monospace")
+            .call(d3.axisLeft(y));
+        
+        g.append("text")
+            .attr("fill", "#000")
+            .attr("x", width / 2)
+            .attr("dy", -20)
+            .attr("text-anchor", "middle")
+            .style("font-family", "monospace")
+            .text("Stock Price ($)");
+        
+          // Add a small label for the symbol name.
+        g.append("text")
+            .attr("x", width - 30)
+            .attr("y", height - 25)
+            .style("text-anchor", "end")
+            .style("font-family", "monospace")
+            .style("font-size", "14")
+            .text("NYSE: TWTR");
+      });
+    </script>
+  </body>
+</html>
