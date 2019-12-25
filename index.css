@@ -47,7 +47,6 @@ span { font-size: 1rem; }
   box-sizing: border-box;
   text-align: center;
   position: relative;
-  background: var(--black0);
 }
 .profileContain {
   display: flex;
