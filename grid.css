@@ -88,6 +88,7 @@ span { font-size: 1rem; }
 .about {
   grid-column: 1 / 2;
   grid-row: 1 / 3;
+  align-items: stretch;
 }
 .places {
   grid-column: 2 / 3;
@@ -133,6 +134,31 @@ span { font-size: 1rem; }
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.projects {
+  flex-wrap: wrap;
+  align-items: stretch;
+  flex: 1;
+  margin-top: 36px;
+}
+.project {
+  width: 33.3%;
+  background: var(--black0);
+  padding: 24px 12px;
+  box-sizing: border-box;
+}
+.project > img {
+  height: 80px;
+  width: 80px;
+  background: var(--white);
+  border-radius:12px;
+}
+.project > p {
+  font-size: 16px;
+  font-weight: bold;
+}
+.project > i {
+  margin: 12px;
 }
 
 .place {
