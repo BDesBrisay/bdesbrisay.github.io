@@ -134,41 +134,7 @@ p { font-size: 1rem; }
   color: var(--white);
 }
 .skills {
-  width: calc(50% - 50px);
+  width: 50%;
+  margin-top: 25px;
 }
 
-
-.grid {
-  display: grid;
-  grid-template-columns: 400px auto ;
-  grid-template-rows: 100vh auto;
-  height: 120vh;
-  width: 100vw;
-  text-align: center;
-}
-.projects {
-  grid-column: 1 / 2;
-  grid-row: 1 / 2;
-  align-items: stretch;
-  padding: 0 25px;
-  box-sizing: border-box;
-}
-.project {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex: 1;
-}
-.project > img {
-  height: 60px;
-  width: 60px;
-  background: var(--white);
-  margin-right: 25px;
-}
-.project > p {
-  line-height: 60px;
-  flex: 1;
-  text-align: left;
-  font-size: 20px;
-  font-weight: bold;
-}
