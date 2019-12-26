@@ -10,6 +10,7 @@ body {
   --blue2: #316db3;
   --blue3: #245792;
   --electricblue: #026cff;
+  --blue: #4171e1;
   /*
   Material Blues
   --blue: #2196f3;
@@ -63,7 +64,7 @@ p { font-size: 1rem; }
   color: white;
 }
 .shadow-right {
-  margin: 25px 50px 25px 0;
+  margin: 25px 50px 25px 25px;
   background: var(--black0);
   box-shadow: 25px 25px 0 0 var(--black2);
   color: white;
@@ -75,53 +76,44 @@ p { font-size: 1rem; }
   color: var(--white);
 }
 
-.s1 {
-  justify-content: space-between;
-}
-.s1text {
-  align-items: flex-start;
+.header {
   color: var(--black3);
-  text-align: left;
+  padding: 25px;
+  box-sizing: border-box;
+  width: 100vw;
+  background: var(--white);
 }
-
-.name {
-  margin: 12px 75px 0;
-}
-.name > span {
-  color: rgb(23, 173, 128);
-  color: #4171e1;
-}
-.title {
-  margin: 12px 78px;
-  color: var(--black1);
-}
-.title > span {
-  color: #47e;
-}
-.location {
-  margin: 12px 80px;
-  font-weight: normal;
-}
-.location b,
-.location i {
-  color: var(--black1);
-}
-
-
 .profile {
   object-fit: cover;
-  height: 300px;
-  width: 300px;
+  height: 280px;
+  width: 280px;
 }
-
+.name {
+  margin: 35px 25px 0;
+}
+.name > span {
+  color: var(--blue);
+}
+.title {
+  margin: 25px;
+}
+.location {
+  font-weight: normal;
+  margin: 0 25px 12px;
+}
+.location b,
+.location i,
+.title {
+  color: var(--black1);
+}
 .socialIcons {
-  margin: 0 0 36px;
+  margin: 12px;
 }
 .socialIcons > a {
   text-decoration: none;
-  color: #bcd;
+  color: var(--black1);
   cursor: pointer;
-  margin: 0 6px;
+  margin: 0 4px;
   height: 40px;
   width: 40px;
   border-radius: 20px;
@@ -131,6 +123,19 @@ p { font-size: 1rem; }
   justify-content: center;
 }
 
+.middle {
+  padding: 0;
+  margin: 0;
+  align-items: stretch;
+}
+.info {
+  width: calc(50% - 50px);
+  background: var(--black);
+  color: var(--white);
+}
+.skills {
+  width: calc(50% - 50px);
+}
 
 
 .grid {
@@ -141,15 +146,29 @@ p { font-size: 1rem; }
   width: 100vw;
   text-align: center;
 }
-
-.header {
-  width: 100%;
-  padding: 24px;
-  box-sizing: border-box;
-}
-
-.about {
+.projects {
   grid-column: 1 / 2;
   grid-row: 1 / 2;
   align-items: stretch;
+  padding: 0 25px;
+  box-sizing: border-box;
+}
+.project {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+}
+.project > img {
+  height: 60px;
+  width: 60px;
+  background: var(--white);
+  margin-right: 25px;
+}
+.project > p {
+  line-height: 60px;
+  flex: 1;
+  text-align: left;
+  font-size: 20px;
+  font-weight: bold;
 }
