@@ -81,6 +81,7 @@ p { font-size: 1rem; }
   padding: 25px;
   box-sizing: border-box;
   width: 100vw;
+  height: 90vh;
   background: var(--white);
 }
 .profile {
