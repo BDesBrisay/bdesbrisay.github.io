@@ -102,12 +102,11 @@ p { font-size: 1rem; }
 .timeline > h3::before {
   content: '';
   position: absolute;
-  left: 4px;
   bottom: 2px;
   height: 16px;
   width: 100%;
   background: var(--electricblue);
-  opacity: 0.35;
+  opacity: 0.3;
   z-index: -1;
 }
 .timeline > a {
@@ -119,7 +118,6 @@ p { font-size: 1rem; }
 .before::before {
   content: '';
   position: absolute;
-  left: 4px;
   bottom: 2px;
   height: 8px;
   width: 100%;
@@ -131,7 +129,7 @@ p { font-size: 1rem; }
 .timeline > a:hover::before,
 .title:hover::before,
 .before::before {
-  opacity: 0.35 !important;
+  opacity: 0.3 !important;
 }
 .progress {
   position: absolute;
@@ -162,4 +160,48 @@ p { font-size: 1rem; }
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+}
+.header {
+  padding: 48px;
+}
+.logo {
+  height: 100px;
+  width: 100px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  margin-right: 48px;
+}
+.socialIcons {
+  margin: 24px 0;
+}
+.socialIcons > a {
+  text-decoration: none;
+  color: var(--black1);
+  cursor: pointer;
+  margin: 16px 0;
+  height: 40px;
+  width: 100px;
+  border-radius: 20px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+.socialIcons i {
+  font-size: 28px;
+  margin: 12px;
+}
+.name {
+  margin: 0;
+  line-height: 100px;
+}
+.position {
+  margin: 8px 0;
+  color: var(--black1);
+}
+.dates {
+  font-weight: bold;
+  color: var(--electricblue);
+  margin: 12px 0;
+  display: block;
 }
