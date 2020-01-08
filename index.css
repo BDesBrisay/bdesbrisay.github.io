@@ -173,6 +173,8 @@ hr {
   height: 100px;
   width: 100px;
   margin-bottom: 12px;
+  border-radius: 6px;
+  box-sizing: border-box;
 }
 .title {
 
@@ -227,4 +229,18 @@ hr {
 .tags > a.activeTag {
   background: var(--blue);
   color: white;
+}
+
+@media (max-width: 980px) {
+  .contain {
+    flex-direction: column;
+  }
+  .side,
+  #content {
+    width: 90%;
+    margin: 0 auto;
+  }
+  .quote {
+    margin: 38px auto;
+  }
 }

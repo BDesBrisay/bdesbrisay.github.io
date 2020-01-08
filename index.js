@@ -1,10 +1,11 @@
 const projects = [
   {
     image: './images/blazebuddies.png',
+    imageStyle: 'margin-left: -12px;',
     title: 'BlazeBuddies',
     position: 'Cofounder, Frontend Developer & Designer',
     dates: 'January 2020 - Present',
-    description: 'BlazeBuddies enables peer-to-peer, fully encrypted cannabis live streams and group video chats. I put together the entire frontend client with a homemade single-page-application (SPA) framework using vanilla JavaScript, HTML, & CSS. I designed the logo as well as the overall UI and UX of the site.',
+    description: 'BlazeBuddies enables peer-to-peer, fully encrypted cannabis live streams and group video chats. I put together and styled the frontend client with a homemade single-page-application (SPA) framework using vanilla JavaScript, HTML, & CSS. I designed the logo as well as the overall UI and UX of the site.',
     tags: [
       'Socket.io',
       'Peer.js',
@@ -19,6 +20,7 @@ const projects = [
   },
   {
     image: './images/donedingo.png',
+    imageStyle: 'margin-left: -12px;',
     title: 'Donedingo',
     position: 'Founder',
     dates: 'October 2019 - December 2019',
@@ -101,7 +103,7 @@ function loadProjects() {
     if (hasActiveTag || !activeTags.length) {
       projectsElement.insertAdjacentHTML('beforeend', `
         <div class="project col">
-          <img src="${project.image}" alt="" class="logo" />
+          <img src="${project.image}" alt="" class="logo" style="${project.imageStyle}" />
           <h3 class="title">${project.title}</h3>
           <h5 class="position">${project.position}</h5>
           <p class="dates"><i>${project.dates}</i></p>
