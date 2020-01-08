@@ -167,7 +167,7 @@ p { font-size: 1rem; }
 .logo {
   height: 100px;
   width: 100px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+  boox-shadow: 0 2px 8px rgba(0,0,0,0.2);
   margin-right: 48px;
 }
 .socialIcons {
@@ -204,4 +204,9 @@ p { font-size: 1rem; }
   color: var(--electricblue);
   margin: 12px 0;
   display: block;
+}
+
+#p12 {
+  background: #234;
+  color: white;
 }
