@@ -1,0 +1,50 @@
+body {
+  background: #282a36;
+  width: 95%;
+  max-width: 800px;
+  margin: 24px auto;
+  font-family: sans-serif;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 22px;
+}
+i {
+  color: #456;
+}
+span {
+  color: #789;
+}
+b {
+  font-weight: normal;
+  color: #abc;
+}
+strong {
+  font-weight: normal;
+  font-size: 32px;
+  line-height: 42px;
+}
+p {
+  color: #50fa7b;
+}
+img {
+  height: 100px;
+  width: auto;
+  object-fit: cover;
+  margin: 0 8px;
+}
+a {
+  color: #669cfd;
+}
+
+.i1 {
+  margin-left: 40px;
+}
+.i2 {
+  margin-left: 80px;
+}
+.i3 {
+  margin-left: 120px;
+}
+.i4 {
+  margin-left: 160px;
+}

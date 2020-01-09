@@ -259,12 +259,12 @@ hr {
 .tags > a:hover::after {
   background: #d4d6d8;
 }
-.tags > a.activeTag {
+.tags > a#activeTag {
   background: var(--blue);
   color: white;
   transition: all 0.2s;
 }
-.tags > a.activeTag::after {
+.tags > a#activeTag::after {
   background: var(--blue3);
   color: var(--white);
 }
