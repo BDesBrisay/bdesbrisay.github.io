@@ -47,7 +47,7 @@ function printArray(arr, level) {
   for (let item of arr) {
     typeof item === 'object'
       ? str += printObject(item, level + 1)
-      : str += `<p class="i${level + 1}">${item}</p>`;
+      : str += `<i class="i${level + 1}">${item}</i><br/>`;
   }
 
   str += `<span class="i${level}">]</span><br/><p>`;

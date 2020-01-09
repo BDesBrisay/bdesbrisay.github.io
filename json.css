@@ -8,11 +8,8 @@ body {
   font-weight: normal;
   line-height: 22px;
 }
-i {
-  color: #456;
-}
 span {
-  color: #789;
+  color: #567;
 }
 b {
   font-weight: normal;
@@ -24,7 +21,9 @@ strong {
   line-height: 42px;
 }
 p {
-  color: #50fa7b;
+  color: #3ddd65;
+  margin-top: 12px;
+  margin-bottom: 12px;
 }
 img {
   height: 100px;
@@ -34,6 +33,11 @@ img {
 }
 a {
   color: #669cfd;
+}
+i {
+  color: #3ddd65;
+  margin-top: 6px;
+  margin-bottom: 6px;
 }
 
 .i1 {
