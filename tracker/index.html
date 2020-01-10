@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Bryce DesBrisay</title>
+    <link rel="stylesheet" type="text/css" href="./index.css">
+  </head>
+  <body>
+    <h1>tracker</h1>
+    <form id="form">
+      <input id="input" placeholder="new tracker" />
+      <input id="goal" placeholder="goal" />
+      <select id="interval">
+        <option value="daily">daily</option>
+        <option value="weekly">weekly</option>
+        <option value="monthly">monthly</option>
+        <option value="yearly">yearly</option>
+      </select>
+      <button type="submit">Add</button>
+    </form>
+    <div id="contain"></div>
+    <!--script src="https://kit.fontawesome.com/c28e2aa93f.js" crossorigin="anonymous"></script-->
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-database.js"></script>
+    <script>
+      const intervalMap = {
+        daily: 1,
+        weekly: 7,
+        monthly: 30,
+        quarterly: 91,
+        yearly: 365
+      }
+      const config = {
+        apiKey: "AIzaSyAmpieeKldZnAdDpj20LBlzphaOc4X3LDg",
+        authDomain: "tracker-47b22.firebaseapp.com",
+        databaseURL: "https://tracker-47b22.firebaseio.com",
+        projectId: "tracker-47b22",
+        storageBucket: "tracker-47b22.appspot.com",
+        messagingSenderId: "878411897680",
+        appId: "1:878411897680:web:ce035ba35205d91d0aaa55"
+      };
+
+      firebase.initializeApp(config);
+
+      const contain = document.getElementById('contain');
+      const db = firebase.database().ref().child('trackers');
+
+      let data = [];
+
+      // load data into page at real-time
+      db.on('value', (snap) => {
+        data = snap.val();
+        // show all data above
+        // contain.innerText = JSON.stringify(snap.val(), null, 3);
+
+        clearItems();
+        renderItems(data);
+      }, (e) => console.error(e));
+
+      function clearItems() {
+        contain.innerHTML = '';
+      }
+
+      function renderItems(data) {
+        for (let index in data) {
+          const item = data[index];
+          contain.insertAdjacentHTML('beforeend', `
+            <div id="${index}" class="tracker">
+              <i>${item.title}</i>
+              <span><b>${item.count}</b> / ${item.goal} ${item.interval}</span>
+              <div class="row">
+                <button onclick="plus('${index}');">+</button>
+                <button onclick="minus('${index}');">-</button>
+                <button onclick="del('${index}');">delete</button>
+              </div>
+            </div>
+          `);
+        }
+      }
+      
+      // create tracker form submit
+      const form = document.getElementById('form');
+      const input = document.getElementById('input');
+      const goal = document.getElementById('goal');
+      const interval = document.getElementById('interval');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const newData = {
+          title: input.value,
+          count: 0,
+          goal: goal.value,
+          interval: interval.value
+        };
+
+        db.child(newData.title).set(newData);
+      });
+
+      // plus tracker count
+      function plus(index) {
+        let count = data[index].count + 1;
+        db.child(index).set(Object.assign({}, data[index], { count }));
+      }
+
+      // minus tracker count
+      function minus(index) {
+        let count = data[index].count - 1;
+        db.child(index).set(Object.assign({}, data[index], { count }));
+      }
+
+      // delete tracker
+      function del(index) {
+        db.child(index).remove();
+      }
+    </script>
+  </body>
+</html>

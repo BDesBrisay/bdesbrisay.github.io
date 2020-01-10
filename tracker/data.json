@@ -1,0 +1,10 @@
+{
+  "trackers": [
+    {
+      "title": "Pushups",
+      "value": 0,
+      "goal": 100,
+      "period": 1
+    }
+  ]
+}
