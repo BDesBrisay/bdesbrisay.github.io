@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Bryce DesBrisay</title>
+    <title>goal tracker</title>
     <link rel="stylesheet" type="text/css" href="./index.css">
   </head>
   <body>
-    <h1>tracker goal</h1>
+    <h1>goal tracker</h1>
     <form id="form">
       <input id="input" placeholder="new goal" />
       <input id="goal" placeholder="target" />
@@ -77,14 +77,18 @@
           const element = document.getElementById(item.interval);
           const isComplete = item.count >= item.goal;
 
+          if ((new Date() - item.lastUpdated) > (86400000 * intervalMap[item.interval])) {
+            console.log('LAST')
+          }
+
           element.insertAdjacentHTML('beforeend', `
             <div id="${index}" class="tracker" ${isComplete ? 'style="color: #1ABC9C !important;"' : ''}>
               <i>${item.title}</i>
               <span><b>${item.count}</b> / ${item.goal} ${item.interval}</span>
               <div class="row">
-                <button onclick="plus('${index}');">+</button>
-                <button onclick="minus('${index}');">-</button>
-                <button onclick="del('${index}');">X</button>
+                <button onclick="plus('${index}');">&plus;</button>
+                <button onclick="minus('${index}');">&minus;</button>
+                <button onclick="del('${index}');">&#x2715;</button>
               </div>
             </div>
           `);
@@ -103,7 +107,8 @@
           title: input.value,
           count: 0,
           goal: goal.value,
-          interval: interval.value
+          interval: interval.value,
+          lastUpdated: new Date()
         };
 
         db.child(newData.title).set(newData);
@@ -112,13 +117,13 @@
       // plus tracker count
       function plus(index) {
         let count = data[index].count + 1;
-        db.child(index).set(Object.assign({}, data[index], { count }));
+        db.child(index).set(Object.assign({}, data[index], { count, lastUpdated: new Date() }));
       }
 
       // minus tracker count
       function minus(index) {
         let count = data[index].count - 1;
-        db.child(index).set(Object.assign({}, data[index], { count }));
+        db.child(index).set(Object.assign({}, data[index], { count, lastUpdated: new Date() }));
       }
 
       // delete tracker
