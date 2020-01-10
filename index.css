@@ -284,6 +284,8 @@ hr {
   width: 10px;
   background: #ddd;
   margin: 0 auto;
+
+  display: none;
 }
 
 @media (max-width: 980px) {
