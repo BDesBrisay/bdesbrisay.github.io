@@ -5,10 +5,10 @@
     <link rel="stylesheet" type="text/css" href="./index.css">
   </head>
   <body>
-    <h1>tracker</h1>
+    <h1>tracker goal</h1>
     <form id="form">
-      <input id="input" placeholder="new tracker" />
-      <input id="goal" placeholder="goal" />
+      <input id="input" placeholder="new goal" />
+      <input id="goal" placeholder="target" />
       <select id="interval">
         <option value="daily">daily</option>
         <option value="weekly">weekly</option>
@@ -17,7 +17,16 @@
       </select>
       <button type="submit">Add</button>
     </form>
-    <div id="contain"></div>
+    <div id="contain">
+      <h2>daily</h2>
+      <div id="daily" class="row"></div>
+      <h2>weekly</h2>
+      <div id="weekly" class="row"></div>
+      <h2>monthly</h2>
+      <div id="monthly" class="row"></div>
+      <h2>yearly</h2>
+      <div id="yearly" class="row"></div>
+    </div>
     <!--script src="https://kit.fontawesome.com/c28e2aa93f.js" crossorigin="anonymous"></script-->
     <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-database.js"></script>
@@ -26,7 +35,6 @@
         daily: 1,
         weekly: 7,
         monthly: 30,
-        quarterly: 91,
         yearly: 365
       }
       const config = {
@@ -57,20 +65,26 @@
       }, (e) => console.error(e));
 
       function clearItems() {
-        contain.innerHTML = '';
+        for (let int of Object.keys(intervalMap)) {
+          const element = document.getElementById(int);
+          element.innerHTML = '';
+        }
       }
 
       function renderItems(data) {
         for (let index in data) {
           const item = data[index];
-          contain.insertAdjacentHTML('beforeend', `
-            <div id="${index}" class="tracker">
+          const element = document.getElementById(item.interval);
+          const isComplete = item.count >= item.goal;
+
+          element.insertAdjacentHTML('beforeend', `
+            <div id="${index}" class="tracker" ${isComplete ? 'style="color: #1ABC9C !important;"' : ''}>
               <i>${item.title}</i>
               <span><b>${item.count}</b> / ${item.goal} ${item.interval}</span>
               <div class="row">
                 <button onclick="plus('${index}');">+</button>
                 <button onclick="minus('${index}');">-</button>
-                <button onclick="del('${index}');">delete</button>
+                <button onclick="del('${index}');">X</button>
               </div>
             </div>
           `);
