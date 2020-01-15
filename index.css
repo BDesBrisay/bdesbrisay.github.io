@@ -288,6 +288,36 @@ hr {
   display: none;
 }
 
+.tag {
+  margin-bottom: 12px !important;
+  margin-right: 38px !important;
+}
+.tag::after {
+  width: 25px !important;
+  right: -25px !important;
+}
+#Language-tag {
+  background: #a860fc;
+  color: white !important;
+}
+#Language-tag::after {
+  background: #7e3dc9;
+}
+#Technology-tag {
+  background: var(--blue);
+  color: white !important;
+}
+#Technology-tag::after {
+  background: var(--blue3);
+}
+#Skill-tag {
+  background: #5ec78f;
+  color: white !important;
+}
+#Skill-tag::after {
+  background: #42a570;
+}
+
 @media (max-width: 980px) {
   .contain {
     flex-direction: column;
