@@ -1,31 +1,47 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
     <title>goal tracker</title>
+    
     <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="shortcut icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="manifest" href="./manifest.json">
+    <link rel="pwa-setup" href="./manifest.json">
+    
   </head>
   <body>
     <h1>goal tracker</h1>
     <form id="form">
       <input id="input" placeholder="new goal" />
-      <input id="goal" placeholder="target" />
+      <input id="goal" placeholder="target" type="number" />
+      <input id="step" placeholder="step" type="number" />
       <select id="interval">
         <option value="daily">daily</option>
         <option value="weekly">weekly</option>
         <option value="monthly">monthly</option>
         <option value="yearly">yearly</option>
       </select>
-      <button type="submit">Add</button>
+      <button type="submit">+ add</button>
     </form>
     <div id="contain">
-      <h2>daily</h2>
-      <div id="daily" class="row"></div>
-      <h2>weekly</h2>
-      <div id="weekly" class="row"></div>
-      <h2>monthly</h2>
-      <div id="monthly" class="row"></div>
-      <h2>yearly</h2>
-      <div id="yearly" class="row"></div>
+      <div class="col">
+        <h2>daily</h2>
+        <div id="daily" class="row"></div>
+      </div>
+      <div class="col">
+        <h2>weekly</h2>
+        <div id="weekly" class="row"></div>
+      </div>
+      <div class="col">
+        <h2>monthly</h2>
+        <div id="monthly" class="row"></div>
+      </div>
+      <div class="col">
+        <h2>yearly</h2>
+        <div id="yearly" class="row"></div>
+      </div>
     </div>
     <!--script src="https://kit.fontawesome.com/c28e2aa93f.js" crossorigin="anonymous"></script-->
     <script src="https://www.gstatic.com/firebasejs/7.6.2/firebase-app.js"></script>
@@ -83,13 +99,21 @@
 
           element.insertAdjacentHTML('beforeend', `
             <div id="${index}" class="tracker" ${isComplete ? 'style="color: #1ABC9C !important;"' : ''}>
-              <i>${item.title}</i>
-              <span><b>${item.count}</b> / ${item.goal} ${item.interval}</span>
-              <div class="row">
-                <button onclick="plus('${index}');">&plus;</button>
-                <button onclick="minus('${index}');">&minus;</button>
-                <button onclick="del('${index}');">&#x2715;</button>
+              <div class="text">
+                <i>${item.title}</i>
+                <span>${item.interval}</span>
+                ${item.step ? `<span>${item.step}</span>` : ''}
               </div>
+              <div class="col">
+                <span class="count" ${isComplete ? 'style="background: #1ABC9C !important;"' : ''}>
+                  <b>${item.count}</b> / ${item.goal}
+                </span>
+                <div class="row">
+                  <button onclick="plus('${index}');">&plus;</button>
+                  <button onclick="minus('${index}');">&minus;</button>
+                </div>
+              </div>
+              <button onclick="del('${index}');" class="del">&#x2715;</button>
             </div>
           `);
         }
@@ -99,6 +123,7 @@
       const form = document.getElementById('form');
       const input = document.getElementById('input');
       const goal = document.getElementById('goal');
+      const step = document.getElementById('step');
       const interval = document.getElementById('interval');
       form.addEventListener('submit', (e) => {
         e.preventDefault();
@@ -108,7 +133,7 @@
           count: 0,
           goal: goal.value,
           interval: interval.value,
-          lastUpdated: new Date()
+          step: step.value || 1
         };
 
         db.child(newData.title).set(newData);
@@ -116,13 +141,13 @@
 
       // plus tracker count
       function plus(index) {
-        let count = data[index].count + 1;
+        let count = data[index].count + (data[index].step || 1);
         db.child(index).set(Object.assign({}, data[index], { count, lastUpdated: new Date() }));
       }
 
       // minus tracker count
       function minus(index) {
-        let count = data[index].count - 1;
+        let count = data[index].count - (data[index].step || 1);
         db.child(index).set(Object.assign({}, data[index], { count, lastUpdated: new Date() }));
       }
 
