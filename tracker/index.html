@@ -101,17 +101,13 @@
             <div id="${index}" class="tracker" ${isComplete ? 'style="color: #1ABC9C !important;"' : ''}>
               <div class="text">
                 <i>${item.title}</i>
-                <span>${item.interval}</span>
-                ${item.step ? `<span>${item.step}</span>` : ''}
               </div>
+              <span class="count" ${isComplete ? 'style="background: rgba(26, 188, 156, 0.3); color: rgb(0, 117, 93);"' : ''}>
+                <b>${item.count}</b> / ${item.goal}
+              </span>
               <div class="col">
-                <span class="count" ${isComplete ? 'style="background: #1ABC9C !important;"' : ''}>
-                  <b>${item.count}</b> / ${item.goal}
-                </span>
-                <div class="row">
-                  <button onclick="plus('${index}');">&plus;</button>
-                  <button onclick="minus('${index}');">&minus;</button>
-                </div>
+                <button onclick="plus('${index}');">&plus;</button>
+                <button onclick="minus('${index}');">&minus;</button>
               </div>
               <button onclick="del('${index}');" class="del">&#x2715;</button>
             </div>
@@ -133,7 +129,7 @@
           count: 0,
           goal: goal.value,
           interval: interval.value,
-          step: int(step.value) || 1
+          step: step.value || 1
         };
 
         db.child(newData.title).set(newData);
