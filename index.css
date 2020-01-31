@@ -158,7 +158,8 @@ hr {
   font-style: italic;
   background: var(--white);
 }
-#filters {
+#filters,
+.bio {
   margin-bottom: 24px;
 }
 .filter {

@@ -324,27 +324,8 @@ function loadProjects() {
 
   const topKeys = Object.keys(counts).sort((a, b) => counts[b] - counts[a]);
 
-  const typeCounts = {};
-  for (let tag of topKeys) typeCounts[tagsMap[tag]]
-    ? typeCounts[tagsMap[tag]]++
-    : typeCounts[tagsMap[tag]] = 1;
-
-  const topTypes = Object.keys(typeCounts).sort((a, b) => typeCounts[b] - typeCounts[a]);
-
   filterElement.insertAdjacentHTML('beforeend', `
-    
     <div id="filterTags">
-      <div class="tags">
-        ${topTypes.map((type) => `
-          <a 
-            class="tag" 
-            id="${type}-tag"
-            data-count="${typeCounts[type]}"
-          >
-            ${type}
-          </a>
-        `).join('')}
-      </div>
       <div class="tags">
         ${topKeys.map((tag) => `
           <a 
@@ -370,3 +351,26 @@ function clearProjects() {
   }
   filterElement.remove();
 }
+
+/*  TOP TAG CATEGORIES
+
+const typeCounts = {};
+for (let tag of topKeys) typeCounts[tagsMap[tag]]
+  ? typeCounts[tagsMap[tag]]++
+  : typeCounts[tagsMap[tag]] = 1;
+
+const topTypes = Object.keys(typeCounts).sort((a, b) => typeCounts[b] - typeCounts[a]);
+
+<div class="tags">
+  ${topTypes.map((type) => `
+    <a 
+      class="tag" 
+      id="${type}-tag"
+      data-count="${typeCounts[type]}"
+    >
+      ${type}
+    </a>
+  `).join('')}
+</div>
+
+*/
