@@ -330,5 +330,18 @@ hr {
   }
   .quote {
     margin: 38px auto;
+    width: 100%;
+    padding: 0;
+    height: 64px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 350px) {
+  .quote {
+    font-size: 17px;
   }
 }
