@@ -163,7 +163,7 @@ const projects = [
     links: [
       {
         label: 'Website',
-        link: 'https://magnify.progress'
+        link: 'https://www.magnifyprogress.com/'
       },
       {
         label: 'iOS App Store',
