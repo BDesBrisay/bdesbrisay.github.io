@@ -98,18 +98,25 @@
           }
 
           element.insertAdjacentHTML('beforeend', `
-            <div id="${index}" class="tracker" ${isComplete ? 'style="color: #1ABC9C !important;"' : ''}>
-              <div class="col">
-                <button onclick="plus('${index}');">&plus;</button>
-                <button onclick="minus('${index}');">&minus;</button>
-              </div>
+            <div 
+              id="${index}" 
+              class="tracker" 
+              ${isComplete 
+                ? 'style="color: #1ABC9C !important; background: rgba(26, 188, 156, 0.1);"' 
+                : 'style="background: none"'}
+            >
+              <button onclick="minus('${index}');" class="minus">&minus;</button>
               <div class="text">
                 <i>${item.title}</i>
+                <span class="count" ${isComplete ? 'style="background: none; color: #1abc9c;"' : ''}>
+                  <b>${item.count}</b> / ${item.goal}
+                </span>
+                <div class="buttonRow">
+                  <button onclick="del('${index}');" class="del">remove</button>
+                  <button onclick="reset('${index}');" class="reset">reset</button>
+                </div>
               </div>
-              <span class="count" ${isComplete ? 'style="background: rgba(26, 188, 156, 0.3); color: rgb(0, 117, 93);"' : ''}>
-                <b>${item.count}</b> / ${item.goal}
-              </span>
-              <button onclick="del('${index}');" class="del">&#x2715;</button>
+              <button onclick="plus('${index}');" class="plus">&plus;</button>
             </div>
           `);
         }
@@ -133,11 +140,13 @@
         };
 
         db.child(newData.title).set(newData);
+
+        form.reset();
       });
 
       // plus tracker count
       function plus(index) {
-        let count = data[index].count + (data[index].step || 1);
+        let count = data[index].count + Number(data[index].step || 1);
         db.child(index).set(Object.assign({}, data[index], { count, lastUpdated: new Date() }));
       }
 
@@ -150,6 +159,11 @@
       // delete tracker
       function del(index) {
         db.child(index).remove();
+      }
+
+      // reset tracker
+      function reset(index) {
+        db.child(index).set(Object.assign({}, data[index], { count: 0, lastUpdated: new Date() }));
       }
     </script>
   </body>

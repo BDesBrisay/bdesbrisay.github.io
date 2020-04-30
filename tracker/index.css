@@ -11,7 +11,7 @@ body {
 #contain {
   width: 100%;
   max-width: 1200px;
-  padding: 0 12px;
+  padding: 0;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
@@ -20,6 +20,8 @@ h2 {
   border-bottom: 1px solid #e8e8e8;
   padding-bottom: 12px;
   margin-top: 12px;
+  padding-left: 12px;
+  box-sizing: border-box;
   color: #678;
 }
 #contain > .col {
@@ -31,7 +33,7 @@ h2 {
   flex-direction: row;
   align-items: stretch;
   width: 100%;
-  margin: 0 0 12px;
+  margin: 0 0 6px;
   background: #fff;
   position: relative;
   box-shadow: 0 3px 6px #e8e8e8;
@@ -41,7 +43,7 @@ i {
   display: flex;
   align-items: center;
   padding: 0;
-  margin: 0;
+  margin: 6px 0 0;
   box-sizing: border-box;
   font-weight: bold;
   font-size: 18px;
@@ -59,22 +61,18 @@ b {
 }
 
 .text {
-  width: calc(100% - 80px);
+  width: calc(100% - 100px);
   padding: 4px 16px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
   justify-content: center;
+  text-align: center;
 }
 .count {
-  margin-left: auto;
-  width: 100px;
   height: 100%;
   text-align: center;
-  background: #d56;
-  color: white;
-  background: rgba(231, 89, 106, 0.2);
   color: rgb(183, 0, 21);
   display: flex;
   align-items: center;
@@ -148,21 +146,28 @@ b {
   height: 50%;
   color: #345;
 }
-.col > button:nth-of-type(1) {
+.plus {
   background: rgba(26, 188, 156, 0.3);
   color: rgb(0, 117, 93);
 
   background: #1ABC9C;
   color: white;
+  width: 50px;
+  font-size: 24px;
+  border: none;
 }
-.col > button:nth-of-type(2) {
+.minus {
   background: rgba(231, 89, 106, 0.3);
   color: rgb(183, 0, 21);
 
   background: #d56;
   color: white;
+  width: 50px;
+  font-size: 24px;
+  border: none;
 }
-.del {
+.del,
+.reset {
   /*
   font-size: 12px;
   line-height: 25px;
@@ -173,16 +178,30 @@ b {
   right: -12.5px;
   border-radius: 12.5px;
   */
-  background: #345;
+  background: none;
   text-align: center;
   width: 50px;
   box-sizing: border-box;
-  margin: 0;
-  font-size: 14px;
-  color: white;
+  margin: 0 0 6px;
+  padding: 0;
+  font-size: 12px;
+  height: 20px;
+  line-height: 20px;
+  color: #888;
   font-weight: bold;
   border: none;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1); 
+}
+.buttonRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+.reset {
+  color: white;
+  background: #888;
+  margin-left: 12px;
+  font-weight: normal;
 }
 
 @media (min-width: 1024px) {
