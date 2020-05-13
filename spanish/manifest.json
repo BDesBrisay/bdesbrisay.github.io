@@ -1,11 +1,11 @@
 {
-  "name": "Tracker",
-  "short_name": "Tracker",
-  "start_url": "https://bdesbrisay.github.io/tracker",
+  "name": "Spanish",
+  "short_name": "Spanish",
+  "start_url": "https://bdesbrisay.github.io/spanish",
   "scope": "/",
   "display": "standalone",
   "theme_color": "#333",
-  "background_color": "#1ABC9C",
+  "background_color": "#db7121",
   "orientation": "profile",
   "icons": [
     {
