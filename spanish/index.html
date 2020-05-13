@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <title>Practica Española</title>
+    
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="shortcut icon apple-touch-icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="manifest" href="./manifest.json">
+    <link rel="pwa-setup" href="./manifest.json">
+    <script src="./pwacompat.js"></script>
+  </head>
+  <body>
+    <h1>Palabras al azar en Español</h1>
+    <div id="contain"></div>
+    <button id="reset" onclick="loadWords()">Otra Vez</button>
+    <script type="text/javascript" src="./data.js"></script>
+    <script>
+      const wordHTML = (item) => `<p><b>${item.word}:</b> ${item.definition}</p>`;
+
+      const loadWords = () => {
+        const contain = document.getElementById('contain');
+        contain.innerHTML = '';
+
+        const firstWord = data[Math.floor(Math.random() * data.length)];
+        const secondWord = data[Math.floor(Math.random() * data.length)];
+
+        contain.insertAdjacentHTML('beforeend', wordHTML(firstWord));
+        contain.insertAdjacentHTML('beforeend', wordHTML(secondWord));
+      }
+
+      loadWords();
+    </script>
+  </body>
+</html>
