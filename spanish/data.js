@@ -1,3 +1,12 @@
+const forms = [
+  'yo',
+  'tu',
+  'el, ella, usted',
+  'nosotros',
+  // 'vosotros',
+  'ellos, ellas, ustedes',
+];
+
 const data = [
   {word:"acabar", definition:"to finish, to end, to complete"},
   {word:"andar", definition:"to walk"},
