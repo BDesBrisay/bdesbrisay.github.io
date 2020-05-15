@@ -12,9 +12,13 @@
     <script src="./pwacompat.js"></script>
   </head>
   <body>
-    <h1>Palabras al azar en Español</h1>
+    <h1>Palabras al azar en Espa&#241;ol</h1>
     <div id="contain"></div>
     <button id="reset" onclick="loadWords()">Otra Vez</button>
+    <br/><br/>
+    <textarea id="input" placeholder="escribir una historia" rows="5"></textarea>
+    <p id="translation"></p>
+    <button id="translate">Traducir la historia</button>
     <script type="text/javascript" src="./data.js"></script>
     <script>
       const wordHTML = (item, form) => `<p>(${form}) <b>${item.word}:</b> ${item.definition}</p>`;
