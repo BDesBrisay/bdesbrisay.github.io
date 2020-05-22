@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+    <title>BryceBox</title>
+    
+    <link rel="stylesheet" type="text/css" href="./index.css">
+    <link rel="shortcut icon apple-touch-icon" type="image/x-icon" href="./favicon.ico" />
+    <link rel="manifest" href="./manifest.json">
+    <link rel="pwa-setup" href="./manifest.json">
+    <script src="./pwacompat.js"></script>
+  </head>
+  <body>
+    <h1>BryceBox</h1>
+    <h3 id="time"></h3>
+    <p>Notes:</p>
+    <textarea id="notes" onkeyup="takeNotes();"></textarea>
+    <script src="modules/time.js" type="text/javascript"></script>
+    <script src="modules/notes.js" type="text/javascript"></script>
+  </body>
+</html>
