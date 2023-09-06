@@ -2,6 +2,30 @@ const projects = [
   {
     image: './images/blazebuddies.png',
     imageStyle: 'margin-left: -12px;',
+    title: 'Ready.net',
+    position: 'Technical Co-Founder, Lead Frontend Engineer',
+    dates: 'June 2020 - Present',
+    description: 'BlazeBuddies enables peer-to-peer, fully encrypted cannabis live streams and group video chats. I put together and styled the frontend client with a homemade single-page-application (SPA) framework using vanilla JavaScript, HTML, & CSS. I designed the logo as well as the overall UI and UX of the site.',
+    tags: [
+      { title: 'Socket.io', type: 'Technology' },
+      { title: 'Peer.js', type: 'Technology' },
+      { title: 'Web Application', type: 'Skill' },
+      { title: 'JavaScript, HTML, CSS', type: 'Language' },
+      { title: 'UI/UX', type: 'Skill' },
+      { title: 'Graphic Design', type: 'Skill' },
+      { title: 'SPA', type: 'Technology' },
+      { title: 'Frontend', type: 'Skill' }
+    ],
+    links: [
+      {
+        label: 'Website',
+        link: 'https://blazebuddies.com'
+      }
+    ]
+  },
+  {
+    image: './images/blazebuddies.png',
+    imageStyle: 'margin-left: -12px;',
     title: 'BlazeBuddies',
     position: 'Founder, Frontend Developer & Designer',
     dates: 'January 2020 - Present',
@@ -54,7 +78,7 @@ const projects = [
     image: './images/soapely.png',
     title: 'Soapely',
     position: 'Software Developer Consultant',
-    dates: 'July 2019 - Present',
+    dates: 'July 2019 - January 2020',
     description: 'Soapely brings car washes and detailing to your driveway in 30 minutes or less. I desgined the logo, graphics, UI, & UX of the site and built the entire frontend in React.js & CSS Modules with a data layer of Apollo + GraphQL.',
     tags: [
       { title: 'React.js', type: 'Technology' },
