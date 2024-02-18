@@ -19,6 +19,9 @@ body {
   --electricblue: #026cff;
   --blue: #4171e1;
 
+  --white-tint1: rgba(255,255,255,0.15);
+  --white-tint2: rgba(255,255,255,0.25);
+  --white-tint3: rgba(255,255,255,0.3);
   --background-tint: red;
   /*
   Material Blues
@@ -29,16 +32,16 @@ body {
   */
   --shadow:  0 2px 16px rgba(0,0,0,0.2);
   font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
-  background: var(--white);
-  color: var(--black);
-  border-color: var(--black);
+  background: var(--black3);
+  color: var(--white);
+  border-color: var(--white2);
 }
 
 /**
  * Dark Theme
  */
 @media screen and (prefers-color-scheme: dark) {
-  body {
+  /* body {
     --black0: #f4f6f8;
     --black: #e4e6e8;
     --black1: #d4d6d8;
@@ -48,7 +51,7 @@ body {
     --white1: #345;
     --white2: #456;
     --white3: #567;
-  }
+  } */
 }
 
 body::before {
@@ -57,7 +60,7 @@ body::before {
   top: 0; right: 0; bottom: 0; left: 0;
   background-color: var(--background-tint);
   transition: background 1s ease;
-  opacity: 1;
+  opacity: 0.9;
   mix-blend-mode: multiply;
   z-index: -1;
 }
@@ -202,7 +205,7 @@ hr {
 .project {
   flex: 1;
   padding-top: 24px;
-  height: max(80vh, 400px);
+  /* height: max(50vh, 400px); */
 }
 .logo {
   height: 104px;
@@ -232,7 +235,7 @@ hr {
 }
 .link {
   text-decoration: none;
-  background: var(--black);
+  background: var(--white-tint1);
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 4px;
@@ -262,7 +265,7 @@ hr {
   border-radius: 4px 0 0 4px;
   cursor: pointer;
   display: inline;
-  background: var(--black);
+  background: var(--white-tint1);
   color: var(--white);
   margin: 4px 28px 4px 0;
   border: none;
@@ -276,7 +279,7 @@ hr {
 .tags > a::after {
   content: attr(data-count);
   height: 100%;
-  background: var(--black1);
+  background: var(--white-tint2);
   position: absolute;
   top: 0;
   bottom: 0;
@@ -290,10 +293,10 @@ hr {
 }
 .tags > li:hover,
 .tags > a:hover {
-  background: var(--black2);
+  background: var(--white-tint2);
 }
 .tags > a:hover::after {
-  background: var(--black3);
+  background: var(--white-tint3);
 }
 .tags > a#activeTag {
   background: var(--blue);

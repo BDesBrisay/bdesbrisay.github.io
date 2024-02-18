@@ -97,18 +97,21 @@ function loadProjects() {
           style="
             background: linear-gradient(to top, ${project.colors.primary}, ${previousProject ? previousProject.colors.primary : project.colors.primary});});
             width: 6px;
-            height: max(20vh, 100px);
+            height: 128px;
             margin-left: 64px;
           "
         ></div>
+
+        <div style="display: flex; align-items: center;">
+          <img src="${project.image}" alt="" class="logo" style="${project.imageStyle}" />
+          <h3 class="title">${project.title}</h3>
+        </div>
+
         <div
           id="${project.id}"
           class="project col"
           style="border-left: 6px solid ${project.colors.primary}; padding-left: 64px; margin-left: 64px;"
         >
-        <img src="${project.image}" alt="" class="logo" style="${project.imageStyle}" />
-          <h3 class="title">${project.title}</h3>
-          <br/>
           <h5 class="position">${project.position}</h5>
           <p class="dates"><i>${project.dates}</i></p>
           <p class="description">${project.description}</p>
