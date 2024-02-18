@@ -12,6 +12,8 @@ function init() {
   activeTags = decodeURIComponent(urlHash).split('#').slice(1);
 
   loadProjects();
+
+  updateDates();
 }
 
 function toggleTag(tag) {
@@ -131,3 +133,26 @@ const topTypes = Object.keys(typeCounts).sort((a, b) => typeCounts[b] - typeCoun
 </div>
 
 */
+
+/**
+ * Update dynamic dates ("for over {X} years")
+ * - #experience-date: 2016 to present
+ * - #learning-date: 2011 to present
+ */
+function updateDates() {
+  const experienceDate = document.getElementById('experience-years');
+  const learningDate = document.getElementById('learning-years');
+
+  const learningYear = 2011;
+  const experienceYear = 2016;
+  const currentYear = new Date().getFullYear();
+
+  const experienceYearsSince = currentYear - experienceYear;
+  const learningYearsSince = currentYear - learningYear;
+
+  console.log('experienceYearsSince', experienceYearsSince);
+  console.log('learningYearsSince', learningYearsSince);
+
+  experienceDate.innerText = experienceYearsSince
+  learningDate.innerText = learningYearsSince
+}

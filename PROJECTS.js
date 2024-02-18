@@ -1,8 +1,29 @@
+
+/**
+ * @typedef {Object} Project - Past Experience
+ * @property {string} image - Company logo/icon
+ * @property {string} title - Company name
+ * @property {string} position - Job title
+ * @property {string} dates - Time worked
+ * @property {string} description - Description of work 
+ * Tags
+ * @property {Array} tags - Tags for filtering
+ *   @property {string} tags.title - Tag name
+ *   @property {string} tags.type - Tag type
+ * Links
+ * @property {Array} links - Links to project 
+ *   @property {string} links.label - Link label
+ *   @property {string} links.link - Link URL
+ * Colors
+ * @property {Object} colors - Color scheme
+ *   @property {string} background - Background color
+ *   @property {string} primary - Primary color
+ */
 const PROJECTS = [
   {
-    image: './images/ready.png',
+    image: './images/ready.svg',
     title: 'Ready.net',
-    position: 'Technical Co-Founder, Lead Frontend Engineer',
+    position: 'Fullstack Engineer, Platform Frontend Lead',
     dates: 'June 2020 - Present',
     description: 'Ready is a Y-Combinator funded platform specializing in providing internet services to internet service providers. As the Lead Frontend Engineer I built out the entire frontend clients for an enterprise BSS/OSS solution for ISPs, a subscriber facing subscription management portal (both web & mobile app). Built and maintained a large codebase over the span of 4 years. Led various teams and product design efforts for the frontend. Spearheaded the development of developer experience focused tools and libraries such as the shared React.js component library and the creation of frontend guidelines and standard shared across numerous repos.',
     tags: [
@@ -26,7 +47,11 @@ const PROJECTS = [
         label: 'Website',
         link: 'https://ready.net'
       }
-    ]
+    ],
+    colors: {
+      background: '#2C2C54',
+      primary: '#706FD3'
+    }
   },
   {
     image: './images/blazebuddies.png',
@@ -50,7 +75,11 @@ const PROJECTS = [
         label: 'Website',
         link: 'https://blazebuddies.com'
       }
-    ]
+    ],
+    colors: {
+      background: '#101010',
+      primary: '#1abc9c' // '#e7596a'
+    }
   },
   {
     image: './images/donedingo.png',
@@ -77,7 +106,11 @@ const PROJECTS = [
         label: 'Website',
         link: 'https://donedingo.herokuapp.com'
       }
-    ]
+    ],
+    colors: {
+      background: '#302b63',
+      primary: '#ffaf7b'
+    }
   },
   {
     image: './images/soapely.png',
@@ -104,7 +137,11 @@ const PROJECTS = [
         label: 'Website',
         link: 'https://soapelyapp.com'
       }
-    ]
+    ],
+    colors: {
+      background: '#001138',
+      primary: '#58b8bf'
+    }
   },
   {
     image: './images/appearix.png',
@@ -136,7 +173,11 @@ const PROJECTS = [
         label: 'iOS App Store',
         link: 'https://apps.apple.com/us/app/appearix/id1474876873'
       }
-    ]
+    ],
+    colors: {
+      background: '#2c3e50',
+      primary: '#4a90e2'
+    }
   },
   {
     image: './images/presearch.png',
@@ -166,7 +207,11 @@ const PROJECTS = [
         label: 'Dsearch.com',
         link: 'https://dsearch.com'
       }
-    ]
+    ],
+    colors: {
+      background: '#2e2e2e',
+      primary: '#127fff'
+    }
   },
   {
     image: './images/magnifyprogress.png',
@@ -202,7 +247,11 @@ const PROJECTS = [
         label: 'Google Play Store',
         link: 'https://play.google.com/store/apps/details?id=com.magnifyprogress'
       }
-    ]
+    ],
+    colors: {
+      background: '#2f4866',
+      primary: '#847aa0'
+    }
   },
   {
     image: './images/realid.png',
@@ -225,7 +274,11 @@ const PROJECTS = [
         label: 'Website',
         link: 'https://realidentities.com'
       }
-    ]
+    ],
+    colors: {
+      background: '#1e1e1e',
+      primary: '#628ba1'
+    }
   },
   {
     image: './images/harvix.png',
@@ -246,6 +299,10 @@ const PROJECTS = [
         label: 'Website',
         link: 'https://harvix.com'
       }
-    ]
+    ],
+    colors: { // red and black
+      background: '#2f2f2f',
+      primary: '#ff0000'
+    }
   }
 ]
