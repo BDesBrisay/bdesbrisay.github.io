@@ -9,12 +9,17 @@ body {
   --black2: #567;
   --black3: #678;
   --white: #f4f6f8;
+  --white1: #e4e6e8;
+  --white2: #d4d6d8;
+  --white3: #c4c6c8;
   --blue: #4a90e2;
   --blue1: #3e80cc;
   --blue2: #316db3;
   --blue3: #245792;
   --electricblue: #026cff;
   --blue: #4171e1;
+
+  --background-tint: red;
   /*
   Material Blues
   --blue: #2196f3;
@@ -24,9 +29,37 @@ body {
   */
   --shadow:  0 2px 16px rgba(0,0,0,0.2);
   font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
-  background: white;
+  background: var(--white);
   color: var(--black);
   border-color: var(--black);
+}
+
+/**
+ * Dark Theme
+ */
+@media screen and (prefers-color-scheme: dark) {
+  body {
+    --black0: #f4f6f8;
+    --black: #e4e6e8;
+    --black1: #d4d6d8;
+    --black2: #c4c6c8;
+    --black3: #b4b6b8;
+    --white: #234;
+    --white1: #345;
+    --white2: #456;
+    --white3: #567;
+  }
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background-color: var(--background-tint);
+  transition: background 1s ease;
+  opacity: 1;
+  mix-blend-mode: multiply;
+  z-index: -1;
 }
 
 h1, h2, h3, h4, h5, p { margin: 0; }
@@ -72,13 +105,13 @@ hr {
   margin: 25px 0 50px 50px;
   background: var(--black0);
   box-shadow: -25px 25px 0 0 var(--black2);
-  color: white;
+  color: var(--white);
 }
 .shadow-right {
   margin: 25px 50px 25px 25px;
   background: var(--black0);
   box-shadow: 25px 25px 0 0 var(--black2);
-  color: white;
+  color: var(--white);
 }
 .shadow-top-right {
   margin: 50px 50px 0 0;
@@ -90,9 +123,11 @@ hr {
 .contain {
   width: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   max-width: 1024px;
   margin: 64px auto;
+  padding: 0 36px;
 }
 .side {
   width: 120px;
@@ -167,12 +202,13 @@ hr {
 .project {
   flex: 1;
   padding-top: 24px;
-  margin-bottom: 24px;
+  height: max(80vh, 400px);
 }
 .logo {
-  height: 100px;
-  width: 100px;
-  margin-bottom: 12px;
+  height: 104px;
+  width: 104px;
+  /* margin: 24px 15px 18px; */ /* add an extra 3px on each side due to the thickness of the line */
+  margin: 24px 0;
   border-radius: 6px;
   box-sizing: border-box;
   object-fit: contain;
@@ -196,11 +232,11 @@ hr {
 }
 .link {
   text-decoration: none;
-  background: var(--blue);
+  background: var(--black);
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 4px;
-  color: white;
+  color: var(--blue);
   margin: 4px 8px 8px 0;
   font-size: 14px;
   font-weight: bold;
@@ -226,8 +262,8 @@ hr {
   border-radius: 4px 0 0 4px;
   cursor: pointer;
   display: inline;
-  background: var(--white);
-  color: var(--black);
+  background: var(--black);
+  color: var(--white);
   margin: 4px 28px 4px 0;
   border: none;
   outline: none;
@@ -240,7 +276,7 @@ hr {
 .tags > a::after {
   content: attr(data-count);
   height: 100%;
-  background: #e4e6e8;
+  background: var(--black1);
   position: absolute;
   top: 0;
   bottom: 0;
@@ -254,14 +290,14 @@ hr {
 }
 .tags > li:hover,
 .tags > a:hover {
-  background: #e4e6e8;
+  background: var(--black2);
 }
 .tags > a:hover::after {
-  background: #d4d6d8;
+  background: var(--black3);
 }
 .tags > a#activeTag {
   background: var(--blue);
-  color: white;
+  color: var(--white);
   transition: all 0.2s;
 }
 .tags > a#activeTag::after {

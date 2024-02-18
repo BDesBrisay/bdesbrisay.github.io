@@ -1,6 +1,7 @@
 
 /**
  * @typedef {Object} Project - Past Experience
+ * @property {string} id - Unique identifier
  * @property {string} image - Company logo/icon
  * @property {string} title - Company name
  * @property {string} position - Job title
@@ -21,6 +22,7 @@
  */
 const PROJECTS = [
   {
+    id: 'ready',
     image: './images/ready.svg',
     title: 'Ready.net',
     position: 'Fullstack Engineer, Platform Frontend Lead',
@@ -54,6 +56,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'blazebuddies',
     image: './images/blazebuddies.png',
     imageStyle: 'margin-left: -12px;',
     title: 'BlazeBuddies',
@@ -82,6 +85,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'donedingo',
     image: './images/donedingo.png',
     imageStyle: 'margin-left: -12px;',
     title: 'Donedingo',
@@ -113,6 +117,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'soapely',
     image: './images/soapely.png',
     title: 'Soapely',
     position: 'Software Developer Consultant',
@@ -144,6 +149,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'appearix',
     image: './images/appearix.png',
     title: 'Appearix',
     position: 'Founder, VP Engineering',
@@ -180,6 +186,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'presearch',
     image: './images/presearch.png',
     title: 'Presearch.org',
     position: 'Software Developer Consultant',
@@ -214,6 +221,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'magnifyprogress',
     image: './images/magnifyprogress.png',
     title: 'Magnify.Progress',
     position: 'Frontend Engineer',
@@ -254,6 +262,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'realid',
     image: './images/realid.png',
     title: 'Real Identities',
     position: 'Freelance Web Developer',
@@ -281,6 +290,7 @@ const PROJECTS = [
     }
   },
   {
+    id: 'harvix',
     image: './images/harvix.png',
     title: 'Harvix',
     position: 'Founder, Web Developer',
