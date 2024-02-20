@@ -55,17 +55,62 @@
           I have over <span id="experience-years">8</span> years of professional web development experience. I first learned to code in 5th grade and have been working on side projects and startups ever since (about <span id="learning-years">13</span> years of learning!).
         </p>
       </div> -->
-      
-      <div id="filters">
-        <h5 class="filter"><b>Filter Projects by Skill</b></h5>
+
+
+      <div
+        class="project col"
+        style="border-left: 6px solid ${project.colors.primary}; padding-left: 64px; margin-left: 64px;"
+      >
+        <img src="./images/bryceProfile.jpg" alt="" class="profile" />
+        <h1>Bryce DesBrisay</h1>
+        <h4>Fullstack Developer & Designer</h4>
+        <h6><b>Remote</b>, based in the <b>SF Bay Area</b></h6>
+
+        <div class="socialIcons row">
+          <a href="https://www.github.com/bdesbrisay">
+            <i class="fab fa-github"></i>
+            <span>Github</span>
+          </a>
+          <a href="https://www.linkedin.com/in/bryce-desbrisay-b36818108/">
+            <i class="fab fa-linkedin"></i>
+            <span>Linkedin</span>
+          </a>
+          <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4W-KoHfJJ1VwsNyBj380TZw-xtKdOA7IvnRpelT2bkZcOVg/viewform?usp=sf_link">
+            <i class="fas fa-envelope"></i>
+            <span>Contact Me</span>
+          </a>
+        </div>
+        
+        <h5 class="filter"><b>About Me</b></h5>
+        <p class="bio">
+          I've worked on many startups before and have experience developing products from the ground up.
+          My role in almost all of the projects I've worked on has been to <b>mock the UI/UX</b> of the product, <b>design the graphics, logos, and layouts</b> for both the website and mobile applications</b>, then finally code the <b>entire frontend interface</b> (typically with React.js/React Native & GraphQL).
+          I have over <span id="experience-years">8</span> years of professional web development experience. I first learned to code in 5th grade and have been working on side projects and startups ever since (about <span id="learning-years">13</span> years of learning!).
+        </p>
+        
+        <br/>
+        <div id="filters">
+          <h5 class="filter"><b>Filter Projects by Skill</b></h5>
+        </div>
       </div>
+      <div
+        id="transition-timeline-color-mash"
+        style="
+          background: linear-gradient(to top, #706FD3, var(--electricblue));
+          width: 6px;
+          height: 128px;
+          margin-left: 64px;
+        "
+      ></div>
       
-      <div id="projects"></div>
+      <div id="projects">
+
+      </div>
     </div>
 
 
-    <!-- <script src="https://kit.fontawesome.com/c28e2aa93f.js" crossorigin="anonymous"></script>
-    <script>
+    <script src="https://kit.fontawesome.com/c28e2aa93f.js" crossorigin="anonymous"></script>
+    <!-- <script>
       !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
       analytics.load("e0rGqM7ltLWVAx79XkwXw8qsdYDtKBIO");
       analytics.page();

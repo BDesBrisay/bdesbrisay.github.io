@@ -22,7 +22,7 @@ body {
   --white-tint1: rgba(255,255,255,0.15);
   --white-tint2: rgba(255,255,255,0.25);
   --white-tint3: rgba(255,255,255,0.3);
-  --background-tint: red;
+  --background-tint: var(--black);
   /*
   Material Blues
   --blue: #2196f3;
@@ -32,26 +32,9 @@ body {
   */
   --shadow:  0 2px 16px rgba(0,0,0,0.2);
   font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
-  background: var(--black3);
+  background: var(--black2);
   color: var(--white);
   border-color: var(--white2);
-}
-
-/**
- * Dark Theme
- */
-@media screen and (prefers-color-scheme: dark) {
-  /* body {
-    --black0: #f4f6f8;
-    --black: #e4e6e8;
-    --black1: #d4d6d8;
-    --black2: #c4c6c8;
-    --black3: #b4b6b8;
-    --white: #234;
-    --white1: #345;
-    --white2: #456;
-    --white3: #567;
-  } */
 }
 
 body::before {
@@ -165,21 +148,25 @@ hr {
   margin: 12px 0;
 }
 .socialIcons {
-  margin: 12px 0 24px;
-  justify-content: center;
+  margin: 24px 0;
+  justify-content: flex-start;
 }
 .socialIcons > a {
   text-decoration: none;
-  color: var(--black);
+  color: var(--white);
   cursor: pointer;
   border-radius: 20px;
-  font-size: 24px;
-  width: 40px;
+  font-size: 28px;
+  /* width: 40px; */
   height: 40px;
-  margin: 0 6px;
+  margin: 0 24px 0 0;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.socialIcons > a > span {
+  font-size: 18px;
+  margin-left: 12px;
 }
 
 
@@ -206,6 +193,9 @@ hr {
   flex: 1;
   padding-top: 24px;
   /* height: max(50vh, 400px); */
+  border-left: 6px solid var(--electricblue);
+  padding-left: 64px;
+  margin-left: 64px;
 }
 .logo {
   height: 104px;

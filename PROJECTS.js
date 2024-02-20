@@ -51,7 +51,7 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#2C2C54',
+      background: '#706FD3',
       primary: '#706FD3'
     }
   },
@@ -80,8 +80,8 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#101010',
-      primary: '#1abc9c' // '#e7596a'
+      background: '#1abc9c',
+      primary: '#e7596a'
     }
   },
   {
@@ -144,7 +144,7 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#001138',
+      background: '#58b8bf',
       primary: '#58b8bf'
     }
   },
@@ -181,14 +181,14 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#2c3e50',
+      background: '#4a90e2',
       primary: '#4a90e2'
     }
   },
   {
     id: 'presearch',
     image: './images/presearch.png',
-    title: 'Presearch.org',
+    title: 'Presearch',
     position: 'Software Developer Consultant',
     dates: 'October 2017 - Present',
     description: 'Presearch is an open, decentralized search engine that rewards community members with PRE, Presearch\'s cryptocurrency token, for their use of the engine. I built an entire frontend for this search engine using the bing API, Socket.io, React.js, CSS Modules, GraphQL, & Apollo. I also setup and built out a browser + search engine prototype in Electron and vanilla Javascript, HTML, and CSS. There is also a version with alternative results called Dsearch.com.',
@@ -216,7 +216,7 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#2e2e2e',
+      background: '#127fff',
       primary: '#127fff'
     }
   },
@@ -257,7 +257,7 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#2f4866',
+      background: '#6090c9',
       primary: '#847aa0'
     }
   },
@@ -285,14 +285,14 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#1e1e1e',
+      background: '#628ba1',
       primary: '#628ba1'
     }
   },
   {
     id: 'harvix',
-    image: './images/harvix.png',
-    title: 'Harvix',
+    // image: './images/harvix.png',
+    title: '<h1 style="color: white;">Har<span style="color: red;">vix</span></h1>',
     position: 'Founder, Web Developer',
     dates: 'January 2011 - August 2015',
     description: 'Harvix is a research engine designed to provide students with relevant data upfront. I developed the front-end aspects for a new web search engine for students. I recruited and collaborated successfully with an international team while acquiring partnerships with WolframAlpha, Seattle Public Schools, and Reddit. Organized meetings with Sequoia Union High School District about widespread implementation.',
@@ -310,8 +310,8 @@ const PROJECTS = [
         link: 'https://harvix.com'
       }
     ],
-    colors: { // red and black
-      background: '#2f2f2f',
+    colors: {
+      background: '#000000',
       primary: '#ff0000'
     }
   }

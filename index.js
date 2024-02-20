@@ -62,7 +62,7 @@ function handleScroll() {
       const colors = getColorForSection(sectionId);
       
       // change the body::before background color
-      document.body.style.setProperty('--background-tint', colors.primary);
+      document.body.style.setProperty('--background-tint', colors.background);
     }
   });
 }
@@ -71,10 +71,12 @@ function handleScroll() {
  * Get color for a section
  */
 function getColorForSection(sectionId) {
-  // from projects
+  // projects section
   const project = PROJECTS.find((project) => project.id === sectionId);
-  console.log('project', project)
-  return project ? project.colors : { background: 'white', primary: 'black' };
+
+  if (project) return project.colors;
+
+  return { background: 'var(--black)', primary: 'var(--black)' };
 }
 
 /**
@@ -88,26 +90,16 @@ function loadProjects() {
   for (projectIndex in PROJECTS) {
     const project = PROJECTS[projectIndex];
     const hasActiveTag = activeTags.every(val => project.tags.some(tag => tag.title === val));
-    const previousProject = PROJECTS[projectIndex - 1];
+    const nextProject = PROJECTS[Number(projectIndex) + 1];
 
     if (hasActiveTag || !activeTags.length) {
       projectsElement.insertAdjacentHTML('beforeend', /*html*/`
-        <div
-          id="transition-timeline-color-mash"
-          style="
-            background: linear-gradient(to top, ${project.colors.primary}, ${previousProject ? previousProject.colors.primary : project.colors.primary});});
-            width: 6px;
-            height: 128px;
-            margin-left: 64px;
-          "
-        ></div>
-
         <div
           id="${project.id}"
           class="project col"
           style="border-left: 6px solid ${project.colors.primary}; padding-left: 64px; margin-left: 64px;"
         >
-          <img src="${project.image}" alt="" class="logo" style="${project.imageStyle}" />
+          ${project.image ? `<img src="${project.image}" alt="" class="logo" style="${project.imageStyle}" />` : ''}
           <h3 class="title">${project.title}</h3>
           <h5 class="position">${project.position}</h5>
           <p class="dates"><i>${project.dates}</i></p>
@@ -139,6 +131,16 @@ function loadProjects() {
             `).join('')}
           </div>
         </div>
+
+        <div
+          id="transition-timeline-color-mash"
+          style="
+            background: linear-gradient(to top,  ${nextProject ? nextProject.colors.primary : project.colors.primary}, ${project.colors.primary});
+            width: 6px;
+            height: 128px;
+            margin-left: 64px;
+          "
+        ></div>
       `);
     }
 
