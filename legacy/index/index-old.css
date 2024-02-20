@@ -9,20 +9,12 @@ body {
   --black2: #567;
   --black3: #678;
   --white: #f4f6f8;
-  --white1: #e4e6e8;
-  --white2: #d4d6d8;
-  --white3: #c4c6c8;
   --blue: #4a90e2;
   --blue1: #3e80cc;
   --blue2: #316db3;
   --blue3: #245792;
   --electricblue: #026cff;
   --blue: #4171e1;
-
-  --white-tint1: rgba(255,255,255,0.15);
-  --white-tint2: rgba(255,255,255,0.25);
-  --white-tint3: rgba(255,255,255,0.3);
-  --background-tint: var(--black);
   /*
   Material Blues
   --blue: #2196f3;
@@ -32,20 +24,9 @@ body {
   */
   --shadow:  0 2px 16px rgba(0,0,0,0.2);
   font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
-  background: var(--black2);
-  color: var(--white);
-  border-color: var(--white2);
-}
-
-body::before {
-  content: '';
-  position: fixed;
-  top: 0; right: 0; bottom: 0; left: 0;
-  background-color: var(--background-tint);
-  transition: background 1s ease;
-  opacity: 0.9;
-  mix-blend-mode: multiply;
-  z-index: -1;
+  background: white;
+  color: var(--black);
+  border-color: var(--black);
 }
 
 h1, h2, h3, h4, h5, p { margin: 0; }
@@ -91,13 +72,13 @@ hr {
   margin: 25px 0 50px 50px;
   background: var(--black0);
   box-shadow: -25px 25px 0 0 var(--black2);
-  color: var(--white);
+  color: white;
 }
 .shadow-right {
   margin: 25px 50px 25px 25px;
   background: var(--black0);
   box-shadow: 25px 25px 0 0 var(--black2);
-  color: var(--white);
+  color: white;
 }
 .shadow-top-right {
   margin: 50px 50px 0 0;
@@ -109,21 +90,20 @@ hr {
 .contain {
   width: 100%;
   display: flex;
-  flex-direction: column;
   justify-content: space-around;
   max-width: 1024px;
   margin: 64px auto;
-  padding: 0 36px;
 }
 .side {
-  width: 120px;
-  background: var(--blue);
-  align-items: stretch;
-  justify-content: center;
+  width: 30vw;
+  max-width: 300px;
+  align-items: center;
+  justify-content: flex-start;
   text-align: center;
 }
 #content {
-  width: calc(100% - 120px);
+  width: 50vw;
+  max-width: 550px;
   align-items: flex-start;
   justify-content: flex-start;
   text-align: left;
@@ -148,25 +128,21 @@ hr {
   margin: 12px 0;
 }
 .socialIcons {
-  margin: 24px 0;
-  justify-content: flex-start;
+  margin: 12px 0 24px;
+  justify-content: center;
 }
 .socialIcons > a {
   text-decoration: none;
-  color: var(--white);
+  color: var(--black);
   cursor: pointer;
   border-radius: 20px;
-  font-size: 28px;
-  /* width: 40px; */
+  font-size: 24px;
+  width: 40px;
   height: 40px;
-  margin: 0 24px 0 0;
+  margin: 0 6px;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-.socialIcons > a > span {
-  font-size: 18px;
-  margin-left: 12px;
 }
 
 
@@ -192,16 +168,12 @@ hr {
 .project {
   flex: 1;
   padding-top: 24px;
-  /* height: max(50vh, 400px); */
-  border-left: 6px solid var(--electricblue);
-  padding-left: 64px;
-  margin-left: 64px;
+  margin-bottom: 24px;
 }
 .logo {
-  height: 104px;
-  width: 104px;
-  /* margin: 24px 15px 18px; */ /* add an extra 3px on each side due to the thickness of the line */
-  margin: 24px 0;
+  height: 100px;
+  width: 100px;
+  margin-bottom: 12px;
   border-radius: 6px;
   box-sizing: border-box;
   object-fit: contain;
@@ -225,11 +197,11 @@ hr {
 }
 .link {
   text-decoration: none;
-  background: var(--white-tint1);
+  background: var(--blue);
   cursor: pointer;
   padding: 8px 16px;
   border-radius: 4px;
-  color: var(--blue);
+  color: white;
   margin: 4px 8px 8px 0;
   font-size: 14px;
   font-weight: bold;
@@ -255,8 +227,8 @@ hr {
   border-radius: 4px 0 0 4px;
   cursor: pointer;
   display: inline;
-  background: var(--white-tint1);
-  color: var(--white);
+  background: var(--white);
+  color: var(--black);
   margin: 4px 28px 4px 0;
   border: none;
   outline: none;
@@ -269,7 +241,7 @@ hr {
 .tags > a::after {
   content: attr(data-count);
   height: 100%;
-  background: var(--white-tint2);
+  background: #e4e6e8;
   position: absolute;
   top: 0;
   bottom: 0;
@@ -283,14 +255,14 @@ hr {
 }
 .tags > li:hover,
 .tags > a:hover {
-  background: var(--white-tint2);
+  background: #e4e6e8;
 }
 .tags > a:hover::after {
-  background: var(--white-tint3);
+  background: #d4d6d8;
 }
 .tags > a#activeTag {
   background: var(--blue);
-  color: var(--white);
+  color: white;
   transition: all 0.2s;
 }
 .tags > a#activeTag::after {
