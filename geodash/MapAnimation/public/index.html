@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Mapbox GL JS - Animated Route</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.8.1/mapbox-gl.css' rel='stylesheet' />
+    <script src='https://unpkg.com/@turf/turf/turf.min.js'></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+    <style>
+        body { margin: 0; padding: 0; }
+        #map { position: absolute; top: 0; bottom: 0; width: 100%; }
+    </style>
+</head>
+<body>
+
+    <button id="startBtn">Start Recording</button>
+    <button id="stopBtn">Stop Recording</button>
+    <video id="recordedVideo" controls></video>
+
+    <div id='map'></div>
+    
+    <script>
+        (async () => {
+            const pinMarkerImage = './van-circle-icon.jpeg' // './IMG_4745.jpg'
+
+            const routePath = 'routes/overland-expo.geojson';
+
+            const totalTime = 1000 * 60 * 1; // 2 minutes
+
+            const outputName = `map-recording-${Date.now()}.webm`;
+
+            mapboxgl.accessToken = "pk.eyJ1IjoiYmRlc2JyaXNheSIsImEiOiJjbHlvMjd3MngwY29rMmxvOHRzcTA0MWthIn0.1otUk3mlzMTwbavjYIjG1A";
+
+            const route = await fetch(routePath).then(response => response.json());
+
+            let progress = 0;
+            const maxProgress = route.geometry.coordinates.length - 1;
+            const firstCoordinate = route.geometry.coordinates[0];
+
+            const totalDistance = turf.length(route, { units: 'miles' });
+
+
+            // Start capturing the map
+            async function startCapture() {
+                try {
+                    console.log('startCapture');
+
+                    let mediaRecorder;
+                    let recordedChunks = [];
+
+                    let stream = await navigator.mediaDevices.getDisplayMedia({
+                        video: { displaySurface: "browser" },
+                        preferCurrentTab: true,
+                        selfBrowserSurface: "include"
+                    });
+
+                    mediaRecorder = new MediaRecorder(stream);
+
+                    mediaRecorder.ondataavailable = (e) => {
+                        if (e.data.size > 0) {
+                            recordedChunks.push(e.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        console.log('stop event');
+                        const blob = new Blob(recordedChunks, { type: 'video/webm' });
+                        const url = URL.createObjectURL(blob);
+                        const video = document.getElementById('recordedVideo');
+                        video.src = url;
+                        recordedChunks = [];
+
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = outputName;
+                        document.body.appendChild(a);
+                        a.click();
+
+                        setTimeout(() => {
+                            document.body.removeChild(a);
+                            URL.revokeObjectURL(url);
+                        }, 100);
+
+                        // stop the screen share
+                        stream.getTracks().forEach(track => track.stop());
+                    };
+
+                    mediaRecorder.start();
+
+                    console.log('start recording');
+
+                    // To stop recording after a certain time
+                    // setTimeout(() => {
+                    //     mediaRecorder.stop();
+                    //     console.log('stop recording', Date.now());
+                    // }, totalTime); // stop recording after 2 minutes
+
+                    return mediaRecorder;
+                } catch (err) {
+                    console.error("Capture Error: " + err);
+                }
+            }
+
+            const map = new mapboxgl.Map({
+                container: 'map',
+                // style: 'mapbox://styles/mapbox/streets-v11',
+                style: 'mapbox://styles/mapbox/satellite-streets-v11',
+                center: firstCoordinate,
+                zoom: 5
+            });
+
+            // Start map animation
+            map.on('load', async () => {
+
+                // wait 1 second
+                await new Promise(resolve => setTimeout(resolve, 5000));
+
+                const mediaRecorder = await startCapture();
+
+                // zoom to the bounds of the route smoothly
+                const bounds = [route.geometry.coordinates[0], route.geometry.coordinates[0]];
+
+                map.fitBounds(bounds, {
+                    padding: 200, // Add padding to ensure the route is not at the edges of the map
+                    maxZoom: 14,
+                    duration: 3000
+                });
+
+                await new Promise(resolve => setTimeout(resolve, 3000));
+
+                map.addSource('route', {
+                    'type': 'geojson',
+                    'data': {
+                        'type': 'Feature',
+                        'geometry': {
+                            'type': 'LineString',
+                            'coordinates': []
+                        }
+                    }
+                });
+
+                map.addLayer({
+                    'id': 'route',
+                    'type': 'line',
+                    'source': 'route',
+                    'layout': {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    'paint': {
+                    // bold royal blue line
+                        // 'line-color': '#0000FF',
+                        'line-color': '#1E90FF',
+                        'line-width': 7
+                    }
+                }, 'waterway-label');
+
+                const marker = new mapboxgl.Marker()
+                    .setLngLat(route.geometry.coordinates[0])
+                    .addTo(map);
+
+                async function animateRoute() {
+                    if (progress < maxProgress) {
+                        progress++;
+                        const currentCoordinates = route.geometry.coordinates.slice(0, progress + 1);
+
+                        // console.log('currentCoordinates:', currentCoordinates);
+                        map.getSource('route').setData({
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'LineString',
+                                'coordinates': currentCoordinates
+                            }
+                        });
+
+                        marker.setLngLat(route.geometry.coordinates[progress]);
+
+                        // Calculate bounds and fit the map to the bounds
+                        const bounds = currentCoordinates.reduce((bounds, coord) => {
+                            return bounds.extend(coord);
+                        }, new mapboxgl.LngLatBounds(currentCoordinates[0], currentCoordinates[0]));
+
+                        const animationDistance = turf.length({
+                            'type': 'Feature',
+                            'geometry': {
+                                'type': 'LineString',
+                                'coordinates': [currentCoordinates[currentCoordinates.length - 2], currentCoordinates[currentCoordinates.length - 1]]
+                            }
+                        }, { units: 'miles' });
+
+                        // total 60 seconds to animate the route
+                        const duration = totalTime * (animationDistance / totalDistance);
+
+                        map.fitBounds(bounds, {
+                            padding: 200, // Add padding to ensure the route is not at the edges of the map
+                            maxZoom: 14,
+                            duration: duration
+                        });
+
+                        setTimeout(() => {
+                            requestAnimationFrame(animateRoute);
+                        }, duration);
+                    }
+                    else if (progress >= maxProgress) {
+                        console.log('done:', Date.now());
+
+                        setTimeout(() => {
+                            mediaRecorder.stop();
+                        }, 3000);
+
+                        console.log('stop recording', Date.now());
+                    }
+                }
+
+                animateRoute();
+            });
+        })();
+    </script>
+</body>
+</html>

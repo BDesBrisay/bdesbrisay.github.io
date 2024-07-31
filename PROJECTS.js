@@ -26,7 +26,7 @@ const PROJECTS = [
     image: './images/ready.svg',
     title: 'Ready.net',
     position: 'Fullstack Engineer, Platform Frontend Lead',
-    dates: 'June 2020 - Present',
+    dates: 'June 2020 - June 2024',
     description: 'Ready is a Y-Combinator funded platform specializing in providing internet services to internet service providers. As the Lead Frontend Engineer I built out the entire frontend clients for an enterprise BSS/OSS solution for ISPs, a subscriber facing subscription management portal (both web & mobile app). Built and maintained a large codebase over the span of 4 years. Led various teams and product design efforts for the frontend. Spearheaded the development of developer experience focused tools and libraries such as the shared React.js component library and the creation of frontend guidelines and standard shared across numerous repos.',
     tags: [
       { title: 'JavaScript, HTML, CSS', type: 'Language' },
@@ -59,10 +59,10 @@ const PROJECTS = [
     id: 'blazebuddies',
     image: './images/blazebuddies.png',
     imageStyle: 'margin-left: -12px;',
-    title: 'BlazeBuddies',
+    title: 'Howlix',
     position: 'Founder, Frontend Developer & Designer',
-    dates: 'January 2020 - Present',
-    description: 'BlazeBuddies enables peer-to-peer, fully encrypted cannabis live streams and group video chats. I put together and styled the frontend client with a homemade single-page-application (SPA) framework using vanilla JavaScript, HTML, & CSS. I designed the logo as well as the overall UI and UX of the site.',
+    dates: 'January 2020 - June 2020',
+    description: 'Howlix enables peer-to-peer, fully encrypted live streams and group video chats. I put together and styled the frontend client with a homemade single-page-application (SPA) framework using vanilla JavaScript, HTML, & CSS. I designed the logo as well as the overall UI and UX of the site.',
     tags: [
       { title: 'Socket.io', type: 'Technology' },
       { title: 'Peer.js', type: 'Technology' },
@@ -76,7 +76,7 @@ const PROJECTS = [
     links: [
       {
         label: 'Website',
-        link: 'https://blazebuddies.com'
+        link: 'https://howlix.com'
       }
     ],
     colors: {
@@ -121,7 +121,7 @@ const PROJECTS = [
     image: './images/soapely.png',
     title: 'Soapely',
     position: 'Software Developer Consultant',
-    dates: 'July 2019 - Present',
+    dates: 'July 2019 - October 2019',
     description: 'Soapely brings car washes and detailing to your driveway in 30 minutes or less. I desgined the logo, graphics, UI, & UX of the site and built the entire frontend in React.js & CSS Modules with a data layer of Apollo + GraphQL.',
     tags: [
       { title: 'React.js', type: 'Technology' },
@@ -153,7 +153,7 @@ const PROJECTS = [
     image: './images/appearix.png',
     title: 'Appearix',
     position: 'Founder, VP Engineering',
-    dates: 'December 2018 - Present',
+    dates: 'December 2018 - January 2020',
     description: 'Appearix is a single place to discover, create, and share events. I designed the logos, modified wireframes, styled the client, and built out the entire frontend interface in React.js, Apollo/GraphQL, CSS Modules. I also built out an entire app using React Native that was deployed to both the iOS app store and the Google Play store. Worked on event outreach with the administration at University of Colorado, Boulder and various clubs there too.',
     tags: [
       { title: 'React.js', type: 'Technology' },
@@ -190,7 +190,7 @@ const PROJECTS = [
     image: './images/presearch.png',
     title: 'Presearch',
     position: 'Software Developer Consultant',
-    dates: 'October 2017 - Present',
+    dates: 'October 2017 - December 2018',
     description: 'Presearch is an open, decentralized search engine that rewards community members with PRE, Presearch\'s cryptocurrency token, for their use of the engine. I built an entire frontend for this search engine using the bing API, Socket.io, React.js, CSS Modules, GraphQL, & Apollo. I also setup and built out a browser + search engine prototype in Electron and vanilla Javascript, HTML, and CSS. There is also a version with alternative results called Dsearch.com.',
     tags: [
       { title: 'Electron', type: 'Technology' },

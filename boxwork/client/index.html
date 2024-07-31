@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Drag and Drop Boxes</title>
+  <style>
+    #canvas {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      border: 1px solid #000;
+    }
+    .box {
+      position: absolute;
+      width: 150px;
+      height: 100px;
+      border: 1px solid #000;
+      background-color: #f9f9f9;
+      cursor: move;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+    .loading {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div id="toolbar">
+    <button id="new-box-btn">New Box</button>
+    <button id="save-workflow-btn">Save Workflow</button>
+  </div>
+  
+  <div id="canvas"></div>
+  
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+
+  <script>
+    /**
+     * Box Actions:
+     * - Move
+     * - Connect
+     * - Disconnect
+     * - Delete
+     * 
+     * Inner Box Actions:
+     * - Prompt Input
+     * - Enter will solidify text and make loading symbol in box and then show a response text
+     * - run response code on enter
+     * - show response code in box
+     */
+
+    document.getElementById('new-box-btn').addEventListener('click', createNewBox);
+
+    function createNewBox() {
+      const box = document.createElement('div');
+      box.className = 'box';
+      box.style.top = '50px';
+      box.style.left = '50px';
+      box.style.position = 'absolute';
+      document.getElementById('canvas').appendChild(box);
+
+      makeDraggable(box);
+      makeEditable(box);
+      renderBoxContent(box);
+      attachBoxActions(box);
+    }
+
+    function makeDraggable(box) {
+      let offsetX = 0;
+      let offsetY = 0;
+
+      d3.select(box).call(d3.drag()
+      .on('start', function(event) {
+        const style = window.getComputedStyle(box);
+        offsetX = event.x - parseInt(style.left);
+        offsetY = event.y - parseInt(style.top);
+      })
+      .on('drag', function(event) {
+        d3.select(this).style('left', (event.x - offsetX) + 'px').style('top', (event.y - offsetY) + 'px');
+      })
+      );
+    }
+
+    function makeEditable(box) {
+      box.contentEditable = true;
+      box.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          box.contentEditable = false;
+          showLoadingSymbol(box);
+          // Simulate a response
+          setTimeout(() => {
+            hideLoadingSymbol(box);
+            renderResponse(box, 'Response text');
+          }, 1000);
+        }
+      });
+    }
+
+    function renderBoxContent(box) {
+      box.innerHTML = `
+        <div class="box-content">
+          <input type="text" placeholder="Prompt input">
+          <div class="loading">Loading...</div>
+          <div class="response"></div>
+        </div>
+      `;
+    }
+
+    function showLoadingSymbol(box) {
+      box.querySelector('.loading').style.display = 'block';
+    }
+
+    function hideLoadingSymbol(box) {
+      box.querySelector('.loading').style.display = 'none';
+    }
+
+    function renderResponse(box, response) {
+      box.querySelector('.response').textContent = response;
+    }
+
+    function attachBoxActions(box) {
+      // Add a delete button
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = 'Delete';
+      deleteBtn.style.position = 'absolute';
+      deleteBtn.style.top = '0';
+      deleteBtn.style.right = '0';
+      deleteBtn.style.zIndex = '10';
+      deleteBtn.addEventListener('click', () => {
+        box.remove();
+      });
+      box.appendChild(deleteBtn);
+
+      // Implement connect functionality
+      box.addEventListener('dblclick', () => {
+        if (!box.classList.contains('connecting')) {
+          box.classList.add('connecting');
+          box.style.border = '2px dashed red';
+          document.querySelectorAll('.box').forEach(b => {
+            if (b !== box) {
+              b.addEventListener('click', createConnection);
+            }
+          });
+        } else {
+          cancelConnecting();
+        }
+      });
+
+      function createConnection(event) {
+        const targetBox = event.currentTarget;
+        if (box !== targetBox) {
+          const line = document.createElement('div');
+          line.className = 'line';
+          document.getElementById('canvas').appendChild(line);
+          updateLinePosition(line, box, targetBox);
+          d3.select(targetBox).on('drag', () => updateLinePosition(line, box, targetBox));
+          d3.select(box).on('drag', () => updateLinePosition(line, box, targetBox));
+          cancelConnecting();
+        }
+      }
+
+      function cancelConnecting() {
+        box.classList.remove('connecting');
+        box.style.border = '1px solid #000';
+        document.querySelectorAll('.box').forEach(b => {
+          b.removeEventListener('click', createConnection);
+        });
+      }
+
+      function updateLinePosition(line, box1, box2) {
+        const rect1 = box1.getBoundingClientRect();
+        const rect2 = box2.getBoundingClientRect();
+        const x1 = rect1.left + rect1.width / 2;
+        const y1 = rect1.top + rect1.height / 2;
+        const x2 = rect2.left + rect2.width / 2;
+        const y2 = rect2.top + rect2.height / 2;
+
+        line.style.position = 'absolute';
+        line.style.width = `${Math.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)}px`;
+        line.style.transformOrigin = '0 0';
+        line.style.transform = `rotate(${Math.atan2(y2 - y1, x2 - x1)}rad)`;
+        line.style.left = `${x1}px`;
+        line.style.top = `${y1}px`;
+        line.style.borderTop = '2px solid black';
+      }
+
+      function deleteConnection() {
+        // Implement delete connection
+      }
+    }
+
+  </script>
+</body>
+</html>
