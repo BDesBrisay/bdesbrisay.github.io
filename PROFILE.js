@@ -15,7 +15,7 @@ const PROFILE = {
   title: 'Full Stack Developer & Designer',
   location: 'Remote, based in the bay areax',
   bio: 'I am a software engineer with a passion for creating and learning. I have experience in web development, mobile development, and machine learning. I am always looking for new opportunities to learn and grow.',
-  picture: './images/bryceProfile.jpg',
+  picture: './images/bryceProfile2.jpg',
   github: '',
   linkedin: '',
   contactUrl: ''
