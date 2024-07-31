@@ -80,7 +80,8 @@ const PROJECTS = [
       }
     ],
     colors: {
-      background: '#1abc9c',
+      // background: '#1abc9c',
+      background: '#4a90e2',
       primary: '#e7596a'
     }
   },
