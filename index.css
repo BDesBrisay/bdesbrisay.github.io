@@ -203,7 +203,7 @@ hr {
   width: 104px;
   /* margin: 24px 15px 18px; */ /* add an extra 3px on each side due to the thickness of the line */
   margin: 24px 0;
-  border-radius: 6px;
+  border-radius: 10px;
   box-sizing: border-box;
   object-fit: contain;
 }

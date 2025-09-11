@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Trade Profit Calendar</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f8fafc; color: #334155; }
+    .calendar-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 4px; padding: 10px; }
+    .month { border: 1px solid #ccc; padding: 4px; }
+    .cell { border: 1px solid #ddd; height: 28px; cursor: pointer; }
+    .profit-positive { background: #bbf7d0; }
+    .profit-negative { background: #fecaca; }
+    .modal-bg { position: fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.4); display:none; justify-content:center; align-items:center; }
+    .modal { background:#fff; padding:16px; border-radius:8px; position:absolute; z-index:10; }
+    .modal-bg.active { display:block; }
+    button { cursor:pointer; }
+    .stats { margin: 16px; text-align: center; }
+  </style>
+</head>
+<body>
+<div class="stats">
+  <h2>Trade Stats</h2>
+  <p id="totalProfit">Total Profit: $0.00</p>
+  <p id="totalTrades">Total Trades: 0</p>
+  <button onclick="openTradeModal()">Add Trade</button>
+</div>
+
+<div class="calendar-grid" id="calendar"></div>
+
+<div id="tradeListContainer" style="max-width:700px;margin:24px auto 0 auto;">
+  <h3>Current Trades</h3>
+  <ul id="tradeList" style="list-style:none;padding:0;"></ul>
+</div>
+
+<div class="modal-bg" id="modal">
+  <div class="modal">
+    <label>Date Range:<br>
+      <input type="date" id="tradeStart"> to <input type="date" id="tradeEnd">
+    </label><br>
+    <label>Profit:<br><input type="number" id="tradeProfit"></label><br>
+    <button onclick="saveTrade()">Save Trade</button>
+    <button onclick="closeTradeModal()">Cancel</button>
+  </div>
+</div>
+
+<script>
+const calendar = document.getElementById('calendar');
+const modal = document.getElementById('modal');
+let trades = JSON.parse(localStorage.getItem('trades') || '[]');
+let editIdx = null;
+
+function renderCalendar(year) {
+  calendar.innerHTML = '';
+  for (let m = 0; m < 12; m++) {
+    const monthDiv = document.createElement('div');
+    monthDiv.className = 'month';
+    monthDiv.innerHTML = `<strong>${new Date(year,m).toLocaleString('default',{month:'long'})}</strong>`;
+    const daysInMonth = new Date(year,m+1,0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.textContent = d;
+      const profit = getDailyProfit(year,m,d);
+      if (profit !== 0) {
+        cell.classList.add(profit>0?'profit-positive':'profit-negative');
+        cell.title = `Profit: ${profit.toFixed(2)}`;
+      }
+      monthDiv.appendChild(cell);
+    }
+    calendar.appendChild(monthDiv);
+  }
+  renderTradeList();
+  updateStats();
+}
+
+function getDailyProfit(y,m,d) {
+  const date = new Date(y,m,d);
+  let dailyProfit = 0;
+  trades.forEach(t => {
+    const start = new Date(t.start);
+    const end = new Date(t.end);
+    if (date >= start && date <= end && date.getDay() != 0 && date.getDay() != 6) {
+      const days = countWeekdays(start, end);
+      dailyProfit += t.profit / days;
+    }
+  });
+  return dailyProfit;
+}
+
+function countWeekdays(start,end) {
+  let count = 0;
+  let current = new Date(start);
+  while (current <= end) {
+    if (current.getDay() != 0 && current.getDay() != 6) count++;
+    current.setDate(current.getDate() + 1);
+  }
+  return count;
+}
+
+function openTradeModal(idx) {
+  modal.classList.add('active');
+  if (typeof idx === 'number') {
+    editIdx = idx;
+    document.getElementById('tradeStart').value = trades[idx].start;
+    document.getElementById('tradeEnd').value = trades[idx].end;
+    document.getElementById('tradeProfit').value = trades[idx].profit;
+  } else {
+    editIdx = null;
+    document.getElementById('tradeStart').value = '';
+    document.getElementById('tradeEnd').value = '';
+    document.getElementById('tradeProfit').value = '';
+  }
+}
+
+function closeTradeModal() {
+  modal.classList.remove('active');
+  editIdx = null;
+}
+
+function saveTrade() {
+  const start = document.getElementById('tradeStart').value;
+  const end = document.getElementById('tradeEnd').value;
+  const profit = parseFloat(document.getElementById('tradeProfit').value);
+  if (!start || !end || isNaN(profit)) return;
+  if (editIdx !== null) {
+    trades[editIdx] = { start, end, profit };
+  } else {
+    trades.push({ start, end, profit });
+  }
+  localStorage.setItem('trades', JSON.stringify(trades));
+  closeTradeModal();
+  renderCalendar(new Date().getFullYear());
+}
+
+function renderTradeList() {
+  const list = document.getElementById('tradeList');
+  list.innerHTML = '';
+  if (trades.length === 0) {
+    list.innerHTML = '<li style="color:#888;">No trades entered.</li>';
+    return;
+  }
+  trades.forEach((t, i) => {
+    const li = document.createElement('li');
+    li.style.marginBottom = '10px';
+    li.innerHTML = `
+      <b>${t.start} to ${t.end}</b> &mdash; Profit: <b>${t.profit}</b>
+      <button onclick="editTrade(${i})" style="margin-left:12px;">Edit</button>
+      <button onclick="deleteTrade(${i})" style="margin-left:4px;color:#b91c1c;">Delete</button>
+    `;
+    list.appendChild(li);
+  });
+}
+
+function editTrade(idx) {
+  openTradeModal(idx);
+}
+
+function deleteTrade(idx) {
+  if (confirm('Delete this trade?')) {
+    trades.splice(idx, 1);
+    localStorage.setItem('trades', JSON.stringify(trades));
+    renderCalendar(new Date().getFullYear());
+  }
+}
+
+function updateStats() {
+  const totalProfit = trades.reduce((acc, t) => acc + t.profit, 0).toFixed(2);
+  const totalTrades = trades.length;
+  document.getElementById('totalProfit').textContent = `Total Profit: $${totalProfit}`;
+  document.getElementById('totalTrades').textContent = `Total Trades: ${totalTrades}`;
+}
+
+window.editTrade = editTrade;
+window.deleteTrade = deleteTrade;
+window.openTradeModal = openTradeModal;
+
+renderCalendar(new Date().getFullYear());
+</script>
+</body>
+</html>
