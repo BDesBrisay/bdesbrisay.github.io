@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTML Logo Exporter</title>
+  <script src="https://unpkg.com/html-to-image@1.11.11/dist/html-to-image.js"></script>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+      background: #fafafa;
+    }
+
+    textarea {
+      width: 50%;
+      border: none;
+      padding: 16px;
+      font-family: monospace;
+      font-size: 14px;
+      resize: none;
+      outline: none;
+      background: #f0f0f0;
+    }
+
+    .preview-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: white;
+      overflow: auto;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px;
+      border-bottom: 1px solid #ccc;
+      background: #f8f8f8;
+      width: 100%;
+    }
+
+    .controls label {
+      font-size: 14px;
+    }
+
+    #capture-area {
+      background: transparent;
+      display: inline-block;
+    }
+
+    iframe {
+      border: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .preview {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      overflow: auto;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="html-input">
+    <div style="font-size:36px; font-weight:semi-bold; color:#fff; text-align:center; display: flex; align-items: flex-start; gap: 4px;">
+      <svg
+        fill="none"
+        height="48px"
+        viewBox="0 0 24 24"
+        width="48px"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g transform="translate(-3, 1)">
+          <path
+            d="M17,5v2h3.586l-5.586,5.586-4-4-6.707,6.707,1.414,1.414,5.293-5.293,4,4,7-7v3.586h2V5h-7Z"
+            fill="#00c951"
+          />
+        </g>
+      </svg>
+      <span>Green<span style="color:#00c951;">line</span>.Trading</span>
+    </div>
+        
+  </textarea>
+
+  <div class="preview-container">
+    <div class="controls">
+      <label>Padding:
+        <input type="range" id="padding-slider" min="0" max="100" value="20" />
+        <span id="padding-value">20px</span>
+      </label>
+      <button id="export-btn">Export Transparent PNG</button>
+    </div>
+    <div class="preview">
+      <div id="capture-area" style="padding:20px;"></div>
+    </div>
+  </div>
+
+  <script>
+    const textarea = document.getElementById("html-input");
+    const captureArea = document.getElementById("capture-area");
+    const paddingSlider = document.getElementById("padding-slider");
+    const paddingValue = document.getElementById("padding-value");
+    const exportBtn = document.getElementById("export-btn");
+
+    function updatePreview() {
+      captureArea.innerHTML = textarea.value;
+    }
+
+    function updatePadding() {
+      const pad = paddingSlider.value;
+      paddingValue.textContent = pad + "px";
+      captureArea.style.padding = pad + "px";
+    }
+
+    textarea.addEventListener("input", updatePreview);
+    paddingSlider.addEventListener("input", updatePadding);
+
+    updatePreview();
+
+    exportBtn.addEventListener("click", async () => {
+      const node = captureArea;
+
+      // Ensure it sizes exactly to content + padding
+      const rect = node.getBoundingClientRect();
+      const width = rect.width;
+      const height = rect.height;
+
+      const dataUrl = await htmlToImage.toPng(node, {
+        backgroundColor: "transparent",
+        width,
+        height,
+        pixelRatio: 3,
+      });
+
+      const link = document.createElement("a");
+      link.download = "exported-logo.png";
+      link.href = dataUrl;
+      link.click();
+    });
+  </script>
+</body>
+</html>
