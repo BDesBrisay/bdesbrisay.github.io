@@ -1,0 +1,535 @@
+/* BackingTracks - Mobile-first dark theme */
+
+:root {
+  --bg-primary: #0a0a0f;
+  --bg-secondary: #14141f;
+  --bg-tertiary: #1e1e2e;
+  --bg-hover: #252538;
+  
+  --text-primary: #f0f0f5;
+  --text-secondary: #a0a0b0;
+  --text-muted: #606070;
+  
+  --accent: #6366f1;
+  --accent-hover: #818cf8;
+  --accent-dim: #4f46e5;
+  
+  --success: #22c55e;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  
+  --border: #2a2a3a;
+  --border-focus: #6366f1;
+  
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  
+  --font-mono: 'SF Mono', 'Menlo', 'Monaco', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+  overflow-x: hidden;
+}
+
+/* Layout */
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.header-icon {
+  font-size: 28px;
+}
+
+.header h1 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+}
+
+/* Cards/Panels */
+.panel {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.panel-title {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Transport Controls */
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.transport-btn {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-size: 24px;
+}
+
+.transport-btn.play {
+  background: var(--accent);
+  color: white;
+}
+
+.transport-btn.play:hover {
+  background: var(--accent-hover);
+  transform: scale(1.05);
+}
+
+.transport-btn.play:active {
+  transform: scale(0.95);
+}
+
+.transport-btn.play.active {
+  background: var(--success);
+}
+
+.transport-btn.stop {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.transport-btn.stop:hover {
+  background: var(--bg-hover);
+}
+
+.transport-btn.stop:active {
+  transform: scale(0.95);
+}
+
+/* Volume Control */
+.volume-control {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 8px;
+}
+
+.volume-icon {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+/* Sliders */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  flex: 1;
+  height: 6px;
+  background: var(--bg-tertiary);
+  border-radius: 3px;
+  outline: none;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 20px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.2);
+}
+
+/* Control Rows */
+.control-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.control-row:last-child {
+  border-bottom: none;
+}
+
+.control-label {
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+}
+
+.control-value {
+  font-family: var(--font-mono);
+  font-size: 0.9375rem;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* Select Dropdowns */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 36px 10px 12px;
+  font-size: 0.9375rem;
+  color: var(--text-primary);
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23a0a0b0' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  min-width: 140px;
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--border-focus);
+}
+
+/* Tempo Slider Row */
+.tempo-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tempo-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.tempo-value {
+  font-family: var(--font-mono);
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+/* Recording Controls */
+.record-controls {
+  display: flex;
+  gap: 12px;
+}
+
+.record-btn {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.record-btn:hover {
+  background: var(--bg-hover);
+}
+
+.record-btn:active {
+  transform: scale(0.98);
+}
+
+.record-btn.recording {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: white;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.record-dot {
+  width: 10px;
+  height: 10px;
+  background: var(--danger);
+  border-radius: 50%;
+}
+
+.record-btn.recording .record-dot {
+  background: white;
+}
+
+/* Track Library */
+.library-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.library-empty {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.library-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: var(--bg-tertiary);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.library-item:hover {
+  background: var(--bg-hover);
+}
+
+.library-item-icon {
+  font-size: 18px;
+  color: var(--text-secondary);
+}
+
+.library-item-info {
+  flex: 1;
+}
+
+.library-item-name {
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.library-item-meta {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+.library-item-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.library-item-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-sm);
+  border: none;
+  background: var(--bg-secondary);
+  color: var(--text-secondary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.15s ease;
+}
+
+.library-item-btn:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.library-item-btn.delete:hover {
+  background: var(--danger);
+  color: white;
+}
+
+/* Metronome Toggle */
+.toggle {
+  position: relative;
+  width: 48px;
+  height: 28px;
+  background: var(--bg-tertiary);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.toggle.active {
+  background: var(--accent);
+}
+
+.toggle-knob {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.toggle.active .toggle-knob {
+  transform: translateX(20px);
+}
+
+/* Visual Feedback */
+.beat-indicator {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.beat-dot {
+  width: 12px;
+  height: 12px;
+  background: var(--bg-tertiary);
+  border-radius: 50%;
+  transition: all 0.1s ease;
+}
+
+.beat-dot.active {
+  background: var(--accent);
+  transform: scale(1.2);
+}
+
+.beat-dot.downbeat.active {
+  background: var(--success);
+}
+
+/* Track Mute Controls */
+.track-controls {
+  display: flex;
+  gap: 8px;
+}
+
+.track-btn {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.track-btn:hover {
+  background: var(--bg-hover);
+}
+
+.track-btn.muted {
+  background: transparent;
+  color: var(--text-muted);
+  border-style: dashed;
+}
+
+/* Initialization Overlay */
+.init-overlay {
+  position: fixed;
+  inset: 0;
+  background: var(--bg-primary);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  z-index: 100;
+  transition: opacity 0.3s ease;
+}
+
+.init-overlay.hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.init-icon {
+  font-size: 64px;
+}
+
+.init-text {
+  font-size: 1.125rem;
+  color: var(--text-secondary);
+  text-align: center;
+  max-width: 280px;
+}
+
+.init-btn {
+  padding: 16px 48px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.init-btn:hover {
+  background: var(--accent-hover);
+  transform: scale(1.02);
+}
+
+.init-btn:active {
+  transform: scale(0.98);
+}
+
+/* Utility */
+.hidden {
+  display: none !important;
+}
