@@ -1,0 +1,189 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #141414;
+  font-family: Avenir, Ubuntu, Arial, Helvetica, sans-serif;
+  color: #f4f6f8;
+  touch-action: none;
+}
+
+#canvas-container {
+  position: fixed;
+  inset: 0;
+  touch-action: none;
+}
+
+#canvas-container canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ---------- Crosshair ---------- */
+
+#crosshair {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  color: rgba(255, 255, 255, 0.3);
+  pointer-events: none;
+  z-index: 5;
+  transition: color 0.15s, text-shadow 0.15s;
+  user-select: none;
+  line-height: 1;
+}
+
+#crosshair.active {
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
+}
+
+/* ---------- Desktop hint ---------- */
+
+#desktop-hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 24px;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 8px;
+  font-size: 14px;
+  pointer-events: none;
+  opacity: 0.8;
+  transition: opacity 0.4s;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+#desktop-hint.hidden {
+  opacity: 0;
+}
+
+/* ---------- Mobile UI ---------- */
+
+#mobile-ui {
+  display: none;
+}
+
+/* Show mobile UI only on coarse-pointer narrow screens */
+@media (pointer: coarse) and (max-width: 900px) {
+  #mobile-ui {
+    display: block;
+  }
+  #desktop-hint {
+    display: none;
+  }
+}
+
+/* Hide mobile UI on precise-pointer devices */
+@media (hover: hover) and (pointer: fine) {
+  #mobile-ui, #mobile-ui * {
+    display: none !important;
+  }
+}
+
+/* --- Info modal --- */
+
+#controls-info {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(20, 20, 20, 0.95);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 16px;
+  padding: 32px 36px;
+  text-align: center;
+  z-index: 100;
+  max-width: 320px;
+  width: 85%;
+}
+
+#controls-info h2 {
+  font-size: 1.4rem;
+  margin-bottom: 16px;
+}
+
+#controls-info p {
+  font-size: 1rem;
+  margin-bottom: 8px;
+  opacity: 0.8;
+}
+
+#controls-info-dismiss {
+  margin-top: 20px;
+  padding: 10px 32px;
+  background: #026cff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#controls-info.hidden {
+  display: none !important;
+}
+
+/* --- Joystick (move stick) --- */
+
+#move-stick {
+  position: fixed;
+  bottom: 32px;
+  left: 32px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 50;
+  touch-action: none;
+}
+
+#move-stick-knob {
+  position: absolute;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+/* --- Look pad --- */
+
+#look-pad {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 50;
+  touch-action: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#look-pad-indicator {
+  font-size: 28px;
+  opacity: 0.3;
+  pointer-events: none;
+  user-select: none;
+}

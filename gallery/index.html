@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover, user-scalable=no">
+    <meta name="theme-color" content="#141414">
+    <title>Bryce DesBrisay — Gallery</title>
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
+    <link rel="stylesheet" href="./gallery.css">
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div id="canvas-container"></div>
+    <div id="crosshair">+</div>
+
+    <div id="mobile-ui">
+      <div id="controls-info">
+        <h2>Controls</h2>
+        <p>Left stick &mdash; move</p>
+        <p>Right pad &mdash; look around</p>
+        <p>Tap a link to open it</p>
+        <button id="controls-info-dismiss">Got it</button>
+      </div>
+      <div id="move-stick">
+        <div id="move-stick-knob"></div>
+      </div>
+      <div id="look-pad">
+        <div id="look-pad-indicator">&#x271A;</div>
+      </div>
+    </div>
+
+    <p id="desktop-hint">Click to look around &middot; WASD or arrow keys to move &middot; Click links on the wall</p>
+
+    <script src="../PROJECTS.js"></script>
+    <script type="module" src="./js/main.js"></script>
+  </body>
+</html>
