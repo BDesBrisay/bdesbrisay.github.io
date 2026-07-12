@@ -1,0 +1,247 @@
+{
+  "generatedAt": "2026-02-27T00:04:18.786Z",
+  "packs": [
+    {
+      "packId": "starter-math-v1",
+      "version": "3.0.0",
+      "title": "Starter Math (Legacy)",
+      "topics": [
+        "arithmetic",
+        "algebra",
+        "geometry"
+      ],
+      "url": "/content/packs/starter-math-v1.json",
+      "defaultInstall": false,
+      "domain": "math",
+      "track": "starter",
+      "stage": "foundation",
+      "recommendedOrder": 0
+    },
+    {
+      "packId": "starter-science-v1",
+      "version": "3.0.0",
+      "title": "Starter Science (Legacy)",
+      "topics": [
+        "physics basics",
+        "biology basics",
+        "earth-space basics"
+      ],
+      "url": "/content/packs/starter-science-v1.json",
+      "defaultInstall": false,
+      "domain": "science",
+      "track": "starter",
+      "stage": "foundation",
+      "recommendedOrder": 0
+    },
+    {
+      "packId": "math-arithmetic-v1",
+      "version": "1.0.0",
+      "title": "Math Arithmetic",
+      "topics": [
+        "arithmetic",
+        "number sense",
+        "fractions",
+        "percent"
+      ],
+      "url": "/content/packs/math-arithmetic-v1.json",
+      "defaultInstall": true,
+      "domain": "math",
+      "track": "arithmetic",
+      "stage": "foundation",
+      "recommendedOrder": 1
+    },
+    {
+      "packId": "math-algebra-charting-v1",
+      "version": "1.0.0",
+      "title": "Math Algebra and Charting",
+      "topics": [
+        "linear equations",
+        "functions",
+        "graph interpretation"
+      ],
+      "url": "/content/packs/math-algebra-charting-v1.json",
+      "defaultInstall": false,
+      "domain": "math",
+      "track": "algebra-charting",
+      "stage": "core",
+      "recommendedOrder": 2,
+      "prerequisites": [
+        "math-arithmetic-v1"
+      ]
+    },
+    {
+      "packId": "math-geometry-v1",
+      "version": "1.0.0",
+      "title": "Math Geometry",
+      "topics": [
+        "area",
+        "volume",
+        "angles",
+        "reasoning"
+      ],
+      "url": "/content/packs/math-geometry-v1.json",
+      "defaultInstall": false,
+      "domain": "math",
+      "track": "geometry",
+      "stage": "core",
+      "recommendedOrder": 3,
+      "prerequisites": [
+        "math-arithmetic-v1"
+      ]
+    },
+    {
+      "packId": "math-calculus-v1",
+      "version": "1.0.0",
+      "title": "Math Calculus",
+      "topics": [
+        "limits",
+        "derivatives",
+        "integrals",
+        "applications"
+      ],
+      "url": "/content/packs/math-calculus-v1.json",
+      "defaultInstall": false,
+      "domain": "math",
+      "track": "calculus",
+      "stage": "advanced",
+      "recommendedOrder": 4,
+      "prerequisites": [
+        "math-algebra-charting-v1",
+        "math-geometry-v1"
+      ]
+    },
+    {
+      "packId": "science-physics-v1",
+      "version": "1.0.0",
+      "title": "Science Physics",
+      "topics": [
+        "mechanics",
+        "energy",
+        "waves",
+        "electricity"
+      ],
+      "url": "/content/packs/science-physics-v1.json",
+      "defaultInstall": true,
+      "domain": "science",
+      "track": "physics",
+      "stage": "foundation",
+      "recommendedOrder": 1
+    },
+    {
+      "packId": "science-chemistry-v1",
+      "version": "1.0.0",
+      "title": "Science Chemistry",
+      "topics": [
+        "atoms",
+        "bonding",
+        "reactions",
+        "stoichiometry"
+      ],
+      "url": "/content/packs/science-chemistry-v1.json",
+      "defaultInstall": false,
+      "domain": "science",
+      "track": "chemistry",
+      "stage": "core",
+      "recommendedOrder": 2,
+      "prerequisites": [
+        "science-physics-v1"
+      ]
+    },
+    {
+      "packId": "science-biology-v1",
+      "version": "1.0.0",
+      "title": "Science Biology",
+      "topics": [
+        "cells",
+        "genetics",
+        "ecology",
+        "human systems"
+      ],
+      "url": "/content/packs/science-biology-v1.json",
+      "defaultInstall": false,
+      "domain": "science",
+      "track": "biology",
+      "stage": "core",
+      "recommendedOrder": 3
+    },
+    {
+      "packId": "science-earth-space-v1",
+      "version": "1.0.0",
+      "title": "Science Earth and Space",
+      "topics": [
+        "geology",
+        "climate",
+        "weather",
+        "astronomy"
+      ],
+      "url": "/content/packs/science-earth-space-v1.json",
+      "defaultInstall": false,
+      "domain": "science",
+      "track": "earth-space",
+      "stage": "core",
+      "recommendedOrder": 4,
+      "prerequisites": [
+        "science-physics-v1"
+      ]
+    },
+    {
+      "packId": "cs-foundations-v1",
+      "version": "1.0.0",
+      "title": "Computer Science Foundations",
+      "topics": [
+        "logic",
+        "binary",
+        "data representation",
+        "complexity intuition"
+      ],
+      "url": "/content/packs/cs-foundations-v1.json",
+      "defaultInstall": true,
+      "domain": "computer-science",
+      "track": "foundations",
+      "stage": "foundation",
+      "recommendedOrder": 1
+    },
+    {
+      "packId": "cs-data-structures-v1",
+      "version": "1.0.0",
+      "title": "Computer Science Data Structures",
+      "topics": [
+        "arrays",
+        "linked lists",
+        "stacks",
+        "queues",
+        "trees",
+        "maps"
+      ],
+      "url": "/content/packs/cs-data-structures-v1.json",
+      "defaultInstall": false,
+      "domain": "computer-science",
+      "track": "data-structures",
+      "stage": "core",
+      "recommendedOrder": 2,
+      "prerequisites": [
+        "cs-foundations-v1"
+      ]
+    },
+    {
+      "packId": "cs-algorithms-v1",
+      "version": "1.0.0",
+      "title": "Computer Science Algorithms",
+      "topics": [
+        "sorting",
+        "searching",
+        "graph traversal",
+        "asymptotic reasoning"
+      ],
+      "url": "/content/packs/cs-algorithms-v1.json",
+      "defaultInstall": false,
+      "domain": "computer-science",
+      "track": "algorithms",
+      "stage": "advanced",
+      "recommendedOrder": 3,
+      "prerequisites": [
+        "cs-data-structures-v1"
+      ]
+    }
+  ]
+}

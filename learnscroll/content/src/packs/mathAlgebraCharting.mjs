@@ -1,0 +1,168 @@
+import { createCardFactory, createPack } from '../builders.mjs';
+
+const PACK_ID = 'math-algebra-charting-v1';
+const CARD_PREFIX = 'math_algebra_charting';
+
+export const mathAlgebraChartingDefinition = {
+  packId: PACK_ID,
+  defaultInstall: false,
+  buildPack: ({ createdAt }) => {
+    const cards = createCardFactory(PACK_ID, CARD_PREFIX);
+    const tags = ['domain:math', 'track:algebra-charting'];
+
+    return createPack({
+      packId: PACK_ID,
+      version: '1.0.0',
+      title: 'Math Algebra and Charting',
+      topics: ['linear equations', 'functions', 'graph interpretation'],
+      domain: 'math',
+      track: 'algebra-charting',
+      stage: 'core',
+      recommendedOrder: 2,
+      prerequisites: ['math-arithmetic-v1'],
+      createdAt,
+      cards: [
+        cards.quickMath({
+          prompt: 'Solve 3x + 7 = 22.',
+          answer: '5',
+          explanation: 'Subtract 7, then divide by 3 to isolate x.',
+          tags: [...tags, 'linear-equations'],
+          difficulty: 2
+        }),
+        cards.quickMath({
+          prompt: 'Solve 5(x - 2) = 40.',
+          answer: '10',
+          explanation: 'Divide by 5 first, then add 2.',
+          tags: [...tags, 'linear-equations', 'distribution'],
+          difficulty: 3
+        }),
+        cards.quickMath({
+          prompt: 'If y = 2x + 1, find y when x = 6.',
+          answer: '13',
+          explanation: 'Substitute x with 6, then evaluate.',
+          tags: [...tags, 'functions', 'substitution'],
+          difficulty: 2
+        }),
+        cards.quickMath({
+          prompt: 'Find slope between (2, 3) and (6, 11).',
+          answer: '2',
+          explanation: 'Use rise over run: (11 - 3) / (6 - 2).',
+          tags: [...tags, 'slope'],
+          difficulty: 3
+        }),
+        cards.quickMath({
+          prompt: 'Write the slope-intercept form for slope 4 and y-intercept -3.',
+          answer: 'y = 4x - 3',
+          explanation: 'Slope-intercept form is y = mx + b.',
+          tags: [...tags, 'linear-models'],
+          difficulty: 3
+        }),
+        cards.quickMath({
+          prompt: 'A graph passes through (0, 5) and (3, 11). What is the slope?',
+          answer: '2',
+          explanation: 'Rise is 6 over run 3, so slope is 2.',
+          tags: [...tags, 'graph-reading', 'slope'],
+          difficulty: 3
+        }),
+        cards.quickMath({
+          prompt: 'For f(x) = x^2 - 4, compute f(3).',
+          answer: '5',
+          explanation: 'Square 3 to get 9, then subtract 4.',
+          tags: [...tags, 'functions', 'quadratics'],
+          difficulty: 3
+        }),
+        cards.quickMath({
+          prompt: 'Solve the system: x + y = 9 and x - y = 1.',
+          answer: 'x = 5, y = 4',
+          explanation: 'Add equations to solve x, then substitute to find y.',
+          tags: [...tags, 'systems'],
+          difficulty: 4
+        }),
+        cards.conceptCheck({
+          prompt: 'Which equation matches a line with slope -2 and y-intercept 7?',
+          options: ['y = 2x + 7', 'y = -2x + 7', 'y = -2x - 7', 'x = -2y + 7'],
+          answer: 'y = -2x + 7',
+          explanation: 'In y = mx + b form, slope is m and intercept is b.',
+          optionExplanations: {
+            'y = 2x + 7': 'The intercept is correct, but slope sign is positive instead of negative.',
+            'y = -2x + 7': 'Both slope and intercept match the stated line.',
+            'y = -2x - 7': 'Slope is right, but intercept is negative seven, not positive seven.',
+            'x = -2y + 7': 'This is not written in slope-intercept form and changes variable structure.'
+          },
+          tags: [...tags, 'linear-models'],
+          difficulty: 3
+        }),
+        cards.conceptCheck({
+          prompt: 'A table shows x: 1,2,3 and y: 4,7,10. Which rule fits?',
+          options: ['y = 3x + 1', 'y = x + 3', 'y = 2x + 2', 'y = 4x'],
+          answer: 'y = 3x + 1',
+          explanation: 'y rises by 3 each step, and when x = 1 it starts at 4.',
+          optionExplanations: {
+            'y = 3x + 1': 'This gives outputs 4, 7, and 10 for x values 1, 2, and 3.',
+            'y = x + 3': 'This produces 4, 5, and 6, which does not match the table.',
+            'y = 2x + 2': 'This gives 4, 6, and 8, missing the observed growth rate.',
+            'y = 4x': 'This produces 4, 8, and 12, which grows too quickly.'
+          },
+          tags: [...tags, 'functions', 'table-analysis'],
+          difficulty: 3
+        }),
+        cards.conceptCheck({
+          prompt: 'If a line is horizontal, what is true about its slope?',
+          options: ['Slope is zero', 'Slope is undefined', 'Slope is one', 'Slope is always negative'],
+          answer: 'Slope is zero',
+          explanation: 'A horizontal line has no vertical change as x changes.',
+          optionExplanations: {
+            'Slope is zero': 'No rise over any run means the slope value is zero.',
+            'Slope is undefined': 'Undefined slope applies to vertical lines with zero run.',
+            'Slope is one': 'Slope one means rise equals run, which is not horizontal.',
+            'Slope is always negative': 'Horizontal lines are neither rising nor falling.'
+          },
+          tags: [...tags, 'slope', 'graph-reading'],
+          difficulty: 2
+        }),
+        cards.conceptCheck({
+          prompt: 'Which point is on the graph of y = 2x - 1?',
+          options: ['(2, 3)', '(2, 5)', '(1, 3)', '(0, -3)'],
+          answer: '(2, 3)',
+          explanation: 'Substitute x values and check whether the output equals y.',
+          optionExplanations: {
+            '(2, 3)': 'For x = 2, the expression gives y = 4 - 1 = 3.',
+            '(2, 5)': 'For x = 2, y should be 3, not 5.',
+            '(1, 3)': 'For x = 1, y equals 1, so this point is not on the line.',
+            '(0, -3)': 'For x = 0, y equals -1, not -3.'
+          },
+          tags: [...tags, 'graph-reading', 'substitution'],
+          difficulty: 2
+        }),
+        cards.conceptCheck({
+          prompt: 'When solving 2x + 4 = 18, what is the first valid step?',
+          options: ['Subtract 4 from both sides', 'Add 4 to both sides', 'Divide both sides by 2 first', 'Multiply both sides by 2'],
+          answer: 'Subtract 4 from both sides',
+          explanation: 'Undo addition before undoing multiplication to isolate the variable term.',
+          optionExplanations: {
+            'Subtract 4 from both sides': 'This isolates 2x cleanly and keeps the equation balanced.',
+            'Add 4 to both sides': 'Adding moves farther from isolation and gives 2x + 8 = 22.',
+            'Divide both sides by 2 first': 'This is possible but less direct because of the added constant.',
+            'Multiply both sides by 2': 'This increases complexity without isolating x.'
+          },
+          tags: [...tags, 'linear-equations'],
+          difficulty: 2
+        }),
+        cards.conceptCheck({
+          prompt: 'Which statement best describes the y-intercept of a line?',
+          options: ['Where x = 0', 'Where y = 0', 'Where slope is zero', 'Where both coordinates are positive'],
+          answer: 'Where x = 0',
+          explanation: 'The y-intercept is the point where the graph crosses the y-axis.',
+          optionExplanations: {
+            'Where x = 0': 'Points on the y-axis always have x value zero.',
+            'Where y = 0': 'This describes x-intercepts, where the graph crosses the x-axis.',
+            'Where slope is zero': 'Slope can vary and is not what defines intercept location.',
+            'Where both coordinates are positive': 'Intercepts can be positive, zero, or negative values.'
+          },
+          tags: [...tags, 'graph-reading', 'linear-models'],
+          difficulty: 2
+        })
+      ]
+    });
+  }
+};

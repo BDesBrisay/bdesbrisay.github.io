@@ -1,0 +1,129 @@
+{
+  "packId": "starter-science-v1",
+  "version": "3.0.0",
+  "title": "Starter Science (Legacy)",
+  "topics": [
+    "physics basics",
+    "biology basics",
+    "earth-space basics"
+  ],
+  "createdAt": "2026-02-27T00:04:18.786Z",
+  "cards": [
+    {
+      "id": "starter_science_ff_001",
+      "packId": "starter-science-v1",
+      "type": "flash_fact",
+      "prompt": "What force pulls objects toward Earth?",
+      "options": [],
+      "answer": "gravity",
+      "explanation": "Gravity causes falling motion and helps maintain orbital paths.",
+      "tags": [
+        "domain:science",
+        "track:starter",
+        "forces"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "starter_science_ff_002",
+      "packId": "starter-science-v1",
+      "type": "flash_fact",
+      "prompt": "What gas do humans inhale for aerobic respiration?",
+      "options": [],
+      "answer": "oxygen",
+      "explanation": "Oxygen supports cellular respiration for ATP production.",
+      "tags": [
+        "domain:science",
+        "track:starter",
+        "human-biology"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "starter_science_ff_003",
+      "packId": "starter-science-v1",
+      "type": "flash_fact",
+      "prompt": "Which planet is known as the Red Planet?",
+      "options": [],
+      "answer": "Mars",
+      "explanation": "Iron-rich surface minerals give Mars a reddish appearance.",
+      "tags": [
+        "domain:science",
+        "track:starter",
+        "astronomy"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "starter_science_qm_001",
+      "packId": "starter-science-v1",
+      "type": "quick_math",
+      "prompt": "If speed is 12 m/s for 5 s, distance is:",
+      "options": [],
+      "answer": "60 m",
+      "explanation": "Distance equals speed multiplied by time in constant-speed motion.",
+      "tags": [
+        "domain:science",
+        "track:starter",
+        "mechanics"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "starter_science_cc_001",
+      "packId": "starter-science-v1",
+      "type": "concept_check",
+      "prompt": "Which organelle controls what enters and leaves a cell?",
+      "options": [
+        "Cell membrane",
+        "Nucleus",
+        "Ribosome",
+        "Golgi apparatus"
+      ],
+      "answer": "Cell membrane",
+      "explanation": "The membrane acts as a selective barrier around the cell.",
+      "optionExplanations": {
+        "Cell membrane": "Transport regulation is a defining role of the membrane.",
+        "Nucleus": "The nucleus stores DNA but is not the outer boundary controller.",
+        "Ribosome": "Ribosomes synthesize proteins from messenger RNA.",
+        "Golgi apparatus": "Golgi modifies and packages molecules, not boundary transport control."
+      },
+      "tags": [
+        "domain:science",
+        "track:starter",
+        "cells"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "starter_science_cc_002",
+      "packId": "starter-science-v1",
+      "type": "concept_check",
+      "prompt": "What causes Earth seasons?",
+      "options": [
+        "Axial tilt",
+        "Monthly distance swings from Sun",
+        "Moon phases",
+        "Rotation speed changes each week"
+      ],
+      "answer": "Axial tilt",
+      "explanation": "Tilt changes sunlight angle and day length across the year.",
+      "optionExplanations": {
+        "Axial tilt": "Earth tilt relative to orbit is the main seasonal driver.",
+        "Monthly distance swings from Sun": "Distance changes are small and not aligned with seasonal cycle.",
+        "Moon phases": "Moon phases affect night illumination, not seasonal climate.",
+        "Rotation speed changes each week": "Rotation speed is stable and not a seasonal mechanism."
+      },
+      "tags": [
+        "domain:science",
+        "track:starter",
+        "earth-space"
+      ],
+      "difficulty": 2
+    }
+  ],
+  "domain": "science",
+  "track": "starter",
+  "stage": "foundation",
+  "recommendedOrder": 0
+}

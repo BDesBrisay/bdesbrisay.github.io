@@ -1,0 +1,243 @@
+{
+  "packId": "cs-foundations-v1",
+  "version": "1.0.0",
+  "title": "Computer Science Foundations",
+  "topics": [
+    "logic",
+    "binary",
+    "data representation",
+    "complexity intuition"
+  ],
+  "createdAt": "2026-02-27T00:04:18.786Z",
+  "cards": [
+    {
+      "id": "cs_foundations_ff_001",
+      "packId": "cs-foundations-v1",
+      "type": "flash_fact",
+      "prompt": "How many values can a single bit represent?",
+      "options": [],
+      "answer": "2",
+      "explanation": "A bit has two states, commonly written as 0 and 1.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "binary"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "cs_foundations_ff_002",
+      "packId": "cs-foundations-v1",
+      "type": "flash_fact",
+      "prompt": "What does CPU stand for?",
+      "options": [],
+      "answer": "central processing unit",
+      "explanation": "The CPU executes instructions and coordinates core computation.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "computer-basics"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "cs_foundations_ff_003",
+      "packId": "cs-foundations-v1",
+      "type": "flash_fact",
+      "prompt": "What number system uses base 2?",
+      "options": [],
+      "answer": "binary",
+      "explanation": "Binary uses place values that are powers of two.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "binary"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "cs_foundations_ff_004",
+      "packId": "cs-foundations-v1",
+      "type": "flash_fact",
+      "prompt": "What does algorithm mean in computing?",
+      "options": [],
+      "answer": "step-by-step procedure",
+      "explanation": "Algorithms describe finite ordered steps for solving a problem.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "algorithms-basics"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "cs_foundations_qm_001",
+      "packId": "cs-foundations-v1",
+      "type": "quick_math",
+      "prompt": "Convert binary 1011 to decimal.",
+      "options": [],
+      "answer": "11",
+      "explanation": "Add place values: 8 + 2 + 1.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "binary",
+        "conversions"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "cs_foundations_qm_002",
+      "packId": "cs-foundations-v1",
+      "type": "quick_math",
+      "prompt": "How many bits are in one byte?",
+      "options": [],
+      "answer": "8",
+      "explanation": "A byte is defined as eight contiguous bits.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "data-representation"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "cs_foundations_qm_003",
+      "packId": "cs-foundations-v1",
+      "type": "quick_math",
+      "prompt": "Which grows faster as n increases: n or n^2?",
+      "options": [],
+      "answer": "n^2",
+      "explanation": "Quadratic growth outpaces linear growth for large n.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "complexity-intuition"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "cs_foundations_qm_004",
+      "packId": "cs-foundations-v1",
+      "type": "quick_math",
+      "prompt": "If an algorithm takes about 2n steps and n doubles, total steps roughly become:",
+      "options": [],
+      "answer": "double",
+      "explanation": "Linear-time work scales proportionally with n.",
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "complexity-intuition"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "cs_foundations_cc_001",
+      "packId": "cs-foundations-v1",
+      "type": "concept_check",
+      "prompt": "Which statement about Boolean logic is correct?",
+      "options": [
+        "AND is true only when both inputs are true",
+        "AND is true when either input is true",
+        "OR is true only when both inputs are true",
+        "NOT keeps value unchanged"
+      ],
+      "answer": "AND is true only when both inputs are true",
+      "explanation": "AND requires both conditions to hold simultaneously.",
+      "optionExplanations": {
+        "AND is true only when both inputs are true": "This is the correct truth condition for logical AND.",
+        "AND is true when either input is true": "That describes OR, not AND.",
+        "OR is true only when both inputs are true": "OR is true when at least one input is true.",
+        "NOT keeps value unchanged": "NOT flips true to false and false to true."
+      },
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "logic"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "cs_foundations_cc_002",
+      "packId": "cs-foundations-v1",
+      "type": "concept_check",
+      "prompt": "Why is Big-O notation useful?",
+      "options": [
+        "It compares growth rates as input size changes",
+        "It gives exact runtime on every computer",
+        "It replaces testing entirely",
+        "It guarantees code has no bugs"
+      ],
+      "answer": "It compares growth rates as input size changes",
+      "explanation": "Big-O abstracts machine details to reason about scalability.",
+      "optionExplanations": {
+        "It compares growth rates as input size changes": "This is the core role of asymptotic complexity notation.",
+        "It gives exact runtime on every computer": "Actual runtime also depends on constants, hardware, and implementation.",
+        "It replaces testing entirely": "Complexity analysis and testing solve different verification needs.",
+        "It guarantees code has no bugs": "Complexity says nothing about functional correctness alone."
+      },
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "complexity-intuition"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "cs_foundations_cc_003",
+      "packId": "cs-foundations-v1",
+      "type": "concept_check",
+      "prompt": "What is a variable in programming?",
+      "options": [
+        "Named storage for a value",
+        "A fixed hardware chip",
+        "A network cable type",
+        "A compiler error"
+      ],
+      "answer": "Named storage for a value",
+      "explanation": "Variables let programs reference and update data by name.",
+      "optionExplanations": {
+        "Named storage for a value": "Variables bind a name to a value in memory or scope.",
+        "A fixed hardware chip": "Hardware chips are physical components, not programming variables.",
+        "A network cable type": "Cable types are networking infrastructure terms.",
+        "A compiler error": "Errors are diagnostics, not data containers."
+      },
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "programming-basics"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "cs_foundations_cc_004",
+      "packId": "cs-foundations-v1",
+      "type": "concept_check",
+      "prompt": "If an algorithm is O(log n), increasing n from 1,000 to 1,000,000 usually causes steps to:",
+      "options": [
+        "Increase modestly",
+        "Increase one thousand times",
+        "Stay exactly constant",
+        "Decrease to zero"
+      ],
+      "answer": "Increase modestly",
+      "explanation": "Logarithmic growth rises slowly even as input sizes jump drastically.",
+      "optionExplanations": {
+        "Increase modestly": "Logarithms grow slowly, making large input increases relatively cheap.",
+        "Increase one thousand times": "That behavior is closer to linear scaling.",
+        "Stay exactly constant": "Step counts still increase, just gradually.",
+        "Decrease to zero": "No practical input increase causes work to drop to zero by itself."
+      },
+      "tags": [
+        "domain:computer-science",
+        "track:foundations",
+        "complexity-intuition"
+      ],
+      "difficulty": 3
+    }
+  ],
+  "domain": "computer-science",
+  "track": "foundations",
+  "stage": "foundation",
+  "recommendedOrder": 1
+}

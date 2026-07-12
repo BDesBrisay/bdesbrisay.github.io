@@ -1,0 +1,296 @@
+{
+  "packId": "math-arithmetic-v1",
+  "version": "1.0.0",
+  "title": "Math Arithmetic",
+  "topics": [
+    "arithmetic",
+    "number sense",
+    "fractions",
+    "percent"
+  ],
+  "createdAt": "2026-02-27T00:04:18.786Z",
+  "cards": [
+    {
+      "id": "math_arithmetic_qm_001",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Compute 27 + 38.",
+      "options": [],
+      "answer": "65",
+      "explanation": "Add tens and ones, or add 30 then adjust by -3.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "addition"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "math_arithmetic_qm_002",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Compute 84 - 29.",
+      "options": [],
+      "answer": "55",
+      "explanation": "Subtract 30 to get 54, then add 1 back.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "subtraction"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "math_arithmetic_qm_003",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Compute 14 x 6.",
+      "options": [],
+      "answer": "84",
+      "explanation": "Break 14 into 10 and 4, then add partial products.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "multiplication"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_qm_004",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Compute 144 / 12.",
+      "options": [],
+      "answer": "12",
+      "explanation": "Think of the multiplication fact 12 x 12 = 144.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "division"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_qm_005",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Find 3/5 of 40.",
+      "options": [],
+      "answer": "24",
+      "explanation": "One fifth is 8, then multiply by three.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "fractions"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_qm_006",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Convert 0.72 to a percent.",
+      "options": [],
+      "answer": "72%",
+      "explanation": "Multiply decimal form by 100 and add the percent sign.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "percent"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_qm_007",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "A notebook costs $3.50 each. What is the total for 8 notebooks?",
+      "options": [],
+      "answer": "$28",
+      "explanation": "Multiply the unit price by quantity: 3.5 x 8.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "unit-rate"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_qm_008",
+      "packId": "math-arithmetic-v1",
+      "type": "quick_math",
+      "prompt": "Round 6.47 to the nearest tenth.",
+      "options": [],
+      "answer": "6.5",
+      "explanation": "The hundredths digit is 7, so the tenths rounds up.",
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "decimals"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "math_arithmetic_cc_001",
+      "packId": "math-arithmetic-v1",
+      "type": "concept_check",
+      "prompt": "Which expression is equivalent to 36 / 9?",
+      "options": [
+        "4",
+        "9 x 4",
+        "36 - 9",
+        "9 / 36"
+      ],
+      "answer": "4",
+      "explanation": "Division asks how many groups; 36 divided by 9 gives 4 groups.",
+      "optionExplanations": {
+        "4": "Thirty six divided by nine equals four.",
+        "9 x 4": "This equals thirty six, but division asks for the resulting group count.",
+        "36 - 9": "This subtraction equals 27, which does not match the quotient 4.",
+        "9 / 36": "This is one fourth, the reciprocal relationship of 36 divided by 9."
+      },
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "division"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_cc_002",
+      "packId": "math-arithmetic-v1",
+      "type": "concept_check",
+      "prompt": "A value increases from 50 to 60. What is the percent increase?",
+      "options": [
+        "10%",
+        "20%",
+        "25%",
+        "50%"
+      ],
+      "answer": "20%",
+      "explanation": "The change is 10 on a base of 50, so 10/50 equals 0.2.",
+      "optionExplanations": {
+        "10%": "Ten percent of fifty is only five, so this underestimates the change.",
+        "20%": "Ten divided by fifty is 0.2, which is twenty percent.",
+        "25%": "Twenty five percent of fifty would be 12.5, larger than the actual increase.",
+        "50%": "A fifty percent increase from fifty would land at seventy five."
+      },
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "percent"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_cc_003",
+      "packId": "math-arithmetic-v1",
+      "type": "concept_check",
+      "prompt": "Which value is the best estimate for 199 + 302?",
+      "options": [
+        "401",
+        "500",
+        "700",
+        "100"
+      ],
+      "answer": "500",
+      "explanation": "Rounding to 200 and 300 gives a fast estimate of 500.",
+      "optionExplanations": {
+        "100": "This is far too small for adding two numbers around two hundred and three hundred.",
+        "401": "This is close to the exact sum but is not the rounded estimate target.",
+        "500": "Rounded addends 200 and 300 produce the estimate 500.",
+        "700": "This overestimates because neither addend rounds near 350."
+      },
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "estimation"
+      ],
+      "difficulty": 1
+    },
+    {
+      "id": "math_arithmetic_cc_004",
+      "packId": "math-arithmetic-v1",
+      "type": "concept_check",
+      "prompt": "Which fraction is equivalent to 3/4?",
+      "options": [
+        "6/8",
+        "9/16",
+        "12/20",
+        "2/3"
+      ],
+      "answer": "6/8",
+      "explanation": "Multiply numerator and denominator by the same number to keep value.",
+      "optionExplanations": {
+        "6/8": "Both parts were doubled from three fourths, so the value stays equal.",
+        "9/16": "This ratio is smaller than three fourths because denominator grew more.",
+        "12/20": "This simplifies to three fifths, not three fourths.",
+        "2/3": "Two thirds is close but still less than three fourths."
+      },
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "fractions"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_cc_005",
+      "packId": "math-arithmetic-v1",
+      "type": "concept_check",
+      "prompt": "You split 42 apples evenly into 6 boxes. How many apples per box?",
+      "options": [
+        "6",
+        "7",
+        "8",
+        "12"
+      ],
+      "answer": "7",
+      "explanation": "Division models equal groups, so 42 / 6 gives each box count.",
+      "optionExplanations": {
+        "6": "Six boxes is the number of groups, not the apples in each group.",
+        "7": "Forty two divided by six gives seven apples per box.",
+        "8": "Eight per box would require forty eight apples total.",
+        "12": "Twelve is double six, but it does not satisfy the total of forty two."
+      },
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "division",
+        "word-problem"
+      ],
+      "difficulty": 2
+    },
+    {
+      "id": "math_arithmetic_cc_006",
+      "packId": "math-arithmetic-v1",
+      "type": "concept_check",
+      "prompt": "Which statement about 0.4 and 40% is true?",
+      "options": [
+        "0.4 is greater than 40%",
+        "0.4 equals 40%",
+        "0.4 is less than 40%",
+        "They cannot be compared"
+      ],
+      "answer": "0.4 equals 40%",
+      "explanation": "Percent means per 100, so 40% is 40/100 which equals 0.4.",
+      "optionExplanations": {
+        "0.4 is greater than 40%": "Both values represent the same quantity, so neither is greater.",
+        "0.4 equals 40%": "Forty percent converts directly to decimal form 0.4.",
+        "0.4 is less than 40%": "This reverses the relationship; they are equivalent forms.",
+        "They cannot be compared": "They are different formats for the same numeric value."
+      },
+      "tags": [
+        "domain:math",
+        "track:arithmetic",
+        "decimals",
+        "percent"
+      ],
+      "difficulty": 1
+    }
+  ],
+  "domain": "math",
+  "track": "arithmetic",
+  "stage": "foundation",
+  "recommendedOrder": 1
+}
