@@ -1,84 +1,1883 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover">
-    <meta name="theme-color" content="#fff">
-    <title>Bryce DesBrisay</title>
-    <link rel="shortcut icon apple-touch-icon" type="image/x-icon" href="./favicon.ico" />
-    <link rel="stylesheet" type="text/css" href="./index.css">
-    <script src="./PROFILE.js" type="text/javascript"></script>
-    <script src="./PROJECTS.js" type="text/javascript"></script>
-    <script src="./index.js" type="text/javascript"></script>
-  </head>
-  <body onload="init();">
-    <div class="contain">
 
-      <div
-        class="project col"
-        style="padding-left: 64px; margin-left: 64px;"
-      >
-        <img src="./images/bryceProfile3.jpg" alt="" class="profile" />
-        <h1 style="font-size: 4rem;">Bryce DesBrisay</h1>
-        <h4>Fullstack Developer & Designer</h4>
-        <h6><b>Remote</b>, based in the <b>SF Bay Area</b></h6>
+'<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<meta name="theme-color" content="#060609" />
+<meta name="description" content="Bryce DesBrisay — Fullstack Developer & Designer. Interactive particle resume and work timeline." />
+<title>Bryce DesBrisay — Particle Resume</title>
+<style>
+  :root {
+    --bg: #060609;
+    --accent: #4a90e2;
+    --accent-bar: 4px;
+    --text: rgba(255, 255, 255, 0.92);
+    --text-dim: rgba(255, 255, 255, 0.55);
+    --text-faint: rgba(255, 255, 255, 0.38);
+  }
 
-        <div class="socialIcons row">
-          <a href="https://www.github.com/bdesbrisay">
-            <i class="fab fa-github"></i>
-            <span>Github</span>
-          </a>
-          <a href="https://www.linkedin.com/in/bryce-desbrisay-b36818108/">
-            <i class="fab fa-linkedin"></i>
-            <span>Linkedin</span>
-          </a>
-          <a href="https://docs.google.com/forms/d/e/1FAIpQLSd4W-KoHfJJ1VwsNyBj380TZw-xtKdOA7IvnRpelT2bkZcOVg/viewform?usp=sf_link">
-            <i class="fas fa-envelope"></i>
-            <span>Contact Me</span>
-          </a>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html {
+    background: var(--bg);
+    scroll-behavior: smooth;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  /* ---------- fixed particle canvas ---------- */
+  #stage {
+    position: fixed; inset: 0;
+    display: block;
+    cursor: grab;
+    z-index: 0;
+  }
+  #stage:active { cursor: grabbing; }
+
+  .vignette {
+    position: fixed; inset: 0; pointer-events: none; z-index: 1;
+    background: radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.5) 100%);
+  }
+
+  .progress {
+    position: fixed; left: 0; bottom: 0; height: var(--accent-bar); width: 100%;
+    background: rgba(255,255,255,.06); pointer-events: none; z-index: 5;
+  }
+  .progress > div {
+    height: 100%; width: 0%;
+    background: var(--accent);
+    transition: background .6s;
+  }
+
+  /* ---------- left-border timeline ---------- */
+  .tline {
+    position: fixed; top: 0; bottom: 0; left: 0; width: var(--accent-bar);
+    background: var(--accent);
+    transition: background .6s;
+    pointer-events: none; z-index: 5;
+  }
+  .markers { position: fixed; inset: 0; pointer-events: none; z-index: 6; }
+  .marker {
+    position: fixed; top: 0; left: -6px;
+    display: flex; align-items: center; gap: 12px;
+    background: none; border: none; cursor: pointer;
+    padding: 0; color: var(--text-faint);
+    font: inherit;
+    pointer-events: auto;
+    will-change: transform;
+  }
+  .marker .mlabel {
+    font-size: 10px; letter-spacing: .22em; text-transform: uppercase;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 40vw;
+    text-align: left;
+    opacity: 0;
+    transition: opacity .3s, color .3s, font-size .3s;
+  }
+  .marker .mdot {
+    width: 16px; height: 16px; border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    border: 1px solid rgba(255,255,255,.3);
+    flex-shrink: 0;
+    transition: background .3s, border-color .3s, box-shadow .3s;
+  }
+  .marker.pinned .mlabel {
+    opacity: 1; color: #fff;
+    font-size: 11px; letter-spacing: .3em;
+  }
+  .marker.pinned .mdot {
+    background: var(--dot, #fff);
+    border-color: var(--dot, #fff);
+    box-shadow: 0 0 14px var(--dot, #fff);
+  }
+  .marker:not(.pinned):hover .mlabel { opacity: .8; }
+
+  /* ---------- sections ---------- */
+  main { position: relative; z-index: 2; pointer-events: none; }
+
+  section.panel {
+    min-height: 112vh; position: relative;
+    display: flex; align-items: center;
+    padding: 0 6vw;
+  }
+  section.panel.short { min-height: 100vh; }
+
+  /* hero */
+  .hero-inner {
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center;
+    justify-content: center;
+    text-align: center;
+    pointer-events: none;
+  }
+  .avatar {
+    width: 148px; height: 148px; border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid rgba(255,255,255,.18);
+    box-shadow: 0 0 44px rgba(120,150,255,.25), 0 18px 50px rgba(0,0,0,.5);
+    animation: fadeDown 1.4s .1s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .avatar-fallback {
+    width: 148px; height: 148px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 56px; font-weight: 700; color: #fff;
+    background: linear-gradient(135deg, #4a90e2, #ce6fd3);
+    border: 2px solid rgba(255,255,255,.18);
+    box-shadow: 0 0 44px rgba(120,150,255,.25), 0 18px 50px rgba(0,0,0,.5);
+    animation: fadeDown 1.4s .1s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .name-slot {
+    width: min(560px, 88vw);
+    height: 96px;
+    margin-top: 10px;
+  }
+  .sr-only {
+    position: absolute; width: 1px; height: 1px;
+    clip: rect(0 0 0 0); overflow: hidden; white-space: nowrap;
+  }
+  .hero-sub {
+    font-size: clamp(15px, 2vw, 21px); font-weight: 300;
+    letter-spacing: .22em; text-transform: uppercase;
+    color: var(--text);
+    animation: fadeUp 1.4s .5s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .hero-loc {
+    margin-top: 12px;
+    font-size: 11px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--text-faint);
+    animation: fadeUp 1.4s .65s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .hero-bio {
+    margin-top: 26px; max-width: 560px;
+    font-size: 13.5px; line-height: 1.75; font-weight: 300;
+    color: var(--text-dim);
+    animation: fadeUp 1.4s .8s cubic-bezier(.2,.8,.2,1) both;
+    pointer-events: auto;
+  }
+  .hero-bio b { font-weight: 600; color: var(--text); }
+  .socials {
+    display: flex; gap: 14px; margin-top: 28px;
+    pointer-events: auto;
+    animation: fadeUp 1.4s .95s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .socials a {
+    color: var(--text-dim); text-decoration: none;
+    font-size: 11px; letter-spacing: .25em; text-transform: uppercase;
+    padding: 10px 18px;
+    border: 1px solid rgba(255,255,255,.16); border-radius: 999px;
+    transition: all .3s;
+    background: rgba(255,255,255,.03);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+  .socials a:hover { color: #fff; border-color: rgba(255,255,255,.55); transform: translateY(-2px); }
+
+  .scroll-hint {
+    margin-top: 42px;
+    font-size: 10px; letter-spacing: .4em; text-transform: uppercase;
+    color: var(--text-faint);
+    animation: fadeUp 1.4s 1.15s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .scroll-hint::after {
+    content: ""; display: block; margin: 14px auto 0;
+    width: 1px; height: 34px;
+    background: linear-gradient(to bottom, rgba(255,255,255,.5), transparent);
+    animation: drip 2s ease-in-out infinite;
+  }
+
+  /* project cards */
+  .card-wrap { width: 100%; display: flex; justify-content: flex-start; }
+
+  .card {
+    pointer-events: auto;
+    width: min(480px, 92vw);
+    padding: 34px 36px;
+    border-radius: 18px;
+    background: rgba(10, 10, 18, 0.62);
+    border: 1px solid rgba(255,255,255,.09);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    box-shadow: 0 24px 70px rgba(0,0,0,.45);
+    opacity: 0; transform: translateY(36px);
+    transition: opacity .8s cubic-bezier(.2,.8,.2,1), transform .8s cubic-bezier(.2,.8,.2,1);
+  }
+  .card.visible { opacity: 1; transform: none; }
+
+  .card .head { display: flex; align-items: center; gap: 16px; }
+  .card .logo {
+    width: 52px; height: 52px; border-radius: 13px;
+    object-fit: contain; background: rgba(255,255,255,.06);
+    flex-shrink: 0;
+  }
+  .card .monogram {
+    width: 52px; height: 52px; border-radius: 13px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px; font-weight: 700; color: #fff;
+    flex-shrink: 0;
+  }
+  .card h2 { font-size: 24px; font-weight: 600; letter-spacing: .01em; }
+  .card .position { font-size: 13px; color: var(--card-accent, var(--text-dim)); margin-top: 3px; font-weight: 500; }
+
+  .card .dates {
+    margin-top: 16px;
+    font-size: 10.5px; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--text-faint);
+  }
+  .card .desc {
+    margin-top: 14px;
+    font-size: 13.5px; line-height: 1.7; font-weight: 300;
+    color: rgba(255,255,255,.72);
+  }
+
+  .card .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 18px; }
+  .tag {
+    font-size: 10px; letter-spacing: .06em;
+    padding: 4px 10px; border-radius: 999px;
+    border: 1px solid; background: rgba(255,255,255,.03);
+  }
+  .tag.language   { color: #fbbf6d; border-color: rgba(251,191,109,.35); }
+  .tag.skill      { color: #6de3b2; border-color: rgba(109,227,178,.35); }
+  .tag.technology { color: #7db8ff; border-color: rgba(125,184,255,.35); }
+
+  .card .links { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+  .card .links a {
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    text-decoration: none; color: #fff;
+    padding: 9px 16px; border-radius: 999px;
+    border: 1px solid var(--card-accent, rgba(255,255,255,.3));
+    transition: all .3s;
+  }
+  .card .links a:hover { background: var(--card-accent); color: #060609; transform: translateY(-2px); }
+
+  /* shape caption — travels invisibly and pins into the top-right header slot */
+  .caption {
+    position: fixed; top: 0; right: 5vw;
+    font-size: 11px; letter-spacing: .4em; text-transform: uppercase;
+    color: var(--text-faint);
+    white-space: nowrap;
+    text-align: right;
+    opacity: 0;
+    transition: opacity .3s;
+    pointer-events: none;
+    will-change: transform;
+    z-index: 6;
+  }
+  .caption.pinned { opacity: 1; }
+
+  /* outro */
+  .outro-inner {
+    width: 100%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding-top: 24vh;
+    text-align: center;
+  }
+
+  @keyframes fadeDown { from { opacity: 0; transform: translateY(-16px); } to { opacity: 1; transform: none; } }
+  @keyframes fadeUp   { from { opacity: 0; transform: translateY(16px);  } to { opacity: 1; transform: none; } }
+  @keyframes drip     { 0% { transform: scaleY(0); transform-origin: top; } 55% { transform: scaleY(1); transform-origin: top; } 100% { transform: scaleY(0); transform-origin: bottom; } }
+
+  @media (max-width: 900px) {
+    .caption { display: none; }
+    .card-wrap { justify-content: center; }
+    section.panel { align-items: flex-end; padding-bottom: 7vh; }
+    section.panel.short { align-items: center; padding-bottom: 0; }
+    .card { padding: 26px 24px; }
+  }
+
+  @media (max-width: 560px) {
+    .socials {
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+    }
+    .socials a {
+      width: min(280px, 88vw);
+      text-align: center;
+      letter-spacing: .18em;
+    }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="stage" aria-hidden="true"></canvas>
+<div class="vignette"></div>
+
+<div class="tline" aria-hidden="true"></div>
+<nav class="markers" id="markers" aria-label="Timeline"></nav>
+<div class="captions" id="captions" aria-hidden="true"></div>
+
+<main id="main"></main>
+
+<div class="progress"><div id="bar"></div></div>
+
+<!-- ============================================================ -->
+<!-- DATA — profile inline below; projects loaded from PROJECTS.js -->
+<!-- ============================================================ -->
+<script src="./PROJECTS.js"></script>
+<script>
+const PROFILE = {
+  name: "Bryce DesBrisay",
+  image: "./images/bryceProfile3.jpg",
+  particleName: "BRYCE DESBRISAY",
+  tagline: "Fullstack Developer & Designer",
+  location: "Remote, based in the SF Bay Area",
+  experienceStartYear: 2016,
+  learningStartYear: 2011,
+  socials: [
+    { label: "Github", link: "https://www.github.com/bdesbrisay" },
+    { label: "Linkedin", link: "https://www.linkedin.com/in/bryce-desbrisay-b36818108/" },
+    { label: "Contact Me", link: "https://docs.google.com/forms/d/e/1FAIpQLSd4W-KoHfJJ1VwsNyBj380TZw-xtKdOA7IvnRpelT2bkZcOVg/viewform?usp=sf_link" },
+  ],
+  colors: { background: "#4a90e2", primary: "#4a90e2" },
+};
+</script>
+
+<!-- ============================================================ -->
+<!-- ENGINE + RENDERER                                             -->
+<!-- ============================================================ -->
+<script>
+(() => {
+  "use strict";
+
+  const profile = window.PROFILE || PROFILE;
+  const projects = window.PROJECTS || (typeof PROJECTS !== "undefined" ? PROJECTS : []);
+  if (!projects.length) console.error("PROJECTS.js not loaded");
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const MOBILE_BP = 900; // must match the CSS media query breakpoint
+  let small = window.innerWidth < MOBILE_BP;
+
+  // ---------------------------------------------------------------
+  // utilities
+  // ---------------------------------------------------------------
+  function esc(s) {
+    return String(s).replace(/[&<>"']/g, (c) =>
+      ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+  function stripHtml(s) {
+    const d = document.createElement("div");
+    d.innerHTML = s;
+    return (d.textContent || "").trim();
+  }
+  function formatBio(profile) {
+    const year = new Date().getFullYear();
+    const experienceYears = year - profile.experienceStartYear;
+    const learningYears = year - profile.learningStartYear;
+    return (
+      "I've worked on many startups before and have experience developing products from the ground up. " +
+      "My role in almost all of the projects I've worked on has been to <b>mock the UI/UX</b> of the product, " +
+      "<b>design the graphics, logos, and layouts</b> for both the website and mobile applications, then finally code the " +
+      "<b>entire frontend interface &amp; API</b> (typically with React.js/React Native &amp; Node.js). " +
+      "I have over " + experienceYears + " years of professional web development experience. " +
+      "I first learned to code in 5th grade and have been working on side projects and startups ever since " +
+      "(about " + learningYears + " years of learning!)."
+    );
+  }
+  function hexToRgb(hex) {
+    let h = hex.replace("#", "");
+    if (h.length === 3) h = h.split("").map((c) => c + c).join("");
+    const n = parseInt(h, 16);
+    return { r: (n >> 16) & 255, g: (n >> 8) & 255, b: n & 255 };
+  }
+  // very dark primaries (e.g. Harvix #000 fallback handled upstream) get lifted so particles stay visible
+  function displayColor(hex) {
+    const c = hexToRgb(hex);
+    const lum = 0.299 * c.r + 0.587 * c.g + 0.114 * c.b;
+    if (lum < 46) {
+      const k = 46 / Math.max(lum, 6);
+      return { r: Math.min(255, c.r * k + 30), g: Math.min(255, c.g * k + 30), b: Math.min(255, c.b * k + 30) };
+    }
+    return c;
+  }
+  function mulberry32(seed) {
+    let a = seed >>> 0;
+    return () => {
+      a |= 0; a = (a + 0x6d2b79f5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+  function gauss() {
+    return (Math.random() + Math.random() + Math.random() - 1.5) / 1.5;
+  }
+
+  // ---------------------------------------------------------------
+  // shape generators — each is (i, N, R) => [x, y, z]
+  // ---------------------------------------------------------------
+
+  // rasterize text / glyphs on an offscreen canvas, sample lit pixels
+  function rasterPoints(draw, w, h) {
+    const off = document.createElement("canvas");
+    off.width = w; off.height = h;
+    const oc = off.getContext("2d");
+    oc.fillStyle = "#fff";
+    draw(oc, w, h);
+    const data = oc.getImageData(0, 0, w, h).data;
+    const pts = [];
+    for (let y = 0; y < h; y += 3) {
+      for (let x = 0; x < w; x += 3) {
+        if (data[(y * w + x) * 4 + 3] > 128) {
+          pts.push([x - w / 2, y - h / 2]);
+        }
+      }
+    }
+    return pts;
+  }
+
+  function textGen(text, widthFactor = 2.9) {
+    const W2 = 1100, H2 = 300;
+    const pts = rasterPoints((oc, w, h) => {
+      let size = 210;
+      oc.font = `900 ${size}px Helvetica, Arial, sans-serif`;
+      const tw = oc.measureText(text).width;
+      if (tw > w * 0.92) size = Math.floor(size * (w * 0.92) / tw);
+      oc.font = `900 ${size}px Helvetica, Arial, sans-serif`;
+      oc.textAlign = "center";
+      oc.textBaseline = "middle";
+      oc.fillText(text, w / 2, h / 2 + 8);
+    }, W2, H2);
+    return (i, N, R) => {
+      const p = pts[(i * 7919 + 13) % pts.length];
+      const k = (R * widthFactor) / W2;
+      return [p[0] * k, p[1] * k, (Math.random() - 0.5) * R * 0.07];
+    };
+  }
+
+  function shieldGen() {
+    const S = 420;
+    const pts = rasterPoints((oc, w, h) => {
+      const cx = w / 2, top = h * 0.09, bot = h * 0.94;
+      const wid = w * 0.36;
+      oc.beginPath();
+      oc.moveTo(cx, top);
+      oc.quadraticCurveTo(cx + wid * 0.55, top + h * 0.1, cx + wid, top + h * 0.06);
+      oc.quadraticCurveTo(cx + wid, h * 0.56, cx, bot);
+      oc.quadraticCurveTo(cx - wid, h * 0.56, cx - wid, top + h * 0.06);
+      oc.quadraticCurveTo(cx - wid * 0.55, top + h * 0.1, cx, top);
+      oc.closePath();
+      oc.fill();
+      // checkmark knockout
+      oc.globalCompositeOperation = "destination-out";
+      oc.lineWidth = h * 0.075;
+      oc.lineCap = "round";
+      oc.beginPath();
+      oc.moveTo(cx - wid * 0.45, h * 0.44);
+      oc.lineTo(cx - wid * 0.08, h * 0.6);
+      oc.lineTo(cx + wid * 0.52, h * 0.28);
+      oc.stroke();
+    }, S, S);
+    return (i, N, R) => {
+      const p = pts[(i * 7919 + 13) % pts.length];
+      const k = (R * 2.35) / S;
+      return [p[0] * k, p[1] * k, (Math.random() - 0.5) * R * 0.09];
+    };
+  }
+
+  // construction crane with an AI camera-aperture "eye" hanging from the jib.
+  // Geometry built in "y-up" unit coords, flipped to screen coords on output.
+  const craneAnchors = (() => {
+    const segs = [];
+    const seg = (x1, y1, z1, x2, y2, z2, w = 1) =>
+      segs.push({ a: [x1, y1, z1], b: [x2, y2, z2], w });
+    const mx = -0.55, s = 0.09; // mast center x, half-width
+    // lattice mast: 4 corner rails + zigzag braces
+    const rails = [[mx - s, -s], [mx + s, -s], [mx + s, s], [mx - s, s]];
+    rails.forEach(([cx, cz]) => seg(cx, 0, cz, cx, 1.5, cz, 1.1));
+    for (let y = 0; y < 1.5; y += 0.25) {
+      seg(mx - s, y, -s, mx + s, y + 0.25, -s, 0.45);
+      seg(mx + s, y, -s, mx - s, y + 0.25, -s, 0.45);
+      seg(mx - s, y, s, mx + s, y + 0.25, s, 0.45);
+      seg(mx + s, y, s, mx - s, y + 0.25, s, 0.45);
+    }
+    // jib (working arm) + lower chord + zigzag
+    seg(mx, 1.5, 0, 1.05, 1.5, 0, 1.8);
+    seg(mx, 1.42, 0, 1.0, 1.42, 0, 1.1);
+    for (let x = mx; x < 0.97; x += 0.16) seg(x, 1.42, 0, x + 0.08, 1.5, 0, 0.35);
+    // counter-jib
+    seg(mx, 1.5, 0, -1.05, 1.5, 0, 1.3);
+    // apex + tension lines
+    seg(mx, 1.5, 0, mx, 1.78, 0, 0.7);
+    seg(mx, 1.78, 0, 0.5, 1.5, 0, 0.7);
+    seg(mx, 1.78, 0, -1.0, 1.5, 0, 0.7);
+    // hoist cable down to the eye
+    seg(0.62, 1.42, 0, 0.62, 1.02, 0, 0.7);
+    // sample anchors proportional to length * weight
+    const anchors = [];
+    for (const { a, b, w } of segs) {
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+      const n = Math.max(2, Math.round(len * w * 70));
+      for (let k = 0; k < n; k++) {
+        const t = k / (n - 1);
+        anchors.push([
+          a[0] + (b[0] - a[0]) * t,
+          a[1] + (b[1] - a[1]) * t,
+          a[2] + (b[2] - a[2]) * t,
+        ]);
+      }
+    }
+    return anchors;
+  })();
+
+  function craneGen(i, N, R) {
+    const K = R * 0.95, CY = 0.89; // vertical centering in y-up coords
+    const out = (xu, yu, zu) => [xu * K, (CY - yu) * K, zu * K];
+    if (i % 10 < 3) {
+      // solid 3D site camera hanging from the hoist cable, pitched down at the site
+      const ex = 0.62, ey = 0.86;                    // body center (top meets the cable)
+      const hw = 0.26, hh = 0.17, hd = 0.13;         // half extents of the body box
+      const PITCH = 0, YAW = Math.PI;            // lens head-on at the viewer, no tilt
+      const cp = Math.cos(PITCH), sp = Math.sin(PITCH);
+      const cw = Math.cos(YAW), sw = Math.sin(YAW);
+      const cam = (lx0, ly0, lz0) => {
+        // pitch down about local x, then yaw, then hang at (ex, ey)
+        const ly = ly0 * cp - lz0 * sp;
+        let lz = ly0 * sp + lz0 * cp;
+        const lx = lx0 * cw + lz * sw;
+        lz = -lx0 * sw + lz * cw;
+        return out(ex + lx, ey + ly, lz);
+      };
+      const rC = Math.random();
+      if (rC < 0.28) {
+        // crisp box edges
+        const axis = (Math.random() * 3) | 0;
+        const t = Math.random() * 2 - 1;
+        const sA = Math.random() < 0.5 ? 1 : -1, sB = Math.random() < 0.5 ? 1 : -1;
+        if (axis === 0) return cam(t * hw, sA * hh, sB * hd);
+        if (axis === 1) return cam(sA * hw, t * hh, sB * hd);
+        return cam(sA * hw, sB * hh, t * hd);
+      }
+      if (rC < 0.6) {
+        // solid faces: random point on a random face of the box
+        const face = (Math.random() * 3) | 0;
+        const s2 = Math.random() < 0.5 ? 1 : -1;
+        const a = Math.random() * 2 - 1, b = Math.random() * 2 - 1;
+        if (face === 0) return cam(s2 * hw, a * hh, b * hd);
+        if (face === 1) return cam(a * hw, s2 * hh, b * hd);
+        return cam(a * hw, b * hh, s2 * hd);
+      }
+      if (rC < 0.92) {
+        // lens: a true cylinder protruding from the front face
+        const LR = 0.13, LLEN = 0.2;
+        const sub = Math.random();
+        const ang = Math.random() * Math.PI * 2;
+        if (sub < 0.55) {
+          // cylinder wall
+          return cam(Math.cos(ang) * LR, Math.sin(ang) * LR, hd + Math.random() * LLEN);
+        }
+        if (sub < 0.8) {
+          // front glass disc
+          const r = Math.sqrt(Math.random()) * (LR * 0.85);
+          return cam(Math.cos(ang) * r, Math.sin(ang) * r, hd + LLEN);
+        }
+        // bright rim at the front of the barrel
+        return cam(Math.cos(ang) * LR, Math.sin(ang) * LR, hd + LLEN);
+      }
+      // top mount block connecting to the cable
+      return cam((Math.random() - 0.5) * 0.1, hh + Math.random() * 0.06, (Math.random() - 0.5) * 0.08);
+    }
+    if (i % 17 === 0) {
+      // counterweight block
+      return out(-0.93 + gauss() * 0.07, 1.33 + gauss() * 0.06, gauss() * 0.07);
+    }
+    const p = craneAnchors[(i * 13) % craneAnchors.length];
+    return out(p[0] + gauss() * 0.012, p[1] + gauss() * 0.012, p[2] + gauss() * 0.012);
+  }
+
+  // globe — lat/long wireframe; 20% of particles are animated connection arcs
+  function randomSurfacePoint() {
+    const u = Math.random() * 2 - 1;
+    const th = Math.random() * Math.PI * 2;
+    const rr = Math.sqrt(1 - u * u);
+    return [Math.cos(th) * rr, u, Math.sin(th) * rr];
+  }
+
+  function globeGen(i, N, R) {
+    const r = R * 0.92;
+    const kind = i % 10;
+    if (kind < 2) {
+      // arc particles — start parked on the surface; globeAnimate flies them
+      const p = randomSurfacePoint();
+      return [p[0] * r, p[1] * r, p[2] * r];
+    }
+    if (kind < 6) {
+      // latitude rings
+      const ring = ((i * 31) % 7) - 3;               // -3..3
+      const phi = ring * (Math.PI / 8);
+      const theta = Math.random() * Math.PI * 2;
+      const cr = Math.cos(phi) * r;
+      return [Math.cos(theta) * cr, Math.sin(phi) * r + gauss() * R * 0.008, Math.sin(theta) * cr];
+    }
+    // meridians
+    const m = (i * 17) % 12;
+    const theta = (m / 12) * Math.PI * 2;
+    const phi = Math.random() * Math.PI * 2;
+    const cr = Math.cos(phi) * r;
+    return [Math.cos(theta) * cr, Math.sin(phi) * r, Math.sin(theta) * cr];
+  }
+
+  // connection arcs — light pulses that fire from point to point around the globe
+  const globeArcs = [];
+  const ARC_COUNT = 5, ARC_TRAIL = 0.45;
+
+  function respawnArc(k, now, from) {
+    globeArcs[k] = {
+      a: from || randomSurfacePoint(),
+      b: randomSurfacePoint(),
+      t0: now + 400 + Math.random() * 900,           // settle at the landing, then relaunch
+      ms: 1300 + Math.random() * 900,                // per-arc speed
+      lift: 1.25 + Math.random() * 0.35,
+    };
+  }
+
+  function globeAnimate(now, tx, ty, tz, R, N) {
+    const r = R * 0.92;
+    if (globeArcs.length === 0) {
+      for (let k = 0; k < ARC_COUNT; k++) {
+        respawnArc(k, now - Math.random() * 2000, null);
+      }
+    }
+    for (let k = 0; k < ARC_COUNT; k++) {
+      const arc = globeArcs[k];
+      if (now - arc.t0 >= arc.ms * (1 + ARC_TRAIL)) respawnArc(k, now, arc.b); // hop onward
+    }
+    // distribute arc particles (i % 10 < 2) across the arcs
+    let slot = 0;
+    for (let i = 0; i < N; i++) {
+      if (i % 10 >= 2) continue;
+      const k = slot % ARC_COUNT;
+      const f = ((slot / ARC_COUNT) | 0) % 40 / 40;  // fraction within the pulse
+      slot++;
+      const arc = globeArcs[k];
+      const lin = Math.max(0, Math.min(1, (now - arc.t0) / (arc.ms * (1 + ARC_TRAIL))));
+      const prog = lin * lin * (3 - 2 * lin);        // ease in/out so landings don't slam
+      // traveling window: the pulse stretches out of A, flies, and absorbs into B
+      const head = Math.min(prog * (1 + ARC_TRAIL), 1);
+      const tail = Math.max(prog * (1 + ARC_TRAIL) - ARC_TRAIL, 0);
+      const t = tail + f * (head - tail);
+      // quadratic bezier lifted above the surface
+      const mid = [
+        (arc.a[0] + arc.b[0]) / 2, (arc.a[1] + arc.b[1]) / 2, (arc.a[2] + arc.b[2]) / 2,
+      ];
+      const mlen = Math.hypot(mid[0], mid[1], mid[2]) || 1;
+      const q = 1 - t;
+      for (let d = 0; d < 3; d++) {
+        const c = (mid[d] / mlen) * arc.lift;
+        const v = q * q * arc.a[d] + 2 * q * t * c + t * t * arc.b[d];
+        if (d === 0) tx[i] = v * r;
+        else if (d === 1) ty[i] = v * r;
+        else tz[i] = v * r;
+      }
+    }
+  }
+
+  // p2p mesh — nodes on a sphere, chains along edges
+  const meshNet = (() => {
+    const COUNT = 14;
+    const nodes = [];
+    const g = Math.PI * (3 - Math.sqrt(5));
+    for (let k = 0; k < COUNT; k++) {
+      const y = 1 - (k / (COUNT - 1)) * 2;
+      const rr = Math.sqrt(1 - y * y);
+      const th = g * k;
+      nodes.push([Math.cos(th) * rr, y, Math.sin(th) * rr]);
+    }
+    const edges = [];
+    const seen = new Set();
+    nodes.forEach((a, ai) => {
+      const dists = nodes
+        .map((b, bi) => ({ bi, d: bi === ai ? 1e9 : (a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2 }))
+        .sort((p, q) => p.d - q.d)
+        .slice(0, 3);
+      for (const { bi } of dists) {
+        const key = ai < bi ? ai + "-" + bi : bi + "-" + ai;
+        if (!seen.has(key)) { seen.add(key); edges.push([nodes[ai], nodes[bi]]); }
+      }
+    });
+    // tangent-plane basis per node so each one can carry a "video call" card
+    const bases = nodes.map((n) => {
+      const up = Math.abs(n[1]) > 0.9 ? [1, 0, 0] : [0, 1, 0];
+      let u = [
+        n[1] * up[2] - n[2] * up[1],
+        n[2] * up[0] - n[0] * up[2],
+        n[0] * up[1] - n[1] * up[0],
+      ];
+      const ul = Math.hypot(u[0], u[1], u[2]) || 1;
+      u = [u[0] / ul, u[1] / ul, u[2] / ul];
+      const v = [
+        n[1] * u[2] - n[2] * u[1],
+        n[2] * u[0] - n[0] * u[2],
+        n[0] * u[1] - n[1] * u[0],
+      ];
+      return { u, v };
+    });
+    // dock each edge's endpoints onto the border of the card facing the neighbor
+    const CARD_DOCK = 0.19, LIFT = 1.02;
+    const dockedEdges = edges.map(([a, b]) => {
+      const dock = (from, to) => {
+        let d = [to[0] - from[0], to[1] - from[1], to[2] - from[2]];
+        const dot = d[0] * from[0] + d[1] * from[1] + d[2] * from[2];
+        d = [d[0] - dot * from[0], d[1] - dot * from[1], d[2] - dot * from[2]];
+        const dl = Math.hypot(d[0], d[1], d[2]) || 1;
+        return [
+          from[0] * LIFT + (d[0] / dl) * CARD_DOCK,
+          from[1] * LIFT + (d[1] / dl) * CARD_DOCK,
+          from[2] * LIFT + (d[2] / dl) * CARD_DOCK,
+        ];
+      };
+      return [dock(a, b), dock(b, a)];
+    });
+    return { nodes, edges: dockedEdges, bases };
+  })();
+
+  function meshGen(i, N, R) {
+    const r = R * 0.85;
+    if (i % 10 < 4) {
+      // video-chat card at each node: rectangle border + person icon
+      const ni = ((i / 10) | 0) % meshNet.nodes.length;
+      const n = meshNet.nodes[ni];
+      const { u, v } = meshNet.bases[ni];
+      const CW2 = 0.2, CH2 = 0.15;                    // card half extents (sphere units)
+      let a, b;
+      const kind = Math.random();
+      if (kind < 0.55) {
+        // card border — all four sides
+        const t = Math.random() * 2 - 1;
+        const s2 = Math.random() < 0.5 ? 1 : -1;
+        if (Math.random() < 0.5) { a = t * CW2; b = s2 * CH2; }
+        else { a = s2 * CW2; b = t * CH2; }
+      } else if (kind < 0.75) {
+        // head
+        const ang = Math.random() * Math.PI * 2;
+        a = Math.cos(ang) * 0.045;
+        b = 0.03 + Math.sin(ang) * 0.045;
+      } else {
+        // shoulders: dome below the head
+        const ang = Math.random() * Math.PI;
+        a = Math.cos(ang) * 0.08;
+        b = -0.1 + Math.sin(ang) * 0.055;
+      }
+      const lift = 1.02;
+      return [
+        (n[0] * lift + u[0] * a + v[0] * b) * r,
+        (n[1] * lift + u[1] * a + v[1] * b) * r,
+        (n[2] * lift + u[2] * a + v[2] * b) * r,
+      ];
+    }
+    // chains run between docked card-border endpoints
+    const [a, b] = meshNet.edges[i % meshNet.edges.length];
+    const t = Math.random();
+    return [
+      (a[0] + (b[0] - a[0]) * t) * r + gauss() * R * 0.012,
+      (a[1] + (b[1] - a[1]) * t) * r + gauss() * R * 0.012,
+      (a[2] + (b[2] - a[2]) * t) * r + gauss() * R * 0.012,
+    ];
+  }
+
+  // to-do list — clipboard card with checked rows
+  function todoGen() {
+    const S = 460;
+    const pts = rasterPoints((oc, w, h) => {
+      oc.strokeStyle = "#fff";
+      oc.lineCap = "round";
+      oc.lineJoin = "round";
+      // card outline
+      oc.lineWidth = 10;
+      oc.strokeRect(w * 0.1, h * 0.08, w * 0.8, h * 0.84);
+      const rows = [0.28, 0.5, 0.72];
+      rows.forEach((ry, k) => {
+        const y = h * ry;
+        // checkbox
+        oc.lineWidth = 9;
+        oc.strokeRect(w * 0.18, y - 26, 52, 52);
+        // text line
+        oc.lineWidth = 13;
+        oc.beginPath();
+        oc.moveTo(w * 0.38, y);
+        oc.lineTo(w * 0.82, y);
+        oc.stroke();
+        // check the first two rows
+        if (k < 2) {
+          oc.lineWidth = 12;
+          oc.beginPath();
+          oc.moveTo(w * 0.18 + 10, y + 2);
+          oc.lineTo(w * 0.18 + 24, y + 18);
+          oc.lineTo(w * 0.18 + 62, y - 24);
+          oc.stroke();
+        }
+      });
+    }, S, S);
+    return (i, N, R) => {
+      const p = pts[(i * 7919 + 13) % pts.length];
+      const k = (R * 2.1) / S;
+      return [p[0] * k, p[1] * k, (Math.random() - 0.5) * R * 0.08];
+    };
+  }
+
+  // 3D sports car — smooth fastback profile, solid panels, hovering droplets
+  const carRig = (() => {
+    // side profile, rear to nose (y-up, car pointing +x)
+    const prof = [
+      [-1.0, 0.14], [-1.0, 0.4], [-0.92, 0.48], [-0.62, 0.56], [-0.28, 0.63],
+      [0.0, 0.62], [0.3, 0.53], [0.6, 0.42], [0.85, 0.36], [1.0, 0.3], [1.0, 0.14],
+    ];
+    const segs = [];
+    const seg = (x1, y1, z1, x2, y2, z2, w = 1) =>
+      segs.push({ a: [x1, y1, z1], b: [x2, y2, z2], w });
+    for (const z of [-0.4, 0.4]) {
+      for (let k = 0; k < prof.length - 1; k++) {
+        seg(prof[k][0], prof[k][1], z, prof[k + 1][0], prof[k + 1][1], z, 1.4);
+      }
+      seg(-1.0, 0.14, z, 1.0, 0.14, z, 1.2);       // rocker line
+    }
+    // cross connectors tie the two sides together
+    for (const [x, y] of prof) seg(x, y, -0.4, x, y, 0.4, 0.5);
+    seg(-1.0, 0.14, -0.4, -1.0, 0.14, 0.4, 0.5);
+    seg(1.0, 0.14, -0.4, 1.0, 0.14, 0.4, 0.5);
+    // windshield / rear-window accents on the top surface
+    seg(0.3, 0.53, -0.34, 0.3, 0.53, 0.34, 0.5);
+    seg(-0.28, 0.63, -0.34, -0.28, 0.63, 0.34, 0.5);
+    const anchors = [];
+    for (const { a, b, w } of segs) {
+      const len = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]);
+      const n = Math.max(2, Math.round(len * w * 70));
+      for (let k = 0; k < n; k++) {
+        const t = k / (n - 1);
+        anchors.push([
+          a[0] + (b[0] - a[0]) * t,
+          a[1] + (b[1] - a[1]) * t,
+          a[2] + (b[2] - a[2]) * t,
+        ]);
+      }
+    }
+    // top-curve interpolator for the solid panel fill (skip the vertical ends)
+    const top = prof.slice(1, prof.length - 1);
+    const topY = (x) => {
+      for (let k = 0; k < top.length - 1; k++) {
+        if (x >= top[k][0] && x <= top[k + 1][0]) {
+          const t = (x - top[k][0]) / (top[k + 1][0] - top[k][0] || 1);
+          return top[k][1] + (top[k + 1][1] - top[k][1]) * t;
+        }
+      }
+      return 0.3;
+    };
+    const rng = mulberry32(99);
+    const drops = [];
+    for (let k = 0; k < 5; k++) {
+      drops.push({
+        x: -1.0 + (k / 4) * 2.0 + (rng() - 0.5) * 0.25,  // spread along the car
+        y: 0.95 + rng() * 0.55,                          // varied heights
+        z: (rng() - 0.5) * 0.9,
+        s: 0.09 + rng() * 0.04,
+      });
+    }
+    return { anchors, drops, topY };
+  })();
+
+  function carGen(i, N, R) {
+    const K = R * 0.8, CY = 0.5, yaw = -0.55;      // baked starting angle
+    const cyw = Math.cos(yaw), syw = Math.sin(yaw);
+    const out = (x, yUp, z) => {
+      const xr = x * cyw - z * syw, zr = x * syw + z * cyw;
+      return [xr * K, (CY - yUp) * K, zr * K];
+    };
+    const kind = i % 10;
+    if (kind < 4) {
+      // body outline
+      const p = carRig.anchors[(i * 13) % carRig.anchors.length];
+      return out(p[0] + gauss() * 0.008, p[1] + gauss() * 0.008, p[2] + gauss() * 0.008);
+    }
+    if (kind < 6) {
+      // solid side panels under the profile curve
+      const x = Math.random() * 2 - 1;
+      const yTop = carRig.topY(x);
+      const y = 0.14 + Math.random() * (yTop - 0.14);
+      return out(x, y, Math.random() < 0.5 ? 0.4 : -0.4);
+    }
+    if (kind < 7) {
+      // solid top surface following the profile
+      const x = Math.random() * 2 - 1;
+      return out(x, carRig.topY(x), (Math.random() * 2 - 1) * 0.38);
+    }
+    if (kind < 8) {
+      // wheels: tire rings + hubs
+      const wIdx = ((i / 10) | 0) % 4;
+      const wx = wIdx % 2 === 0 ? 0.6 : -0.6;
+      const wz = wIdx < 2 ? 0.41 : -0.41;
+      const a = Math.random() * Math.PI * 2;
+      const rr = i % 7 === 0 ? 0.06 : 0.16;
+      return out(wx + Math.cos(a) * rr, 0.14 + Math.sin(a) * rr, wz);
+    }
+    // hovering raindrops: teardrop of revolution — round belly, tapered tip
+    const d = carRig.drops[i % carRig.drops.length];
+    const tau = Math.random();                       // 0 = bottom, 1 = tip
+    const th = Math.random() * Math.PI * 2;
+    let rr, yUp;
+    if (tau < 0.5) {
+      // lower hemisphere
+      const w2 = 1 - 2 * tau;                        // 1 → 0
+      rr = Math.sqrt(1 - w2 * w2) * d.s;
+      yUp = -w2 * d.s;
+    } else {
+      // upper taper to a point
+      const w2 = (tau - 0.5) / 0.5;                  // 0 → 1
+      rr = Math.pow(1 - w2, 1.6) * d.s;
+      yUp = w2 * d.s * 1.7;
+    }
+    return out(
+      d.x + Math.cos(th) * rr,
+      d.y + yUp,
+      d.z + Math.sin(th) * rr,
+    );
+  }
+
+  // overhead map with winding roads, small buildings, and drop pins
+  const mapLayout = (() => {
+    const rng = mulberry32(2024);
+    const pins = [];
+    for (let k = 0; k < 3; k++) {
+      pins.push({
+        x: -0.78 + k * 0.75 + (rng() - 0.5) * 0.25,
+        z: (rng() - 0.5) * 0.9,
+        h: 0.3 + rng() * 0.14,      // needle height varies per pin
+        r: 0.065 + rng() * 0.035,   // head size varies per pin
+      });
+    }
+    const roads = [
+      { z0: -0.42, amp: 0.13, freq: 2.1, ph: rng() * 6, vertical: false },
+      { z0: 0.06,  amp: 0.18, freq: 1.6, ph: rng() * 6, vertical: false },
+      { z0: 0.45,  amp: 0.1,  freq: 2.7, ph: rng() * 6, vertical: false },
+      { z0: 0.18,  amp: 0.08, freq: 2.3, ph: rng() * 6, vertical: true },  // cross street
+    ];
+    return { pins, roads };
+  })();
+
+  function mapPinsGen(i, N, R) {
+    // gentle terrain height (y-up), then baked tilt toward the camera
+    const terrain = (x, z) =>
+      (Math.sin(x * 2.3) + Math.cos(z * 3.1) + Math.sin((x + z) * 1.7)) * 0.025;
+    const tilt = 0.62, ct = Math.cos(tilt), st = Math.sin(tilt);
+    // world y is screen-down: tilt the ground plane back so we look down on it
+    const place = (x, yUp, z) => {
+      const y = -yUp;
+      return [x * R, (y * ct - z * st) * R, (y * st + z * ct) * R];
+    };
+    if (i % 10 < 2) {
+      // pins: pick the pin BEFORE splitting into needle/head so both parts
+      // land on the same pin, and make the needle top meet the head
+      const pin = mapLayout.pins[(i >> 1) % mapLayout.pins.length];
+      const base = place(pin.x, terrain(pin.x, pin.z), pin.z);
+      if (i % 2 === 0) {
+        // needle, denser near the ground for a teardrop taper
+        const t = Math.pow(Math.random(), 0.75);
+        return [base[0] + gauss() * R * 0.008, base[1] - t * R * pin.h, base[2]];
+      }
+      // pin head ball sitting on top of the needle
+      const u = Math.random() * 2 - 1;
+      const th = Math.random() * Math.PI * 2;
+      const rr = Math.sqrt(1 - u * u) * pin.r;
+      return [
+        base[0] + Math.cos(th) * rr * R,
+        base[1] - R * (pin.h + pin.r * 0.85) + u * R * pin.r,
+        base[2] + Math.sin(th) * rr * R,
+      ];
+    }
+    const kind = i % 10;
+    if (kind < 8) {
+      // winding roads
+      const road = mapLayout.roads[(Math.random() * mapLayout.roads.length) | 0];
+      if (road.vertical) {
+        const z = Math.random() * 1.3 - 0.65;
+        const x = road.z0 + Math.sin(z * road.freq * 2 + road.ph) * road.amp;
+        return place(x + gauss() * 0.008, terrain(x, z), z);
+      }
+      const x = Math.random() * 2.3 - 1.15;
+      const z = road.z0 + Math.sin(x * road.freq + road.ph) * road.amp;
+      return place(x, terrain(x, z), z + gauss() * 0.008);
+    }
+    // light terrain scatter
+    const x = Math.random() * 2.2 - 1.1;
+    const z = Math.random() * 1.24 - 0.62;
+    return place(x, terrain(x, z) + Math.random() * 0.02, z);
+  }
+
+  // coin face with a bitcoin "B" carved out (drawn manually, no font dependence)
+  const coinFacePts = (() => {
+    const S = 240;
+    return rasterPoints((oc, w, h) => {
+      oc.beginPath();
+      oc.arc(w / 2, h / 2, w * 0.46, 0, Math.PI * 2);
+      oc.fill();
+      oc.globalCompositeOperation = "destination-out";
+      oc.font = `900 ${Math.floor(w * 0.52)}px Helvetica, Arial, sans-serif`;
+      oc.textAlign = "center";
+      oc.textBaseline = "middle";
+      oc.fillText("B", w / 2, h / 2 + 2);
+      // the bitcoin glyph's protruding strokes above and below the B
+      oc.fillRect(w * 0.43, h * 0.12, w * 0.05, h * 0.1);
+      oc.fillRect(w * 0.52, h * 0.12, w * 0.05, h * 0.1);
+      oc.fillRect(w * 0.43, h * 0.78, w * 0.05, h * 0.1);
+      oc.fillRect(w * 0.52, h * 0.78, w * 0.05, h * 0.1);
+    }, S, S);
+  })();
+
+  // magnifying glass over a crypto coin — search meets token
+  function searchCoinGen(i, N, R) {
+    const lens = { x: 0.18, y: -0.16 }; // screen coords (y down)
+    const kind = i % 10;
+    if (kind < 3) {
+      // lens rim
+      const a = Math.random() * Math.PI * 2;
+      const r = 0.62 + gauss() * 0.03;
+      return [(lens.x + Math.cos(a) * r) * R, (lens.y + Math.sin(a) * r) * R, gauss() * R * 0.03];
+    }
+    if (kind < 5) {
+      // handle: from lower-left rim outward
+      const a0 = 2.42; // rim angle pointing down-left in screen coords
+      const bx = lens.x + Math.cos(a0) * 0.62, by = lens.y + Math.sin(a0) * 0.62;
+      const t = Math.random();
+      return [
+        (bx + Math.cos(a0) * t * 0.62) * R + gauss() * R * 0.028,
+        (by + Math.sin(a0) * t * 0.62) * R + gauss() * R * 0.028,
+        gauss() * R * 0.03,
+      ];
+    }
+    if (kind < 8) {
+      // coin face inside the lens, with the bitcoin B carved out
+      const p = coinFacePts[(i * 7919 + 13) % coinFacePts.length];
+      const k = (R * 0.68) / (240 * 0.92);
+      return [lens.x * R + p[0] * k, lens.y * R + p[1] * k, gauss() * R * 0.025];
+    }
+    if (kind === 8) {
+      // coin rim (denser edge)
+      const a = Math.random() * Math.PI * 2;
+      return [(lens.x + Math.cos(a) * 0.36) * R, (lens.y + Math.sin(a) * 0.36) * R, gauss() * R * 0.03];
+    }
+    // orbiting sparks between coin and lens
+    const a = Math.random() * Math.PI * 2;
+    const r = 0.48 + gauss() * 0.015;
+    return [(lens.x + Math.cos(a) * r) * R, (lens.y + Math.sin(a) * r) * R, (Math.sin(a * 3) * 0.06 + gauss() * 0.02) * R];
+  }
+
+  // the coin flips 180 degrees back and forth inside the lens
+  function coinSpinAnimate(now, tx, ty, tz, R, N) {
+    const lens = { x: 0.18, y: -0.16 };
+    const ang = (1 - Math.cos(now * 0.0011)) * (Math.PI / 2);   // 0 → 180 → 0
+    const ca = Math.cos(ang), sa = Math.sin(ang);
+    const k = (R * 0.68) / (240 * 0.92);
+    for (let i = 0; i < N; i++) {
+      const kind = i % 10;
+      if (kind < 5 || kind > 8) continue;
+      if (kind < 8) {
+        // coin face with the bitcoin B, rotated about its vertical axis
+        const p = coinFacePts[(i * 7919 + 13) % coinFacePts.length];
+        tx[i] = lens.x * R + p[0] * k * ca;
+        ty[i] = lens.y * R + p[1] * k;
+        tz[i] = p[0] * k * sa;
+      } else {
+        // coin rim (deterministic golden-angle spread)
+        const a = i * 2.399963;
+        tx[i] = lens.x * R + Math.cos(a) * 0.36 * R * ca;
+        ty[i] = lens.y * R + Math.sin(a) * 0.36 * R;
+        tz[i] = Math.cos(a) * 0.36 * R * sa;
+      }
+    }
+  }
+
+  // open book with a magnifier hovering over the right page
+  function bookMagGen(i, N, R) {
+    const tilt = 0.85, ct = Math.cos(tilt), st = Math.sin(tilt);
+    const U_MAX = 0.8;
+    // page surface: curl anchored at the spine so pages and spine meet exactly
+    const pageY = (u) => 0.2 * Math.pow(u, 0.7) - 0.05;
+    // book surface in y-up coords, tilted back so pages face the viewer
+    const placeBook = (x, yUp, z) => {
+      const y = -yUp;
+      return [x * R, (y * ct - z * st) * R * 1.06 + R * 0.28, (y * st + z * ct) * R];
+    };
+    const kind = i % 10;
+    if (kind < 4) {
+      // text rows following the page surface, with margins
+      const side = i % 2 === 0 ? 1 : -1;
+      const row = (i >> 1) % 7;
+      const u = 0.1 + Math.random() * 0.6;             // outward from spine
+      const z = (row - 3) * 0.115 + gauss() * 0.008;   // text line rows
+      return placeBook(side * u, pageY(u), z);
+    }
+    if (kind < 7) {
+      // page outline around BOTH pages: top/bottom edges, outer edges, spine, cover
+      const side = Math.random() < 0.5 ? 1 : -1;
+      const e = Math.random();
+      if (e < 0.36) {
+        // top and bottom page edges follow the curl from the spine outward
+        const u = Math.random() * U_MAX;
+        return placeBook(side * u, pageY(u), Math.random() < 0.5 ? 0.44 : -0.44);
+      }
+      if (e < 0.58) {
+        // outer page edges (left and right)
+        return placeBook(side * U_MAX + gauss() * 0.008, pageY(U_MAX), Math.random() * 0.88 - 0.44);
+      }
+      if (e < 0.78) {
+        // spine crease connecting both pages
+        return placeBook(gauss() * 0.008, pageY(0), Math.random() * 0.88 - 0.44);
+      }
+      // cover peeking out beneath the pages
+      const u = Math.random() * (U_MAX + 0.06);
+      return placeBook(side * u, pageY(Math.min(u, U_MAX)) - 0.07, Math.random() > 0.5 ? 0.49 : -0.49);
+    }
+    // magnifier over the right page (screen coords)
+    const mg = { x: 0.42, y: -0.34 };
+    if (kind < 9) {
+      const a = Math.random() * Math.PI * 2;
+      const r = 0.3 + gauss() * 0.018;
+      return [(mg.x + Math.cos(a) * r) * R, (mg.y + Math.sin(a) * r) * R, gauss() * R * 0.03];
+    }
+    // magnifier handle: from the bottom-right of the ring, angled down-right
+    const a0 = 0.75;
+    const bx = mg.x + Math.cos(a0) * 0.3, by = mg.y + Math.sin(a0) * 0.3;
+    const t = Math.random();
+    return [
+      (bx + Math.cos(a0) * t * 0.4) * R + gauss() * R * 0.02,
+      (by + Math.sin(a0) * t * 0.4) * R + gauss() * R * 0.02,
+      gauss() * R * 0.03,
+    ];
+  }
+
+  // 3D megaphone — solid cone horn, mouthpiece, handle, sound-wave arcs
+  function megaphoneGen(i, N, R) {
+    const K = R * 0.95, yaw = -0.25;                 // mostly side view, ~15 degrees off
+    const cyw = Math.cos(yaw), syw = Math.sin(yaw);
+    const out = (x, yUp, z) => {
+      const xc = x - 0.55;                           // center the whole assembly
+      const xr = xc * cyw - z * syw, zr = xc * syw + z * cyw;
+      return [xr * K, -yUp * K, zr * K];
+    };
+    const hornR = (x) => 0.13 + (x / 0.75) * 0.34;
+    const kind = i % 10;
+    if (kind < 5) {
+      // solid horn shell
+      const x = Math.pow(Math.random(), 0.8) * 0.75; // denser toward the mouth
+      const a = Math.random() * Math.PI * 2;
+      const r = hornR(x);
+      return out(x, Math.sin(a) * r, Math.cos(a) * r);
+    }
+    if (kind < 6) {
+      // bright rim ring at the horn mouth + solid mouthpiece
+      if (i % 2 === 0) {
+        const a = Math.random() * Math.PI * 2;
+        return out(0.75, Math.sin(a) * hornR(0.75), Math.cos(a) * hornR(0.75));
+      }
+      const a = Math.random() * Math.PI * 2;
+      const x = -0.24 + Math.random() * 0.24;
+      return out(x, Math.sin(a) * 0.085, Math.cos(a) * 0.085);
+    }
+    if (kind < 7) {
+      // solid handle slab below the horn
+      return out(
+        0.1 + Math.random() * 0.24,
+        -0.16 - Math.random() * 0.28,
+        (Math.random() - 0.5) * 0.05,
+      );
+    }
+    // sound-wave arcs expanding from the horn mouth, layered in depth
+    const wave = kind - 7;                           // 0..2
+    const r = 0.28 + wave * 0.2;
+    const a = (Math.random() * 2 - 1) * 0.95;
+    const zLayer = ((i * 7) % 3 - 1) * 0.1;
+    return out(0.8 + Math.cos(a) * r, Math.sin(a) * r, zLayer + gauss() * 0.02);
+  }
+
+  // random point on the perimeter of a rounded rectangle (centered at origin)
+  function roundRectPt(hw, hh, r) {
+    const sw = 2 * (hw - r), sh = 2 * (hh - r), arc = Math.PI * r / 2;
+    const total = 2 * sw + 2 * sh + 4 * arc;
+    let d = Math.random() * total;
+    if (d < sw) return [-(hw - r) + d, -hh];
+    d -= sw;
+    if (d < sw) return [-(hw - r) + d, hh];
+    d -= sw;
+    if (d < sh) return [-hw, -(hh - r) + d];
+    d -= sh;
+    if (d < sh) return [hw, -(hh - r) + d];
+    d -= sh;
+    const c = Math.min(3, (d / arc) | 0);
+    const a = ((d - c * arc) / arc) * (Math.PI / 2) + c * (Math.PI / 2);
+    const ccx = (c === 0 || c === 3) ? hw - r : -(hw - r);
+    const ccy = (c === 0 || c === 1) ? hh - r : -(hh - r);
+    return [ccx + Math.cos(a) * r, ccy + Math.sin(a) * r];
+  }
+
+  // uniform point inside a triangle
+  function triPt(a, b, c) {
+    const r1 = Math.sqrt(Math.random()), r2 = Math.random();
+    return [
+      (1 - r1) * a[0] + r1 * (1 - r2) * b[0] + r1 * r2 * c[0],
+      (1 - r1) * a[1] + r1 * (1 - r2) * b[1] + r1 * r2 * c[1],
+    ];
+  }
+
+  // lever balancing on a fulcrum: document on the low end, chat on the high end
+  function fulcrumGen(i, N, R) {
+    const beamY = (x) => 0.09 + x * -0.16;           // y-down: left end low, right end high
+    const kind = i % 10;
+    const jz = () => (Math.random() - 0.5) * R * 0.06;
+    if (kind < 2) {
+      // fulcrum triangle under the beam pivot
+      const apex = [0, 0.14], bl = [-0.3, 0.64], br = [0.3, 0.64];
+      if (Math.random() < 0.7) {
+        // outline
+        const e = (Math.random() * 3) | 0;
+        const t = Math.random();
+        const [p, q] = e === 0 ? [apex, bl] : e === 1 ? [apex, br] : [bl, br];
+        return [(p[0] + (q[0] - p[0]) * t) * R, (p[1] + (q[1] - p[1]) * t) * R, jz()];
+      }
+      // sparse fill
+      const t = Math.random(), s2 = Math.random();
+      const x = apex[0] + (bl[0] + (br[0] - bl[0]) * s2 - apex[0]) * t;
+      const y = apex[1] + (bl[1] - apex[1]) * t;
+      return [x * R, y * R, jz()];
+    }
+    if (kind < 4) {
+      // the beam
+      const x = Math.random() * 2.1 - 1.05;
+      return [x * R, (beamY(x) + gauss() * 0.012) * R, jz()];
+    }
+    if (kind < 6) {
+      // single portrait document icon above the low (left) end
+      const cx = -0.85, cy = beamY(-0.85) - 0.34;
+      const hw = 0.15, hh = 0.2, r = 0.045;
+      if (Math.random() < 0.55) {
+        const [px, py] = roundRectPt(hw, hh, r);
+        return [(cx + px) * R, (cy + py) * R, jz()];
+      }
+      // horizontal text lines, inset from the edges (last one shorter)
+      const row = (Math.random() * 4) | 0;
+      const lineHW = hw * (row === 3 ? 0.38 : 0.62);
+      const y = cy - 0.11 + row * 0.075;
+      return [(cx - hw * 0.62 + Math.random() * (hw * 0.62 + lineHW)) * R, y * R, jz()];
+    }
+    // chat bubble floating on the high (right) end
+    const bx = 0.85, by = beamY(0.85) - 0.3;
+    const hw = 0.24, hh = 0.15, r = 0.05;
+    const dots = [-0.09, 0, 0.09], dr = 0.035;
+    const u = Math.random();
+    if (u < 0.18) {
+      // rounded-rect outline
+      const [px, py] = roundRectPt(hw, hh, r);
+      return [(bx + px) * R, (by + py) * R, jz()];
+    }
+    if (u < 0.32) {
+      // solid triangle tail off the bottom edge, pointing down toward the beam
+      const [px, py] = triPt(
+        [bx - 0.1, by + hh + 0.13],
+        [bx - 0.13, by + hh - 0.01],
+        [bx + 0.01, by + hh - 0.01],
+      );
+      return [px * R, py * R, jz()];
+    }
+    if (u < 0.42) {
+      // crisp rings around the typing-dot holes
+      const d = dots[(Math.random() * 3) | 0];
+      const a = Math.random() * Math.PI * 2;
+      return [(bx + d + Math.cos(a) * dr) * R, (by + Math.sin(a) * dr) * R, jz()];
+    }
+    // solid fill, with the three typing dots carved out as negative space
+    for (let tries = 0; tries < 12; tries++) {
+      const px = (Math.random() * 2 - 1) * hw, py = (Math.random() * 2 - 1) * hh;
+      const qx = Math.abs(px) - (hw - r), qy = Math.abs(py) - (hh - r);
+      if (qx > 0 && qy > 0 && qx * qx + qy * qy > r * r) continue; // outside rounded corner
+      let inDot = false;
+      for (const d of dots) {
+        const dx = px - d;
+        if (dx * dx + py * py < dr * dr) { inDot = true; break; }
+      }
+      if (inDot) continue;
+      return [(bx + px) * R, (by + py) * R, jz()];
+    }
+    const [px, py] = roundRectPt(hw, hh, r);
+    return [(bx + px) * R, (by + py) * R, jz()];
+  }
+
+  // zig-zag stock line trending up and to the right — the green line
+  const greenlineRig = (() => {
+    const rng = mulberry32(4321);
+    const pts = [];
+    const n = 8;
+    let y = 0.55;                                     // y-down: start low-left
+    for (let k = 0; k < n; k++) {
+      pts.push({ x: -0.95 + k * (1.8 / (n - 1)), y });
+      const up = k % 3 !== 1;                         // up, pullback, up, up, ...
+      y += up ? -(0.16 + rng() * 0.1) : (0.08 + rng() * 0.05);
+    }
+    const last = pts[n - 1], prev = pts[n - 2];
+    const ang = Math.atan2(last.y - prev.y, last.x - prev.x);
+    return { pts, arrow: { x: last.x, y: last.y, ang } };
+  })();
+
+  function greenlineGen(i, N, R) {
+    const kind = i % 10;
+    if (kind < 7) {
+      // the zig-zag trend line
+      const ps = greenlineRig.pts;
+      const seg = (Math.random() * (ps.length - 1)) | 0;
+      const t = Math.random();
+      const x = ps[seg].x + (ps[seg + 1].x - ps[seg].x) * t;
+      const y = ps[seg].y + (ps[seg + 1].y - ps[seg].y) * t;
+      return [x * R, (y + gauss() * 0.012) * R, gauss() * R * 0.03];
+    }
+    if (kind < 9) {
+      // solid arrowhead at the top-right end, aligned with the last segment
+      const { x, y, ang } = greenlineRig.arrow;
+      const ca = Math.cos(ang), sa = Math.sin(ang);
+      const [px, py] = triPt(
+        [x + ca * 0.17, y + sa * 0.17],
+        [x - sa * 0.08, y + ca * 0.08],
+        [x + sa * 0.08, y - ca * 0.08],
+      );
+      return [px * R, py * R, gauss() * R * 0.02];
+    }
+    // chart axes
+    if (i % 2 === 0) {
+      const x = Math.random() * 2.14 - 1.07;
+      return [x * R, 0.68 * R, gauss() * R * 0.02];
+    }
+    const y = Math.random() * 1.5 - 0.82;
+    return [-1.07 * R, y * R, gauss() * R * 0.02];
+  }
+
+  // ---------------------------------------------------------------
+  // sections: hero + projects + outro
+  // ---------------------------------------------------------------
+  const shapeRegistry = {
+    fulcrum:         { gen: fulcrumGen,              caption: "Balanced by AI", flat: true },
+    greenline:       { gen: greenlineGen,            caption: "Up and to the right", flat: true },
+    inspectmind:     { gen: craneGen,                caption: "AI eye on site", flat: true },
+    ready:           { gen: globeGen,                caption: "Connected globe", animate: globeAnimate },
+    blazebuddies:    { gen: meshGen,                 caption: "Peer-to-peer mesh" },
+    donedingo:       { gen: todoGen(),               caption: "Checked off", flat: true },
+    soapely:         { gen: carGen,                  caption: "Car in the wash", flat: true },
+    appearix:        { gen: mapPinsGen,              caption: "Pins on the map", flat: true },
+    presearch:       { gen: searchCoinGen,           caption: "Search the token", flat: true, animate: coinSpinAnimate },
+    magnifyprogress: { gen: megaphoneGen,            caption: "Make some noise", flat: true },
+    realid:          { gen: shieldGen(),             caption: "Verified", flat: true },
+    harvix:          { gen: bookMagGen,              caption: "Study search", flat: true },
+  };
+  const defaultShape = { gen: (i, N, R) => {  // fibonacci sphere fallback
+    const g = Math.PI * (3 - Math.sqrt(5));
+    const y = 1 - (i / (N - 1)) * 2;
+    const r = Math.sqrt(1 - y * y);
+    const th = g * i;
+    return [Math.cos(th) * r * R, y * R, Math.sin(th) * r * R];
+  }, caption: "Sphere" };
+
+  const sections = [];
+  sections.push({
+    id: "hero",
+    label: "Intro",
+    gen: textGen(profile.particleName || "HELLO", 3.1),
+    caption: "",
+    color: displayColor(profile.colors.primary),
+    cssColor: profile.colors.primary,
+    side: "center",
+    flat: true,
+    swing: 0.07,
+  });
+  projects.forEach((p, idx) => {
+    const shape = shapeRegistry[p.id] || defaultShape;
+    const c = displayColor(p.colors.primary);
+    sections.push({
+      id: p.id,
+      label: stripHtml(p.title),
+      dates: p.dates,
+      project: p,
+      gen: shape.gen,
+      caption: shape.caption,
+      color: c,
+      cssColor: `rgb(${c.r|0},${c.g|0},${c.b|0})`,
+      side: "left",   // cards on the left, particles on the right
+      flat: !!shape.flat,
+      swing: shape.swing,
+      animate: shape.animate,
+    });
+  });
+  sections.push({
+    id: "outro",
+    label: "Say hi",
+    gen: textGen("SAY HI", 2.4),
+    caption: "",
+    color: displayColor("#ce6fd3"),
+    cssColor: "#ce6fd3",
+    side: "center",
+    flat: true,
+    swing: 0.07,
+  });
+
+  // ---------------------------------------------------------------
+  // build DOM
+  // ---------------------------------------------------------------
+  const main = document.getElementById("main");
+  const markersEl = document.getElementById("markers");
+
+  function buildHero() {
+    const sec = document.createElement("section");
+    sec.className = "panel short";
+    sec.id = "sec-hero";
+    const initial = esc((profile.name || "?").charAt(0).toUpperCase());
+    const avatarHtml = profile.image
+      ? `<img class="avatar" src="${esc(profile.image)}" alt="${esc(profile.name)}"
+           onerror="this.outerHTML='<div class=&quot;avatar-fallback&quot;>${initial}</div>'" />`
+      : `<div class="avatar-fallback">${initial}</div>`;
+    sec.innerHTML = `
+      <div class="hero-inner">
+        <h1 class="sr-only">${esc(profile.name)} — ${esc(profile.tagline)}</h1>
+        ${avatarHtml}
+        <div class="name-slot" id="name-slot" aria-hidden="true"></div>
+        <div class="hero-sub">${esc(profile.tagline)}</div>
+        <div class="hero-loc">${esc(profile.location)}</div>
+        <p class="hero-bio">${formatBio(profile)}</p>
+        <div class="socials">
+          ${profile.socials.map((s) =>
+            `<a href="${esc(s.link)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a>`).join("")}
         </div>
-        
-        <h5 class="filter"><b>About Me</b></h5>
-        <p class="bio">
-          I've worked on many startups before and have experience developing products from the ground up.
-          My role in almost all of the projects I've worked on has been to <b>mock the UI/UX</b> of the product, <b>design the graphics, logos, and layouts</b> for both the website and mobile applications</b>, then finally code the <b>entire frontend interface</b> (typically with React.js/React Native & GraphQL).
-          I have over <span id="experience-years">8</span> years of professional web development experience. I first learned to code in 5th grade and have been working on side projects and startups ever since (about <span id="learning-years">13</span> years of learning!).
-        </p>
-        
-        <br/>
-        <br/>
+        <div class="scroll-hint">Scroll through time</div>
+      </div>`;
+    main.appendChild(sec);
+  }
 
-        <h2><b>Work Experience</b></h2>
+  function buildProject(section) {
+    const p = section.project;
+    const sec = document.createElement("section");
+    sec.className = "panel";
+    sec.id = "sec-" + p.id;
+    sec.style.setProperty("--card-accent", section.cssColor);
 
-        <br/>
+    const title = stripHtml(p.title);
+    const monoLetter = esc(title.charAt(0).toUpperCase());
+    const logoHtml = p.image
+      ? `<img class="logo" src="${esc(p.image)}" alt="" loading="lazy"
+           onerror="this.outerHTML='<div class=&quot;monogram&quot; style=&quot;background:${esc(section.cssColor)}&quot;>${monoLetter}</div>'" />`
+      : `<div class="monogram" style="background:${esc(section.cssColor)}">${monoLetter}</div>`;
 
-        <div id="filters">
-          <h5 class="filter"><b>Filter Projects by Skill</b></h5>
+    const tagsHtml = (p.tags || []).map((t) => {
+      const type = String(t.type || "").toLowerCase();
+      return `<span class="tag ${esc(type)}">${esc(t.title)}</span>`;
+    }).join("");
+
+    const linksHtml = (p.links || []).map((l) =>
+      `<a href="${esc(l.link)}" target="_blank" rel="noopener noreferrer">${esc(l.label)}</a>`).join("");
+
+    sec.innerHTML = `
+      <div class="card-wrap">
+        <article class="card" style="--card-accent:${esc(section.cssColor)}">
+          <div class="head">
+            ${logoHtml}
+            <div>
+              <h2>${esc(title)}</h2>
+              <div class="position">${esc(p.position)}</div>
+            </div>
+          </div>
+          <div class="dates">${esc(p.dates)}</div>
+          <p class="desc">${esc(p.description)}</p>
+          <div class="tags">${tagsHtml}</div>
+          <div class="links">${linksHtml}</div>
+        </article>
+      </div>`;
+    main.appendChild(sec);
+    section.cardEl = sec.querySelector(".card");
+  }
+
+  function buildOutro() {
+    const sec = document.createElement("section");
+    sec.className = "panel short";
+    sec.id = "sec-outro";
+    sec.innerHTML = `
+      <div class="outro-inner">
+        <div class="hero-loc">Want to build something together?</div>
+        <div class="socials" style="margin-top: 22px;">
+          ${profile.socials.map((s) =>
+            `<a href="${esc(s.link)}" target="_blank" rel="noopener noreferrer">${esc(s.label)}</a>`).join("")}
         </div>
-      </div>
-      <div
-        id="transition-timeline-color-mash"
-        style="
-          background: linear-gradient(to top, #ce6fd3, var(--electricblue));
-          width: 6px;
-          height: 128px;
-          margin-left: 64px;
-        "
-      ></div>
-      
-      <div id="projects">
+      </div>`;
+    main.appendChild(sec);
+  }
 
-      </div>
-    </div>
+  sections.forEach((s) => {
+    if (s.id === "hero") buildHero();
+    else if (s.id === "outro") buildOutro();
+    else buildProject(s);
+  });
 
+  // left-border timeline markers — one per section, anchored to its morph point
+  const markers = sections.map((s) => {
+    const btn = document.createElement("button");
+    btn.className = "marker";
+    btn.style.setProperty("--dot", s.cssColor);
+    btn.setAttribute("aria-label", s.label);
+    btn.innerHTML = `<span class="mdot"></span><span class="mlabel">${esc(s.id === "hero" ? profile.name : s.label)}</span>`;
+    btn.addEventListener("click", () => {
+      document.getElementById("sec-" + s.id).scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
+    });
+    markersEl.appendChild(btn);
+    return btn;
+  });
 
-    <script src="https://kit.fontawesome.com/c28e2aa93f.js" crossorigin="anonymous"></script>
-    <!-- <script>
-      !function(){var analytics=window.analytics=window.analytics||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","once","off","on"];analytics.factory=function(t){return function(){var e=Array.prototype.slice.call(arguments);e.unshift(t);analytics.push(e);return analytics}};for(var t=0;t<analytics.methods.length;t++){var e=analytics.methods[t];analytics[e]=analytics.factory(e)}analytics.load=function(t,e){var n=document.createElement("script");n.type="text/javascript";n.async=!0;n.src="https://cdn.segment.com/analytics.js/v1/"+t+"/analytics.min.js";var a=document.getElementsByTagName("script")[0];a.parentNode.insertBefore(n,a);analytics._loadOptions=e};analytics.SNIPPET_VERSION="4.1.0";
-      analytics.load("e0rGqM7ltLWVAx79XkwXw8qsdYDtKBIO");
-      analytics.page();
-      }}();
-    </script> -->
+  // shape captions — mirror the marker behavior into the top-right header slot
+  const captionsEl = document.getElementById("captions");
+  const captions = sections.map((s) => {
+    const div = document.createElement("div");
+    div.className = "caption";
+    div.textContent = s.caption || profile.location;
+    captionsEl.appendChild(div);
+    return div;
+  });
 
-  </body>
+  const PIN_Y = 18;       // translateY where a marker pins in the top-right corner
+  const MARKER_GAP = 34;  // distance at which the next marker pushes the pinned one off
+
+  function updateMarkers() {
+    const ys = sections.map((s) => {
+      // anchored to the morph point: a marker pins exactly when its section
+      // crosses the viewport center and the particles start transitioning
+      const rect = document.getElementById("sec-" + s.id).getBoundingClientRect();
+      return Math.max(rect.top - H / 2 + PIN_Y, PIN_Y);
+    });
+    // push-off: an arriving marker slides the pinned one up and off screen
+    for (let k = 0; k < ys.length - 1; k++) {
+      if (ys[k + 1] < ys[k] + MARKER_GAP) ys[k] = ys[k + 1] - MARKER_GAP;
+    }
+    for (let k = 0; k < markers.length; k++) {
+      const pinned = ys[k] <= PIN_Y + 4;
+      markers[k].style.transform = `translateY(${ys[k]}px)`;
+      markers[k].classList.toggle("pinned", pinned);
+      captions[k].style.transform = `translateY(${ys[k]}px)`;
+      captions[k].classList.toggle("pinned", pinned);
+    }
+  }
+
+  // card enter animation (enter once, no exit blink)
+  const cardObserver = new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (e.isIntersecting) {
+        e.target.classList.add("visible");
+        cardObserver.unobserve(e.target);
+      }
+    }
+  }, { threshold: 0.15 });
+  document.querySelectorAll(".card").forEach((c) => cardObserver.observe(c));
+
+  // ---------------------------------------------------------------
+  // particle engine
+  // ---------------------------------------------------------------
+  const canvas = document.getElementById("stage");
+  const ctx = canvas.getContext("2d");
+  const barEl = document.getElementById("bar");
+
+  const N = window.innerWidth < MOBILE_BP ? 2000 : 3600;
+  const FOV = 900;
+
+  let W, H, DPR, R;
+
+  const px = new Float32Array(N), py = new Float32Array(N), pz = new Float32Array(N);
+  const vx = new Float32Array(N), vy = new Float32Array(N), vz = new Float32Array(N);
+  const tx = new Float32Array(N), ty = new Float32Array(N), tz = new Float32Array(N);
+  const sz = new Float32Array(N), tw = new Float32Array(N);
+  const order = new Uint16Array(N);
+  const depth = new Float32Array(N);
+
+  for (let i = 0; i < N; i++) {
+    px[i] = (Math.random() - 0.5) * 2200;
+    py[i] = (Math.random() - 0.5) * 2200;
+    pz[i] = (Math.random() - 0.5) * 2200;
+    sz[i] = 0.6 + Math.random() * 1.6;
+    tw[i] = Math.random() * Math.PI * 2;
+  }
+
+  let activeIdx = -1;
+  const cur = { r: 120, g: 150, b: 255 };
+  let tgt = sections[0].color;
+  let offsetX = 0, offsetXTgt = 0;
+  let offsetY = 0, offsetYTgt = 0;
+
+  function setShape(idx, kick) {
+    activeIdx = idx;
+    const s = sections[idx];
+    for (let i = 0; i < N; i++) {
+      const p = s.gen(i, N, R);
+      tx[i] = p[0]; ty[i] = p[1]; tz[i] = p[2];
+      if (kick && !reducedMotion) {
+        vx[i] += (Math.random() - 0.5) * 6;
+        vy[i] += (Math.random() - 0.5) * 6;
+        vz[i] += (Math.random() - 0.5) * 6;
+      }
+    }
+    tgt = s.color;
+
+    // cards sit on the left, so the shape drifts right; hero/outro handled below
+    if (small || s.side === "center") offsetXTgt = 0;
+    else offsetXTgt = W * 0.24;
+    if (s.id === "outro") offsetYTgt = -H * 0.18;
+    else if (s.side === "center") offsetYTgt = 0;
+    else offsetYTgt = small ? -H * 0.14 : 0;
+
+    // chrome updates
+    document.documentElement.style.setProperty("--accent", s.cssColor);
+    barEl.style.background = s.cssColor;
+  }
+
+  // ---------------------------------------------------------------
+  // interaction: drag-to-orbit, mouse repulsion
+  // ---------------------------------------------------------------
+  let rotX = -0.22, rotY = 0.45;
+  let velX = 0, velY = reducedMotion ? 0 : 0.0022;
+  let dragging = false, lastMX = 0, lastMY = 0;
+  const mouse = { x: -1e4, y: -1e4 };
+  const IDLE_SPIN = reducedMotion ? 0 : 0.0022;
+
+  canvas.addEventListener("pointerdown", (e) => {
+    dragging = true;
+    lastMX = e.clientX; lastMY = e.clientY;
+    canvas.setPointerCapture(e.pointerId);
+  });
+  window.addEventListener("pointermove", (e) => {
+    mouse.x = e.clientX; mouse.y = e.clientY;
+    if (dragging) {
+      const dx = e.clientX - lastMX, dy = e.clientY - lastMY;
+      velY = dx * 0.00028 + velY * 0.5;
+      velX = dy * 0.00028 + velX * 0.5;
+      rotY += dx * 0.005;
+      rotX += dy * 0.005;
+      lastMX = e.clientX; lastMY = e.clientY;
+    }
+  });
+  window.addEventListener("pointerup", () => { dragging = false; });
+  window.addEventListener("blur", () => { mouse.x = -1e4; mouse.y = -1e4; dragging = false; });
+
+  // keyboard section jumps
+  window.addEventListener("keydown", (e) => {
+    if (["ArrowDown", "PageDown", "Space"].includes(e.code)) {
+      e.preventDefault();
+      jumpTo(Math.min(activeIdx + 1, sections.length - 1));
+    } else if (["ArrowUp", "PageUp"].includes(e.code)) {
+      e.preventDefault();
+      jumpTo(Math.max(activeIdx - 1, 0));
+    }
+  });
+  function jumpTo(idx) {
+    document.getElementById("sec-" + sections[idx].id)
+      .scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
+  }
+
+  // ---------------------------------------------------------------
+  // scroll tracking
+  // ---------------------------------------------------------------
+  let scrollVel = 0, lastScrollY = window.scrollY, lastScrollT = performance.now();
+
+  function findActiveSection() {
+    const centerY = window.scrollY + window.innerHeight / 2;
+    for (let k = 0; k < sections.length; k++) {
+      const el = document.getElementById("sec-" + sections[k].id);
+      if (centerY >= el.offsetTop && centerY < el.offsetTop + el.offsetHeight) return k;
+    }
+    return window.scrollY <= 0 ? 0 : sections.length - 1;
+  }
+
+  function resize() {
+    DPR = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    small = W < MOBILE_BP;
+    canvas.width = W * DPR; canvas.height = H * DPR;
+    canvas.style.width = W + "px"; canvas.style.height = H + "px";
+    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // on mobile the shape lives in the band above the card, so size it to fit there
+    R = small
+      ? Math.max(100, Math.min(270, Math.min(W * 0.36, H * 0.16)))
+      : Math.max(140, Math.min(270, Math.min(W, H) * 0.34));
+    if (activeIdx >= 0) setShape(activeIdx, false);
+  }
+  window.addEventListener("resize", resize);
+  resize();
+
+  // ---------------------------------------------------------------
+  // render loop
+  // ---------------------------------------------------------------
+  function frame(now) {
+    // scroll velocity (smoothed px/ms)
+    const sy = window.scrollY;
+    const dt = Math.max(now - lastScrollT, 1);
+    scrollVel = scrollVel * 0.88 + ((sy - lastScrollY) / dt) * 0.12;
+    lastScrollY = sy; lastScrollT = now;
+
+    // section change → morph
+    const idx = findActiveSection();
+    if (idx !== activeIdx) setShape(idx, true);
+
+    // per-section target animation (e.g. globe arcs)
+    if (sections[activeIdx].animate) sections[activeIdx].animate(now, tx, ty, tz, R, N);
+
+    // hero: aim the particle name at the DOM name slot (tracks as it scrolls)
+    if (sections[activeIdx].id === "hero") {
+      const slot = document.getElementById("name-slot");
+      if (slot) {
+        const rect = slot.getBoundingClientRect();
+        offsetXTgt = rect.left + rect.width / 2 - W / 2;
+        offsetYTgt = rect.top + rect.height / 2 - H / 2;
+      }
+    } else if (small && sections[activeIdx].cardEl) {
+      // mobile: ride the gap between the top chrome and the card, centered
+      const rect = sections[activeIdx].cardEl.getBoundingClientRect();
+      const bandTop = 60; // below the fixed header
+      let centerY = (bandTop + Math.min(rect.top, H)) / 2;
+      centerY = Math.max(H * 0.16, Math.min(H * 0.5, centerY));
+      offsetXTgt = 0;
+      offsetYTgt = centerY - H / 2;
+    }
+
+    // scroll progress bar (bottom border)
+    const total = document.documentElement.scrollHeight - H;
+    barEl.style.width = (total > 0 ? (sy / total) * 100 : 0) + "%";
+
+    updateMarkers();
+
+    // idle rotation with inertia; flat shapes ease back to face the viewer
+    const flat = sections[activeIdx] && sections[activeIdx].flat;
+    if (!dragging) {
+      if (flat) {
+        const TAU = Math.PI * 2;
+        const homeY = Math.round(rotY / TAU) * TAU;
+        rotY += (homeY - rotY) * 0.055;
+        rotX += (0 - rotX) * 0.055;
+        velX *= 0.85; velY *= 0.85;
+      } else {
+        rotY += velY; rotX += velX;
+        velX *= 0.95;
+        velY = velY * 0.95 + IDLE_SPIN * 0.05;
+      }
+    }
+    rotX = Math.max(-1.4, Math.min(1.4, rotX));
+
+    // color + center-offset lerp
+    cur.r += (tgt.r - cur.r) * 0.045;
+    cur.g += (tgt.g - cur.g) * 0.045;
+    cur.b += (tgt.b - cur.b) * 0.045;
+    offsetX += (offsetXTgt - offsetX) * 0.06;
+    offsetY += (offsetYTgt - offsetY) * 0.06;
+
+    // trails
+    ctx.fillStyle = "rgba(6, 6, 9, 0.34)";
+    ctx.fillRect(0, 0, W, H);
+    ctx.globalCompositeOperation = "lighter";
+
+    // slow back-and-forth swing keeps flat shapes alive and shows their depth
+    const swingAmp = (sections[activeIdx] && sections[activeIdx].swing) ?? 0.26;
+    const wobble = flat && !reducedMotion ? Math.sin(now * 0.00045) * swingAmp : 0;
+    const cy = Math.cos(rotY + wobble), syn = Math.sin(rotY + wobble);
+    const cx = Math.cos(rotX), sx = Math.sin(rotX);
+    const cxs = W / 2 + offsetX, cys = H / 2 + offsetY;
+
+    // scroll turbulence strength
+    const turb = reducedMotion ? 0 : Math.min(Math.abs(scrollVel) * 2.4, 3.2);
+
+    for (let i = 0; i < N; i++) {
+      // spring toward target
+      vx[i] = (vx[i] + (tx[i] - px[i]) * 0.016) * 0.9;
+      vy[i] = (vy[i] + (ty[i] - py[i]) * 0.016) * 0.9;
+      vz[i] = (vz[i] + (tz[i] - pz[i]) * 0.016) * 0.9;
+
+      if (turb > 0.02) {
+        vx[i] += (Math.random() - 0.5) * turb;
+        vy[i] += (Math.random() - 0.5) * turb + scrollVel * 1.4 * Math.random();
+        vz[i] += (Math.random() - 0.5) * turb;
+      }
+
+      px[i] += vx[i]; py[i] += vy[i]; pz[i] += vz[i];
+
+      // rotate Y then X
+      let x = px[i] * cy - pz[i] * syn;
+      let z = px[i] * syn + pz[i] * cy;
+      let y = py[i] * cx - z * sx;
+      z = py[i] * sx + z * cx;
+
+      depth[i] = z;
+      order[i] = i;
+
+      const s = FOV / (FOV + z + 420);
+      const sxp = cxs + x * s;
+      const syp = cys + y * s;
+
+      // mouse repulsion in screen space
+      const mdx = sxp - mouse.x, mdy = syp - mouse.y;
+      const md2 = mdx * mdx + mdy * mdy;
+      if (md2 < 16900 && md2 > 0.01) {
+        const f = (1 - Math.sqrt(md2) / 130) * 2.2;
+        const inv = 1 / Math.sqrt(md2);
+        vx[i] += (mdx * inv * f) * cy;
+        vz[i] -= (mdx * inv * f) * syn;
+        vy[i] += mdy * inv * f;
+      }
+    }
+
+    // painter's sort, far first
+    Array.prototype.sort.call(order, (a, b) => depth[b] - depth[a]);
+
+    const t = now * 0.002;
+    const br = cur.r, bg = cur.g, bb = cur.b;
+
+    for (let k = 0; k < N; k++) {
+      const i = order[k];
+      const z = depth[i];
+      const s = FOV / (FOV + z + 420);
+      if (s <= 0) continue;
+
+      let x = px[i] * cy - pz[i] * syn;
+      let zz = px[i] * syn + pz[i] * cy;
+      let y = py[i] * cx - zz * sx;
+
+      const sxp = cxs + x * s;
+      const syp = cys + y * s;
+      if (sxp < -20 || sxp > W + 20 || syp < -20 || syp > H + 20) continue;
+
+      const twinkle = reducedMotion ? 0.85 : 0.72 + 0.28 * Math.sin(t + tw[i]);
+      const rad = sz[i] * s * 1.5;
+      const alpha = Math.max(0.05, Math.min(0.9, s * 0.85)) * twinkle;
+
+      // brighten near particles + slight per-particle variation
+      const wMix = Math.max(0, Math.min(0.5, (420 - z) * 0.0009)) + ((i % 40) / 40) * 0.18;
+      const rr = br + (255 - br) * wMix;
+      const gg = bg + (255 - bg) * wMix;
+      const bb2 = bb + (255 - bb) * wMix;
+
+      ctx.fillStyle = `rgba(${rr | 0},${gg | 0},${bb2 | 0},${alpha})`;
+      ctx.beginPath();
+      ctx.arc(sxp, syp, rad, 0, 6.2832);
+      ctx.fill();
+    }
+
+    // core glow
+    const glow = ctx.createRadialGradient(cxs, cys, 0, cxs, cys, Math.min(W, H) * 0.5);
+    glow.addColorStop(0, `rgba(${br | 0},${bg | 0},${bb | 0},0.06)`);
+    glow.addColorStop(1, "rgba(0,0,0,0)");
+    ctx.fillStyle = glow;
+    ctx.fillRect(0, 0, W, H);
+
+    ctx.globalCompositeOperation = "source-over";
+    requestAnimationFrame(frame);
+  }
+
+  setShape(findActiveSection(), false);
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
 </html>

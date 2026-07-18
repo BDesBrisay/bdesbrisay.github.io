@@ -21,6 +21,61 @@
  */
 const PROJECTS = [
   {
+    id: "fulcrum",
+    title: "Fulcrum",
+    position: "Senior Software Engineer",
+    dates: "2025 - Present",
+    description:
+      "Fulcrum builds AI-powered workflows for insurance agencies — automating document processing, data extraction, and policy operations end to end. I work across the stack on agentic document pipelines, chat-driven workflows, and the platform that orchestrates them. (Placeholder description — replace with the real one.)",
+    tags: [
+      { title: "TypeScript", type: "Language" },
+      { title: "React.js", type: "Technology" },
+      { title: "Node.js", type: "Technology" },
+      { title: "AI Agents", type: "Technology" },
+      { title: "Temporal", type: "Technology" },
+      { title: "Frontend", type: "Skill" },
+      { title: "Backend", type: "Skill" },
+      { title: "Web Application", type: "Skill" },
+    ],
+    links: [
+      {
+        label: "Website",
+        link: "https://withfulcrum.com",
+      },
+    ],
+    colors: {
+      background: "#f5a623",
+      primary: "#f5a623",
+    },
+  },
+  {
+    id: "greenline",
+    title: "greenline.trading",
+    position: "Founder",
+    dates: "2024",
+    description:
+      "greenline.trading is an automated stock investing platform — rules-based strategies that watch the market and execute for you. I designed and built the product end to end. (Placeholder description — replace with the real one.)",
+    tags: [
+      { title: "TypeScript", type: "Language" },
+      { title: "React.js", type: "Technology" },
+      { title: "Node.js", type: "Technology" },
+      { title: "Trading APIs", type: "Technology" },
+      { title: "Frontend", type: "Skill" },
+      { title: "Backend", type: "Skill" },
+      { title: "Web Application", type: "Skill" },
+    ],
+    links: [
+      {
+        label: "Website",
+        link: "https://greenline.trading",
+      },
+    ],
+    colors: {
+      background: "#22c55e",
+      primary: "#22c55e",
+    },
+  },
+  {
     id: "inspectmind",
     image: "./images/inspectmind.png",
     title: "InspectMind.AI",
