@@ -2,29 +2,66 @@ const experienceYears = new Date().getFullYear() - 2016;
 const learningYears = new Date().getFullYear() - 2011;
 
 export const GALLERY_CONFIG = {
-  room: {
-    width: 8,
-    height: 4,
-    segmentLength: 10,
+  planet: {
+    radius: 28,
+    segments: 96,
+    baseColor: '#4a6741',
+    dirtColor: '#6b5344',
+    waterColor: '#2a5a7a',
+    roadColor: '#b8b4a4',
+    roadEdgeColor: '#6b6560',
+    roadCenterColor: '#e8e4d8',
+    roadWidth: 2.0,
+    roadRaise: 0.28,
+    heightAmplitude: 0.9,
+    lakeLat: -0.15,
+    lakeLon: 1.8,
+    lakeRadius: 2.5,
+    fogDensity: 0.005,
   },
 
-  poster: {
-    width: 4.0,
-    height: 3.2,
-    depth: 0.06,
-    centerY: 1.8,
-    infoWall: 'left',
+  sky: {
+    nebulaColors: ['#1a0a2e', '#3d1a6e', '#0d1b3e'],
+    auroraColors: ['#00ffaa44', '#aa00ff33'],
   },
 
-  spawn: {
-    x: 0,
-    y: 1.65,
-    z: 2,
-    yaw: Math.PI,
+  drive: {
+    maxSpeed: 11,
+    acceleration: 22,
+    brakeDecel: 28,
+    turnRate: 2.5,
+    carHover: 0.35,
+    cameraDistance: 4,
+    cameraHeight: 1.6,
+    cameraLag: 8,
+  },
+
+  area: {
+    zoneRadius: 3,
+    revealRadius: 4.5,
+    tourLatStart: 0.44,
+    tourLonStep: 0.38,
+    tourLatDrift: 0.025,
+  },
+
+  nav: {
+    compassSize: 48,
+    minimapSize: 140,
+    minimapZoom: 0.55,
+  },
+
+  landmark: {
+    archWidth: 4.4,
+    archHeight: 3.5,
+    pillarWidth: 0.25,
+    labelHeight: 0.6,
+  },
+
+  intro: {
+    tutorialStorageKey: 'gallery-planet-tutorial-seen',
   },
 
   movement: {
-    speed: 4,
     lookSensitivity: 0.002,
   },
 

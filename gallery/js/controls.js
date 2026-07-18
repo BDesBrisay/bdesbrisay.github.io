@@ -1,85 +1,201 @@
-import { PointerLockControls } from 'three/addons/controls/PointerLockControls.js';
+import * as THREE from 'three';
 import { clamp } from './utils.js';
+import {
+  getSurfaceFrame,
+  projectToSurface,
+  getNearestStop,
+  getTourProgress,
+  surfacePosition,
+  vec3ToLatLon,
+} from './planet.js';
+import { orientToSurface } from './planet.js';
 
-export function createInputManager({ domElement, camera, renderer, config, isMobile, getHoveredLink }) {
-  const speed = config.movement.speed;
-  const sensitivity = config.movement.lookSensitivity;
-
+export function createInputManager({
+  domElement,
+  camera,
+  renderer,
+  config,
+  isMobile,
+  car,
+  stops,
+  getHoveredLink,
+}) {
   if (isMobile) {
-    return createMobileInput(domElement, camera, speed, sensitivity, getHoveredLink);
+    return createMobileDrive({ domElement, camera, config, car, stops, getHoveredLink });
   }
-  return createDesktopInput(domElement, camera, renderer, speed, sensitivity, getHoveredLink);
+  return createDesktopDrive({ domElement, camera, renderer, config, car, stops, getHoveredLink });
 }
 
-// ─── Desktop ──────────────────────────────────────────────
+function createDriveState(stops, config) {
+  const first = stops[0];
+  const pos = surfacePosition(first.lat, first.lon, config, config.drive.carHover);
 
-function createDesktopInput(domElement, camera, renderer, speed, sensitivity, getHoveredLink) {
-  const controls = new PointerLockControls(camera, renderer.domElement);
+  return {
+    position: new THREE.Vector3(pos.x, pos.y, pos.z),
+    heading: first.heading,
+    speed: 0,
+    visited: new Set([0]),
+    nearestStop: first,
+    proximityWeight: 0,
+    tourIndex: 0,
+    tourComplete: false,
+    camYawOffset: 0,
+    camPitch: 0.15,
+  };
+}
+
+function updateDrivePhysics(state, input, car, camera, dt, config, stops) {
+  const { drive } = config;
+  const frame = getSurfaceFrame(state.position, config);
+
+  if (input.steer) state.heading += input.steer * drive.turnRate * dt * (0.5 + Math.abs(state.speed) / drive.maxSpeed);
+  if (input.throttle) {
+    state.speed += input.throttle * drive.acceleration * dt;
+  }
+  if (input.brake) {
+    state.speed -= Math.sign(state.speed || 1) * drive.brakeDecel * dt;
+    if (Math.abs(state.speed) < 0.1) state.speed = 0;
+  }
+
+  state.speed = clamp(state.speed, -drive.maxSpeed * 0.4, drive.maxSpeed);
+
+  if (Math.abs(state.speed) > 0.01) {
+    const forward = frame.north.clone().multiplyScalar(Math.cos(state.heading))
+      .add(frame.east.clone().multiplyScalar(Math.sin(state.heading)));
+    state.position.addScaledVector(forward, state.speed * dt);
+    state.position.copy(projectToSurface(state.position, config, drive.carHover));
+  }
+
+  const nearest = getNearestStop(state.position, stops, config);
+  state.nearestStop = nearest.stop;
+  state.proximityWeight = nearest.weight;
+
+  if (nearest.stop && nearest.distance < nearest.stop.zoneRadius) {
+    state.visited.add(nearest.stop.index);
+  }
+
+  const tour = getTourProgress(state.visited, stops);
+  state.tourIndex = tour.tourIndex;
+  state.tourComplete = tour.tourComplete;
+
+  orientToSurface(car, state.position, state.heading, config);
+
+  const carFrame = getSurfaceFrame(state.position, config);
+  const carForward = carFrame.north.clone().multiplyScalar(Math.cos(state.heading))
+    .add(carFrame.east.clone().multiplyScalar(Math.sin(state.heading)))
+    .normalize();
+
+  const WORLD_UP = new THREE.Vector3(0, 1, 0);
+  const horizontalForward = carForward.clone().projectOnPlane(WORLD_UP);
+  if (horizontalForward.lengthSq() < 1e-6) {
+    horizontalForward.copy(carFrame.east).projectOnPlane(WORLD_UP).normalize();
+  } else {
+    horizontalForward.normalize();
+  }
+
+  const camBack = horizontalForward.clone().multiplyScalar(-drive.cameraDistance);
+  const camTarget = state.position.clone()
+    .add(camBack)
+    .add(WORLD_UP.clone().multiplyScalar(drive.cameraHeight));
+
+  const camRight = new THREE.Vector3().crossVectors(WORLD_UP, horizontalForward).normalize();
+  const yawOff = state.camYawOffset || 0;
+  camTarget.add(camRight.clone().multiplyScalar(Math.sin(yawOff) * 2));
+
+  const lag = 1 - Math.exp(-drive.cameraLag * dt);
+  camera.position.lerp(camTarget, lag);
+
+  const lookAhead = horizontalForward.clone().multiplyScalar(4);
+  const lookAt = state.position.clone().add(lookAhead);
+  lookAt.y += Math.sin(state.camPitch) * 2;
+  camera.up.copy(WORLD_UP);
+  camera.lookAt(lookAt);
+
+  return state;
+}
+
+function createDesktopDrive({ domElement, camera, renderer, config, car, stops, getHoveredLink }) {
+  const state = createDriveState(stops, config);
   const keys = new Set();
   const hint = document.getElementById('desktop-hint');
+  let pointerLocked = false;
   let lockFrame = 0;
-
-  domElement.addEventListener('click', () => {
-    if (!controls.isLocked) {
-      controls.lock();
-      lockFrame = 2;
-    }
-  });
-
-  function onLinkClick() {
-    if (!controls.isLocked || lockFrame > 0) return;
-    const link = getHoveredLink();
-    if (link) {
-      controls.unlock();
-      window.open(link.url, '_blank');
-    }
-  }
-  document.addEventListener('mousedown', onLinkClick);
-
-  controls.addEventListener('lock', () => {
-    if (hint) hint.classList.add('hidden');
-  });
-  controls.addEventListener('unlock', () => {
-    if (hint) hint.classList.remove('hidden');
-  });
 
   function onKeyDown(e) { keys.add(e.code); }
   function onKeyUp(e) { keys.delete(e.code); }
   document.addEventListener('keydown', onKeyDown);
   document.addEventListener('keyup', onKeyUp);
 
+  domElement.addEventListener('click', () => {
+    if (!pointerLocked) {
+      renderer.domElement.requestPointerLock();
+    }
+  });
+
+  document.addEventListener('pointerlockchange', () => {
+    pointerLocked = document.pointerLockElement === renderer.domElement;
+    if (hint) hint.classList.toggle('hidden', pointerLocked);
+  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!pointerLocked) return;
+    state.camYawOffset -= e.movementX * config.movement.lookSensitivity;
+    state.camPitch = clamp(state.camPitch - e.movementY * config.movement.lookSensitivity, -0.4, 0.6);
+  });
+
+  document.addEventListener('mousedown', (e) => {
+    if (!pointerLocked || lockFrame > 0) return;
+    const link = getHoveredLink?.();
+    if (link) {
+      document.exitPointerLock();
+      window.open(link.url, '_blank');
+    }
+  });
+
+  function getInput() {
+    const throttle = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0)
+      - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0);
+    const steer = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0)
+      - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0);
+    const brake = keys.has('Space') ? 1 : 0;
+    return { throttle, steer, brake };
+  }
+
   function update(dt) {
     if (lockFrame > 0) lockFrame--;
-    if (!controls.isLocked) return;
+    updateDrivePhysics(state, getInput(), car, camera, dt, config, stops);
+  }
 
-    const forward = (keys.has('KeyW') || keys.has('ArrowUp') ? 1 : 0)
-                  - (keys.has('KeyS') || keys.has('ArrowDown') ? 1 : 0);
-    const strafe = (keys.has('KeyD') || keys.has('ArrowRight') ? 1 : 0)
-                 - (keys.has('KeyA') || keys.has('ArrowLeft') ? 1 : 0);
-
-    if (forward) controls.moveForward(forward * speed * dt);
-    if (strafe) controls.moveRight(strafe * speed * dt);
+  function getDriveState() {
+    const { lat, lon } = vec3ToLatLon(state.position);
+    const tour = getTourProgress(state.visited, stops);
+    return {
+      position: { x: state.position.x, y: state.position.y, z: state.position.z },
+      lat,
+      lon,
+      heading: state.heading,
+      speed: state.speed,
+      nearestStop: state.nearestStop,
+      proximityWeight: state.proximityWeight,
+      tourIndex: tour.tourIndex,
+      tourComplete: tour.tourComplete,
+      nextStop: tour.nextStop,
+      visited: state.visited,
+    };
   }
 
   function dispose() {
-    document.removeEventListener('mousedown', onLinkClick);
     document.removeEventListener('keydown', onKeyDown);
     document.removeEventListener('keyup', onKeyUp);
-    controls.dispose();
   }
 
-  return { update, dispose };
+  return { update, getDriveState, dispose };
 }
 
-// ─── Mobile ───────────────────────────────────────────────
-
-function createMobileInput(domElement, camera, speed, sensitivity, getHoveredLink) {
+function createMobileDrive({ domElement, camera, config, car, stops, getHoveredLink }) {
+  const state = createDriveState(stops, config);
   const infoModal = document.getElementById('controls-info');
   const dismissBtn = document.getElementById('controls-info-dismiss');
-  const stickEl = document.getElementById('move-stick');
-  const knobEl = document.getElementById('move-stick-knob');
-  const lookEl = document.getElementById('look-pad');
-
   if (localStorage.getItem('gallery-controls-seen')) {
     infoModal?.classList.add('hidden');
   }
@@ -87,54 +203,31 @@ function createMobileInput(domElement, camera, speed, sensitivity, getHoveredLin
     infoModal?.classList.add('hidden');
     localStorage.setItem('gallery-controls-seen', '1');
   });
-
-  const stickState = { x: 0, z: 0, touchId: null };
+  const stickEl = document.getElementById('move-stick');
+  const knobEl = document.getElementById('move-stick-knob');
+  const lookEl = document.getElementById('look-pad');
+  const stickState = { x: 0, y: 0, touchId: null };
   const lookState = { lastX: 0, lastY: 0, touchId: null };
   const stickRadius = 50;
   const deadZone = 0.15;
-
-  // Tap detection for link clicks
-  let tapStart = null;
-  const TAP_THRESHOLD = 10;
 
   function getStickCenter() {
     const r = stickEl.getBoundingClientRect();
     return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
   }
 
-  stickEl.addEventListener('touchstart', (e) => {
+  stickEl?.addEventListener('touchstart', (e) => {
     e.preventDefault();
     stickState.touchId = e.changedTouches[0].identifier;
   }, { passive: false });
 
-  lookEl.addEventListener('touchstart', (e) => {
+  lookEl?.addEventListener('touchstart', (e) => {
     e.preventDefault();
     const t = e.changedTouches[0];
     lookState.touchId = t.identifier;
     lookState.lastX = t.clientX;
     lookState.lastY = t.clientY;
   }, { passive: false });
-
-  // Tap on canvas for link clicks
-  domElement.addEventListener('touchstart', (e) => {
-    if (e.target === domElement || e.target.tagName === 'CANVAS') {
-      tapStart = { x: e.changedTouches[0].clientX, y: e.changedTouches[0].clientY, time: Date.now() };
-    }
-  }, { passive: true });
-
-  domElement.addEventListener('touchend', (e) => {
-    if (!tapStart) return;
-    const t = e.changedTouches[0];
-    const dx = t.clientX - tapStart.x;
-    const dy = t.clientY - tapStart.y;
-    const elapsed = Date.now() - tapStart.time;
-    tapStart = null;
-
-    if (Math.sqrt(dx * dx + dy * dy) < TAP_THRESHOLD && elapsed < 300) {
-      const link = getHoveredLink();
-      if (link) window.open(link.url, '_blank');
-    }
-  }, { passive: true });
 
   document.addEventListener('touchmove', (e) => {
     for (const t of e.changedTouches) {
@@ -148,55 +241,68 @@ function createMobileInput(domElement, camera, speed, sensitivity, getHoveredLin
         const angle = Math.atan2(dy, dx);
         dx = Math.cos(angle) * clamped;
         dy = Math.sin(angle) * clamped;
-
-        knobEl.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
+        if (knobEl) knobEl.style.transform = `translate(calc(-50% + ${dx}px), calc(-50% + ${dy}px))`;
         const norm = clamped / stickRadius;
-        stickState.x = norm > deadZone ? (dx / stickRadius) : 0;
-        stickState.z = norm > deadZone ? (dy / stickRadius) : 0;
+        stickState.x = norm > deadZone ? dx / stickRadius : 0;
+        stickState.y = norm > deadZone ? -dy / stickRadius : 0;
       }
-
       if (t.identifier === lookState.touchId) {
         e.preventDefault();
         const dx = t.clientX - lookState.lastX;
         const dy = t.clientY - lookState.lastY;
         lookState.lastX = t.clientX;
         lookState.lastY = t.clientY;
-        camera.rotation.y -= dx * sensitivity * 3;
-        camera.rotation.x = clamp(camera.rotation.x - dy * sensitivity * 3, -Math.PI / 3, Math.PI / 3);
+        state.camYawOffset -= dx * config.movement.lookSensitivity * 3;
+        state.camPitch = clamp(state.camPitch - dy * config.movement.lookSensitivity * 3, -0.4, 0.6);
       }
     }
   }, { passive: false });
 
-  function resetStick(e) {
+  function resetTouch(e) {
     for (const t of e.changedTouches) {
       if (t.identifier === stickState.touchId) {
         stickState.touchId = null;
         stickState.x = 0;
-        stickState.z = 0;
-        knobEl.style.transform = 'translate(-50%, -50%)';
+        stickState.y = 0;
+        if (knobEl) knobEl.style.transform = 'translate(-50%, -50%)';
       }
-      if (t.identifier === lookState.touchId) {
-        lookState.touchId = null;
-      }
+      if (t.identifier === lookState.touchId) lookState.touchId = null;
     }
   }
+  document.addEventListener('touchend', resetTouch);
+  document.addEventListener('touchcancel', resetTouch);
 
-  document.addEventListener('touchend', resetStick);
-  document.addEventListener('touchcancel', resetStick);
+  domElement.addEventListener('touchend', (e) => {
+    const link = getHoveredLink?.();
+    if (link) window.open(link.url, '_blank');
+  }, { passive: true });
 
   function update(dt) {
-    if (stickState.x === 0 && stickState.z === 0) return;
-    const yaw = camera.rotation.y;
-    const sin = Math.sin(yaw);
-    const cos = Math.cos(yaw);
-    camera.position.x += (-stickState.z * sin + stickState.x * cos) * speed * dt;
-    camera.position.z += (-stickState.z * cos - stickState.x * sin) * speed * dt;
+    const input = {
+      throttle: stickState.y,
+      steer: stickState.x,
+      brake: 0,
+    };
+    updateDrivePhysics(state, input, car, camera, dt, config, stops);
   }
 
-  function dispose() {
-    document.removeEventListener('touchend', resetStick);
-    document.removeEventListener('touchcancel', resetStick);
+  function getDriveState() {
+    const { lat, lon } = vec3ToLatLon(state.position);
+    const tour = getTourProgress(state.visited, stops);
+    return {
+      position: { x: state.position.x, y: state.position.y, z: state.position.z },
+      lat,
+      lon,
+      heading: state.heading,
+      speed: state.speed,
+      nearestStop: state.nearestStop,
+      proximityWeight: state.proximityWeight,
+      tourIndex: tour.tourIndex,
+      tourComplete: tour.tourComplete,
+      nextStop: tour.nextStop,
+      visited: state.visited,
+    };
   }
 
-  return { update, dispose };
+  return { update, getDriveState, dispose: () => {} };
 }

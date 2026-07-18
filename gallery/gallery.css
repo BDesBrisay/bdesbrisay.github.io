@@ -47,6 +47,285 @@ html, body {
   text-shadow: 0 0 10px rgba(255, 255, 255, 0.6);
 }
 
+/* ---------- Intro ---------- */
+
+.intro-screen {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(10, 10, 18, 0.92);
+  z-index: 200;
+  padding: 32px;
+  text-align: center;
+}
+
+.intro-screen.hidden {
+  display: none !important;
+}
+
+#intro-title .intro-photo {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #026cff;
+  margin-bottom: 20px;
+}
+
+#intro-title h1 {
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.intro-tagline {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  margin-bottom: 16px;
+}
+
+.intro-copy {
+  max-width: 480px;
+  opacity: 0.75;
+  line-height: 1.5;
+  margin-bottom: 12px;
+}
+
+.intro-controls {
+  font-size: 0.9rem;
+  opacity: 0.6;
+  margin-bottom: 24px;
+}
+
+.intro-start {
+  font-size: 0.95rem;
+  opacity: 0.5;
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.8; }
+}
+
+#intro-tutorial h2 {
+  margin-bottom: 20px;
+}
+
+#intro-tutorial p {
+  margin-bottom: 10px;
+  opacity: 0.85;
+}
+
+#intro-tutorial-dismiss {
+  margin-top: 24px;
+  padding: 10px 32px;
+  background: #026cff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+/* ---------- Navigation HUD ---------- */
+
+#nav-minimap {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  z-index: 15;
+  pointer-events: none;
+}
+
+#nav-minimap.hidden {
+  display: none;
+}
+
+#nav-compass {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 12;
+  pointer-events: none;
+}
+
+#nav-compass.hidden {
+  display: none;
+}
+
+.compass-arrow {
+  font-size: 22px;
+  color: #026cff;
+  transition: transform 0.1s linear;
+}
+
+/* ---------- Drive overlay ---------- */
+
+#drive-overlay {
+  position: fixed;
+  top: 24px;
+  left: 24px;
+  right: auto;
+  max-width: 480px;
+  max-height: 32vh;
+  overflow-y: auto;
+  background: rgba(15, 15, 22, 0.82);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--accent, #026cff);
+  border-radius: 14px;
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  transition: opacity 0.15s ease;
+}
+
+.overlay-inner {
+  display: flex;
+  gap: 16px;
+  padding: 18px;
+}
+
+.overlay-img {
+  width: 72px;
+  height: 72px;
+  border-radius: 10px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.overlay-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.overlay-title {
+  font-size: 1.2rem;
+  margin-bottom: 4px;
+}
+
+.overlay-position {
+  font-size: 0.95rem;
+  opacity: 0.9;
+}
+
+.overlay-location,
+.overlay-dates {
+  font-size: 0.85rem;
+  opacity: 0.65;
+  margin-top: 2px;
+}
+
+.overlay-desc {
+  font-size: 0.85rem;
+  line-height: 1.45;
+  opacity: 0.8;
+  margin-top: 10px;
+}
+
+.overlay-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.overlay-tag {
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.overlay-tag.muted {
+  opacity: 0.5;
+}
+
+.overlay-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.overlay-link {
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  color: #f4f6f8;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.overlay-link:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+/* ---------- Easter egg toast ---------- */
+
+#egg-toast {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  max-width: 320px;
+  padding: 16px 20px;
+  background: rgba(20, 20, 30, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 18;
+  transition: opacity 0.2s;
+}
+
+#egg-toast.visible {
+  pointer-events: auto;
+}
+
+#egg-toast strong {
+  display: block;
+  margin-bottom: 6px;
+}
+
+#egg-toast p {
+  font-size: 0.9rem;
+  opacity: 0.8;
+  line-height: 1.4;
+}
+
+.egg-link {
+  margin-top: 10px;
+  padding: 6px 18px;
+  background: #026cff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
 /* ---------- Desktop hint ---------- */
 
 #desktop-hint {
@@ -75,7 +354,6 @@ html, body {
   display: none;
 }
 
-/* Show mobile UI only on coarse-pointer narrow screens */
 @media (pointer: coarse) and (max-width: 900px) {
   #mobile-ui {
     display: block;
@@ -83,16 +361,26 @@ html, body {
   #desktop-hint {
     display: none;
   }
+  #nav-minimap {
+    width: 100px;
+    height: 100px;
+    top: 12px;
+    right: 12px;
+  }
+  #drive-overlay {
+    left: 12px;
+    right: auto;
+    top: 12px;
+    bottom: auto;
+    max-height: 35vh;
+  }
 }
 
-/* Hide mobile UI on precise-pointer devices */
 @media (hover: hover) and (pointer: fine) {
   #mobile-ui, #mobile-ui * {
     display: none !important;
   }
 }
-
-/* --- Info modal --- */
 
 #controls-info {
   position: fixed;
@@ -136,8 +424,6 @@ html, body {
   display: none !important;
 }
 
-/* --- Joystick (move stick) --- */
-
 #move-stick {
   position: fixed;
   bottom: 32px;
@@ -162,8 +448,6 @@ html, body {
   transform: translate(-50%, -50%);
   pointer-events: none;
 }
-
-/* --- Look pad --- */
 
 #look-pad {
   position: fixed;

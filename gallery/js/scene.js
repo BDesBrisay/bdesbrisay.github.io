@@ -1,134 +1,316 @@
 import * as THREE from 'three';
-import { createInfoTexture, createLinksTexture } from './poster.js';
-import { clamp, darken } from './utils.js';
+import { darken } from './utils.js';
+import {
+  getSurfaceFrame,
+  orientToSurface,
+  sampleTourPathPoints,
+  surfacePosition,
+} from './planet.js';
+import {
+  displaceSphereGeometry,
+  applyZoneTints,
+  buildLakeMesh,
+  setRoadFlatten,
+} from './terrain.js';
+import { buildLandmark, buildZoneRing, buildLandmarkArch, buildEasterEggMarker } from './landmarks.js';
 
-function createFrameGroup(texture, config) {
-  const { width: fw, height: fh, depth: fd } = config.poster;
-  const group = new THREE.Group();
+const _tmpFwd = new THREE.Vector3();
+const _tmpUp = new THREE.Vector3();
+const _tmpRight = new THREE.Vector3();
+const _tmpLeft = new THREE.Vector3();
+const _tmpRgt = new THREE.Vector3();
+const _tmpToCar = new THREE.Vector3();
 
-  const shadowGeo = new THREE.PlaneGeometry(fw + 0.16, fh + 0.16);
-  const shadowMat = new THREE.MeshBasicMaterial({ color: 0x0d0d0d });
-  const shadow = new THREE.Mesh(shadowGeo, shadowMat);
-  shadow.position.z = -0.005;
-  group.add(shadow);
-
-  const frameGeo = new THREE.BoxGeometry(fw + 0.12, fh + 0.12, fd);
-  const frameMat = new THREE.MeshStandardMaterial({ color: 0x1f1f1f, metalness: 0.2, roughness: 0.6 });
-  group.add(new THREE.Mesh(frameGeo, frameMat));
-
-  const matGeo = new THREE.PlaneGeometry(fw + 0.04, fh + 0.04);
-  const matMat = new THREE.MeshStandardMaterial({ color: 0xd9d9d9 });
-  const mat = new THREE.Mesh(matGeo, matMat);
-  mat.position.z = fd * 0.51;
-  group.add(mat);
-
-  const artGeo = new THREE.PlaneGeometry(fw, fh);
-  const artMat = new THREE.MeshStandardMaterial({ map: texture });
-  const art = new THREE.Mesh(artGeo, artMat);
-  art.position.z = fd * 0.52;
-  group.add(art);
-
-  return { group, artworkMesh: art };
+function roadMaterial(color, config) {
+  return new THREE.MeshStandardMaterial({
+    color,
+    roughness: 0.65,
+    metalness: 0.08,
+    polygonOffset: true,
+    polygonOffsetFactor: -1,
+    polygonOffsetUnits: -1,
+  });
 }
 
-function buildCorridor(scene, corridorDepth, config) {
-  const { width: rw, height: rh } = config.room;
-  const totalLen = corridorDepth + rw;
-  const centerZ = corridorDepth / 2;
+function buildRibbonMesh(points, halfW, material) {
+  if (points.length < 2) return null;
 
-  const floorMat = new THREE.MeshStandardMaterial({ color: '#567' });
-  const floorGeo = new THREE.PlaneGeometry(rw, totalLen);
-  const floor = new THREE.Mesh(floorGeo, floorMat);
-  floor.rotation.x = -Math.PI / 2;
-  floor.position.set(0, 0, centerZ);
-  scene.add(floor);
+  const vertices = [];
+  const indices = [];
 
-  const ceilMat = new THREE.MeshStandardMaterial({ color: '#234' });
-  const ceilGeo = new THREE.PlaneGeometry(rw, totalLen);
-  const ceil = new THREE.Mesh(ceilGeo, ceilMat);
-  ceil.rotation.x = Math.PI / 2;
-  ceil.position.set(0, rh, centerZ);
-  scene.add(ceil);
+  for (let i = 0; i < points.length; i++) {
+    const p = points[i];
+    _tmpUp.copy(p).normalize();
 
-  const wallMat = new THREE.MeshStandardMaterial({ color: '#345' });
-  const wallGeo = new THREE.BoxGeometry(0.2, rh, totalLen);
-  const leftWall = new THREE.Mesh(wallGeo, wallMat);
-  leftWall.position.set(-rw / 2, rh / 2, centerZ);
-  scene.add(leftWall);
+    if (i < points.length - 1) {
+      _tmpFwd.copy(points[i + 1]).sub(p).normalize();
+    } else {
+      _tmpFwd.copy(p).sub(points[i - 1]).normalize();
+    }
+    _tmpRight.crossVectors(_tmpFwd, _tmpUp).normalize();
 
-  const rightWall = new THREE.Mesh(wallGeo, wallMat);
-  rightWall.position.set(rw / 2, rh / 2, centerZ);
-  scene.add(rightWall);
+    _tmpLeft.copy(p).addScaledVector(_tmpRight, -halfW);
+    _tmpRgt.copy(p).addScaledVector(_tmpRight, halfW);
+    vertices.push(_tmpLeft.x, _tmpLeft.y, _tmpLeft.z, _tmpRgt.x, _tmpRgt.y, _tmpRgt.z);
+  }
 
-  const capGeo = new THREE.BoxGeometry(rw, rh, 0.2);
-  const backWall = new THREE.Mesh(capGeo, wallMat);
-  backWall.position.set(0, rh / 2, -rw / 2);
-  scene.add(backWall);
+  for (let i = 0; i < points.length - 1; i++) {
+    const a = i * 2;
+    const b = i * 2 + 1;
+    const c = (i + 1) * 2;
+    const d = (i + 1) * 2 + 1;
+    indices.push(a, c, b, b, c, d);
+  }
 
-  const endWall = new THREE.Mesh(capGeo, wallMat);
-  endWall.position.set(0, rh / 2, corridorDepth + rw / 2);
-  scene.add(endWall);
+  const geo = new THREE.BufferGeometry();
+  geo.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+  geo.setIndex(indices);
+  geo.computeVertexNormals();
 
-  return { floorMat, ceilMat, wallMat };
+  const mesh = new THREE.Mesh(geo, material);
+  mesh.renderOrder = 1;
+  return mesh;
 }
 
-function addLighting(scene, rooms, config) {
-  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+function offsetPathPoints(basePoints, lateralOffset, raiseExtra = 0) {
+  const out = [];
 
-  const halfW = config.room.width / 2;
-  for (const room of rooms) {
-    const zMid = (room.zStart + room.zEnd) / 2;
-    const leftLight = new THREE.PointLight(0xfff5e6, 1.2, 18);
-    leftLight.position.set((-halfW + 0.1) * 0.5, config.room.height - 0.3, zMid);
-    scene.add(leftLight);
+  for (let i = 0; i < basePoints.length; i++) {
+    const p = basePoints[i];
+    _tmpUp.copy(p).normalize();
 
-    const rightLight = new THREE.PointLight(0xfff5e6, 1.2, 18);
-    rightLight.position.set((halfW - 0.1) * 0.5, config.room.height - 0.3, zMid);
-    scene.add(rightLight);
+    if (i < basePoints.length - 1) {
+      _tmpFwd.copy(basePoints[i + 1]).sub(p).normalize();
+    } else {
+      _tmpFwd.copy(p).sub(basePoints[i - 1]).normalize();
+    }
+    _tmpRight.crossVectors(_tmpFwd, _tmpUp).normalize();
+
+    const offset = p.clone().addScaledVector(_tmpRight, lateralOffset);
+    if (raiseExtra !== 0) {
+      offset.addScaledVector(_tmpUp, raiseExtra);
+    }
+    out.push(offset);
+  }
+  return out;
+}
+
+function buildCenterDashes(scene, basePoints, config) {
+  const { planet } = config;
+  const dashLen = 1.2;
+  const gapLen = 0.8;
+  const halfW = 0.06;
+  const mat = roadMaterial(planet.roadCenterColor, config);
+  let acc = 0;
+  let drawing = true;
+
+  for (let i = 0; i < basePoints.length - 1; i++) {
+    const a = basePoints[i];
+    const b = basePoints[i + 1];
+    const segLen = a.distanceTo(b);
+    let t = 0;
+
+    while (t < segLen) {
+      const chunk = drawing ? dashLen : gapLen;
+      const tEnd = Math.min(t + chunk, segLen);
+      if (drawing && tEnd - t > 0.05) {
+        const p0 = a.clone().lerp(b, t / segLen);
+        const p1 = a.clone().lerp(b, tEnd / segLen);
+        _tmpUp.copy(p0).normalize();
+        _tmpFwd.copy(p1).sub(p0).normalize();
+        if (_tmpFwd.lengthSq() > 1e-6) {
+          _tmpRight.crossVectors(_tmpFwd, _tmpUp).normalize();
+          p0.addScaledVector(_tmpUp, planet.roadRaise * 0.08);
+          p1.addScaledVector(_tmpUp, planet.roadRaise * 0.08);
+          const dash = buildRibbonMesh([p0, p1], halfW, mat);
+          if (dash) scene.add(dash);
+        }
+      }
+      t = tEnd;
+      drawing = !drawing;
+      acc += chunk;
+      if (acc > 500) break;
+    }
   }
 }
 
-async function mountPosters(scene, exhibits, rooms, config) {
-  const exhibitMap = new Map(exhibits.map(e => [e.id, e]));
-  const halfW = config.room.width / 2;
-  const infoLeft = config.poster.infoWall === 'left';
-  const linkMeshes = [];
+function buildSky(scene, config) {
+  const canvas = document.createElement('canvas');
+  canvas.width = 512;
+  canvas.height = 512;
+  const ctx = canvas.getContext('2d');
+  const grad = ctx.createLinearGradient(0, 0, 0, 512);
+  grad.addColorStop(0, config.sky.nebulaColors[0]);
+  grad.addColorStop(0.5, config.sky.nebulaColors[1]);
+  grad.addColorStop(1, config.sky.nebulaColors[2]);
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, 512, 512);
 
-  const jobs = rooms.map(async (room) => {
-    const exhibit = exhibitMap.get(room.exhibitId);
-    if (!exhibit) return;
+  const tex = new THREE.CanvasTexture(canvas);
+  scene.background = tex;
 
-    const zMid = (room.zStart + room.zEnd) / 2;
-
-    // Info poster
-    const infoTex = await createInfoTexture(exhibit);
-    const info = createFrameGroup(infoTex, config);
-    const infoX = infoLeft ? -halfW + 0.11 : halfW - 0.11;
-    const infoRotY = infoLeft ? Math.PI / 2 : -Math.PI / 2;
-    info.group.position.set(infoX, config.poster.centerY, zMid);
-    info.group.rotation.y = infoRotY;
-    scene.add(info.group);
-
-    // Links poster
-    const { texture: linksTex, linkZones } = createLinksTexture(exhibit);
-    const links = createFrameGroup(linksTex, config);
-    const linksX = infoLeft ? halfW - 0.11 : -halfW + 0.11;
-    const linksRotY = infoLeft ? -Math.PI / 2 : Math.PI / 2;
-    links.group.position.set(linksX, config.poster.centerY, zMid);
-    links.group.rotation.y = linksRotY;
-    scene.add(links.group);
-
-    if (linkZones.length) {
-      links.artworkMesh.userData = { linkZones, exhibitId: exhibit.id };
-      linkMeshes.push(links.artworkMesh);
-    }
+  const auroraGeo = new THREE.PlaneGeometry(200, 60);
+  const auroraMat = new THREE.MeshBasicMaterial({
+    color: 0x00ffaa,
+    transparent: true,
+    opacity: 0.15,
+    side: THREE.DoubleSide,
+    depthWrite: false,
   });
+  const aurora1 = new THREE.Mesh(auroraGeo, auroraMat);
+  aurora1.position.set(0, 80, -120);
+  aurora1.rotation.x = -0.3;
+  scene.add(aurora1);
 
-  await Promise.all(jobs);
-  return linkMeshes;
+  const aurora2 = aurora1.clone();
+  aurora2.material = auroraMat.clone();
+  aurora2.material.color.set('#aa00ff');
+  aurora2.material.opacity = 0.1;
+  aurora2.position.set(40, 60, -100);
+  aurora2.rotation.z = 0.4;
+  scene.add(aurora2);
+
+  return { aurora1, aurora2 };
 }
 
-export async function initScene(container, exhibits, rooms, corridorDepth, config) {
+function buildPlanetMesh(stops, config) {
+  const geo = new THREE.SphereGeometry(
+    config.planet.radius,
+    config.planet.segments,
+    config.planet.segments,
+  );
+  setRoadFlatten(stops, config);
+  displaceSphereGeometry(geo, config, stops);
+  applyZoneTints(geo, stops, config);
+
+  const mat = new THREE.MeshStandardMaterial({
+    vertexColors: true,
+    roughness: 0.85,
+    metalness: 0.05,
+    side: THREE.FrontSide,
+    flatShading: false,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.renderOrder = 0;
+  return mesh;
+}
+
+function buildSurfaceRoad(scene, stops, config) {
+  const basePoints = sampleTourPathPoints(stops, config, 12);
+  if (basePoints.length < 2) return;
+
+  const { planet } = config;
+  const halfW = planet.roadWidth / 2;
+  const shoulderOffset = halfW + 0.15;
+  const shoulderHalfW = 0.22;
+
+  const asphaltPoints = offsetPathPoints(basePoints, 0);
+  const asphalt = buildRibbonMesh(asphaltPoints, halfW, roadMaterial(planet.roadColor, config));
+  if (asphalt) scene.add(asphalt);
+
+  const leftShoulder = offsetPathPoints(basePoints, -shoulderOffset, -0.04);
+  const rightShoulder = offsetPathPoints(basePoints, shoulderOffset, -0.04);
+  const leftMesh = buildRibbonMesh(leftShoulder, shoulderHalfW, roadMaterial(planet.roadEdgeColor, config));
+  const rightMesh = buildRibbonMesh(rightShoulder, shoulderHalfW, roadMaterial(planet.roadEdgeColor, config));
+  if (leftMesh) scene.add(leftMesh);
+  if (rightMesh) scene.add(rightMesh);
+
+  buildCenterDashes(scene, basePoints, config);
+}
+
+export function buildCar(config) {
+  const car = new THREE.Group();
+  const bodyMat = new THREE.MeshStandardMaterial({ color: '#e74c3c', metalness: 0.4, roughness: 0.5 });
+  const trimMat = new THREE.MeshStandardMaterial({ color: '#2c3e50', metalness: 0.3, roughness: 0.6 });
+
+  const body = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.5, 2.2), bodyMat);
+  body.position.y = 0.45;
+  car.add(body);
+
+  const cabin = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.45, 1.2), trimMat);
+  cabin.position.set(0, 0.85, -0.1);
+  car.add(cabin);
+
+  const wheelGeo = new THREE.CylinderGeometry(0.22, 0.22, 0.15, 10);
+  const wheelMat = new THREE.MeshStandardMaterial({ color: '#111' });
+  const wheelPos = [
+    [-0.55, 0.22, 0.7], [0.55, 0.22, 0.7],
+    [-0.55, 0.22, -0.7], [0.55, 0.22, -0.7],
+  ];
+  for (const [x, y, z] of wheelPos) {
+    const w = new THREE.Mesh(wheelGeo, wheelMat);
+    w.rotation.z = Math.PI / 2;
+    w.position.set(x, y, z);
+    car.add(w);
+  }
+
+  return car;
+}
+
+function buildZoneLandmarks(scene, exhibits, stops, config) {
+  const exhibitMap = new Map(exhibits.map(e => [e.id, e]));
+  const landmarkGroups = [];
+
+  for (const stop of stops) {
+    const exhibit = exhibitMap.get(stop.exhibitId);
+    if (!exhibit) continue;
+
+    const pos = surfacePosition(stop.lat, stop.lon, config, 0.05);
+    const zoneGroup = new THREE.Group();
+
+    const ring = buildZoneRing(exhibit.colors, 2.2);
+    ring.rotation.x = Math.PI / 2;
+    zoneGroup.add(ring);
+
+    const arch = buildLandmarkArch(exhibit.title, exhibit.colors, config);
+    zoneGroup.add(arch);
+
+    const landmark = buildLandmark(stop.exhibitId, exhibit.colors);
+    landmark.scale.setScalar(0.85);
+    zoneGroup.add(landmark);
+
+    orientToSurface(zoneGroup, pos, stop.heading, config);
+    zoneGroup.userData.isLandmark = true;
+    scene.add(zoneGroup);
+    landmarkGroups.push(zoneGroup);
+  }
+
+  return landmarkGroups;
+}
+
+function buildEasterEggs(scene, eggs, config) {
+  for (const egg of eggs) {
+    const pos = surfacePosition(egg.lat, egg.lon, config, 0.05);
+    const marker = buildEasterEggMarker(egg);
+    orientToSurface(marker, pos, 0, config);
+    scene.add(marker);
+  }
+}
+
+function updateLandmarkBillboards(landmarkGroups, carPosition, config) {
+  if (!carPosition || !landmarkGroups?.length) return;
+
+  const carPos = new THREE.Vector3(carPosition.x, carPosition.y, carPosition.z);
+
+  for (const group of landmarkGroups) {
+    const frame = getSurfaceFrame(group.position, config);
+    _tmpToCar.copy(carPos).sub(group.position).projectOnPlane(frame.normal);
+    if (_tmpToCar.lengthSq() < 0.01) continue;
+
+    const heading = Math.atan2(_tmpToCar.dot(frame.east), _tmpToCar.dot(frame.north));
+    orientToSurface(group, group.position, heading, config);
+  }
+}
+
+function addPlanetLighting(scene) {
+  scene.add(new THREE.AmbientLight(0xffffff, 0.45));
+  scene.add(new THREE.HemisphereLight(0x88aaff, 0x334422, 0.35));
+  const sun = new THREE.DirectionalLight(0xfff5e0, 1.1);
+  sun.position.set(60, 40, 30);
+  scene.add(sun);
+}
+
+export async function initScene(container, exhibits, stops, eggs, config, getDriveState) {
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(container.clientWidth, container.clientHeight);
@@ -136,35 +318,37 @@ export async function initScene(container, exhibits, rooms, corridorDepth, confi
   container.appendChild(renderer.domElement);
 
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color(0x141414);
+  const fogDensity = config.planet.fogDensity ?? 0.005;
+  scene.fog = new THREE.FogExp2(0x0d0b18, fogDensity);
+  const sky = buildSky(scene, config);
 
-  const camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 200);
-  camera.position.set(config.spawn.x, config.spawn.y, config.spawn.z);
-  camera.rotation.order = 'YXZ';
-  camera.rotation.y = config.spawn.yaw;
+  const planet = buildPlanetMesh(stops, config);
+  scene.add(planet);
 
-  const roomMats = buildCorridor(scene, corridorDepth, config);
-  addLighting(scene, rooms, config);
-  const linkMeshes = await mountPosters(scene, exhibits, rooms, config);
+  const lake = buildLakeMesh(config);
+  scene.add(lake);
 
-  // Raycaster for link hover
-  const raycaster = new THREE.Raycaster();
-  raycaster.far = 12;
-  const screenCenter = new THREE.Vector2(0, 0);
-  let hoveredLink = null;
-  const crosshairEl = document.getElementById('crosshair');
+  buildSurfaceRoad(scene, stops, config);
+  const landmarkGroups = buildZoneLandmarks(scene, exhibits, stops, config);
+  buildEasterEggs(scene, eggs, config);
+  addPlanetLighting(scene);
 
-  const halfW = config.room.width / 2;
-  const minX = -halfW + 0.5;
-  const maxX = halfW - 0.5;
-  const minZ = 0.5;
-  const maxZ = corridorDepth - 0.5;
+  const car = buildCar(config);
+  scene.add(car);
 
-  const segLen = config.room.segmentLength;
-  const targetFloorColor = new THREE.Color();
-  const targetCeilColor = new THREE.Color();
-  const targetWallColor = new THREE.Color();
+  const camera = new THREE.PerspectiveCamera(
+    70,
+    container.clientWidth / container.clientHeight,
+    0.1,
+    600,
+  );
+
+  const first = stops[0];
+  const startPos = surfacePosition(first.lat, first.lon, config, config.drive.carHover);
+  orientToSurface(car, startPos, first.heading, config);
+
   const targetBgColor = new THREE.Color();
+  let auroraPhase = 0;
 
   window.addEventListener('resize', () => {
     camera.aspect = container.clientWidth / container.clientHeight;
@@ -173,55 +357,28 @@ export async function initScene(container, exhibits, rooms, corridorDepth, confi
   });
 
   function update(cam, dt) {
-    // Collision
-    cam.position.x = clamp(cam.position.x, minX, maxX);
-    cam.position.z = clamp(cam.position.z, minZ, maxZ);
-    cam.position.y = config.spawn.y;
-
-    // Zone color lerp
-    const zoneIdx = clamp(Math.floor(cam.position.z / segLen), 0, rooms.length - 1);
-    const zoneColors = rooms[zoneIdx].colors;
-    const bg = zoneColors.background;
-    targetFloorColor.set(darken(bg, 0.35));
-    targetCeilColor.set(darken(bg, 0.25));
-    targetWallColor.set(darken(bg, 0.2));
-    targetBgColor.set(darken(bg, 0.55));
-
-    const t = 1 - Math.exp(-3 * dt);
-    roomMats.floorMat.color.lerp(targetFloorColor, t);
-    roomMats.ceilMat.color.lerp(targetCeilColor, t);
-    roomMats.wallMat.color.lerp(targetWallColor, t);
-    scene.background.lerp(targetBgColor, t);
-
-    // Raycast for link hover
-    raycaster.setFromCamera(screenCenter, cam);
-    const hits = raycaster.intersectObjects(linkMeshes);
-    hoveredLink = null;
-
-    if (hits.length > 0) {
-      const hit = hits[0];
-      const uv = hit.uv;
-      if (uv) {
-        const zones = hit.object.userData.linkZones;
-        for (const zone of zones) {
-          if (uv.y >= zone.uvY1 && uv.y <= zone.uvY2) {
-            hoveredLink = { label: zone.label, url: zone.url };
-            break;
-          }
-        }
-      }
+    const drive = getDriveState();
+    auroraPhase += dt * 0.15;
+    if (sky.aurora1) {
+      sky.aurora1.material.opacity = 0.12 + Math.sin(auroraPhase) * 0.04;
+      sky.aurora2.material.opacity = 0.08 + Math.cos(auroraPhase * 0.7) * 0.03;
     }
 
-    if (crosshairEl) {
-      crosshairEl.classList.toggle('active', !!hoveredLink);
+    if (drive?.position) {
+      updateLandmarkBillboards(landmarkGroups, drive.position, config);
+    }
+
+    if (drive?.nearestStop?.colors) {
+      const bg = darken(drive.nearestStop.colors.background, 0.55);
+      targetBgColor.set(bg);
+      const t = 1 - Math.exp(-2 * dt);
+      if (scene.fog) {
+        scene.fog.color.lerp(targetBgColor, t);
+      }
     }
 
     renderer.render(scene, cam);
   }
 
-  function getHoveredLink() {
-    return hoveredLink;
-  }
-
-  return { camera, renderer, update, getHoveredLink };
+  return { camera, renderer, scene, car, update };
 }

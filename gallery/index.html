@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover, user-scalable=no">
     <meta name="theme-color" content="#141414">
-    <title>Bryce DesBrisay — Gallery</title>
+    <title>Bryce DesBrisay — Planet Bryce</title>
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico" />
     <link rel="stylesheet" href="./gallery.css">
     <script type="importmap">
@@ -20,12 +20,41 @@
     <div id="canvas-container"></div>
     <div id="crosshair">+</div>
 
+    <div id="intro-title" class="intro-screen">
+      <img class="intro-photo" src="" alt="Bryce DesBrisay" />
+      <h1>Bryce DesBrisay</h1>
+      <p class="intro-tagline">Fullstack Developer &amp; Designer</p>
+      <p class="intro-copy">Drive around Planet Bryce to explore my résumé — each landmark is a chapter of my work.</p>
+      <p class="intro-controls">WASD drive &middot; Mouse look &middot; Drive over areas to reveal details</p>
+      <p class="intro-start">Click or press any key to start</p>
+    </div>
+
+    <div id="intro-tutorial" class="intro-screen hidden">
+      <h2>Welcome to Planet Bryce</h2>
+      <p><strong>W / S</strong> &mdash; accelerate &amp; brake</p>
+      <p><strong>A / D</strong> &mdash; steer</p>
+      <p><strong>Mouse</strong> &mdash; look around while driving</p>
+      <p>Follow the <strong>road</strong>, <strong>compass</strong>, and <strong>minimap</strong> to tour career stops.</p>
+      <p>Drive off-road to find hidden surprises.</p>
+      <button id="intro-tutorial-dismiss" type="button">Got it</button>
+    </div>
+
+    <canvas id="nav-minimap" width="140" height="140"></canvas>
+
+    <div id="nav-compass">
+      <div class="compass-arrow">&#x25B2;</div>
+    </div>
+
+    <div id="drive-overlay"></div>
+
+    <div id="egg-toast"></div>
+
     <div id="mobile-ui">
       <div id="controls-info">
         <h2>Controls</h2>
-        <p>Left stick &mdash; move</p>
+        <p>Left stick &mdash; drive</p>
         <p>Right pad &mdash; look around</p>
-        <p>Tap a link to open it</p>
+        <p>Tap links in the overlay</p>
         <button id="controls-info-dismiss">Got it</button>
       </div>
       <div id="move-stick">
@@ -36,7 +65,7 @@
       </div>
     </div>
 
-    <p id="desktop-hint">Click to look around &middot; WASD or arrow keys to move &middot; Click links on the wall</p>
+    <p id="desktop-hint">Click to look &middot; WASD drive &middot; Drive over areas to explore résumé</p>
 
     <script src="../PROJECTS.js"></script>
     <script type="module" src="./js/main.js"></script>
