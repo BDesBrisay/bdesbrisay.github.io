@@ -21,6 +21,8 @@ const PROFILE = {
   contactUrl: ''
 }
 
+window.PROFILE = PROFILE;
+
 const PROFILE_V2 = {
   id: 'profile',
   image: './images/bryceProfile.jpg',
@@ -47,3 +49,5 @@ const PROFILE_V2 = {
     }
   ]
 }
+
+window.PROFILE_V2 = PROFILE_V2;

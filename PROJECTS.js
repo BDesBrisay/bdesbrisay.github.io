@@ -428,3 +428,5 @@ const PROJECTS = [
     },
   },
 ];
+
+window.PROJECTS = PROJECTS;
