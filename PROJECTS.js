@@ -183,7 +183,6 @@ const PROJECTS = [
       },
     ],
     colors: {
-      // background: '#1abc9c',
       background: "#4a90e2",
       primary: "#e7596a",
     },
@@ -237,7 +236,7 @@ const PROJECTS = [
       { title: "Web Application", type: "Skill" },
       { title: "JavaScript, HTML, CSS", type: "Language" },
       { title: "CSS Modules", type: "Technology" },
-      { title: "UI/UX", type: "SKill" },
+      { title: "UI/UX", type: "Skill" },
       { title: "Graphic Design", type: "Skill" },
       { title: "SPA", type: "Technology" },
       { title: "Frontend", type: "Skill" },
@@ -428,3 +427,5 @@ const PROJECTS = [
     },
   },
 ];
+
+window.PROJECTS = PROJECTS;
