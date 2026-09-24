@@ -60,10 +60,9 @@
     .job { opacity:1; transform:none; transition:none; }
   }
   .job-date { font-size:13px; color:var(--muted); white-space:nowrap; padding-top:4px; }
-  .job-main { }
   h3.job-title { font-weight:600; font-size:18px; line-height:1.3; margin:0; }
   .job-company { font-weight:600; font-size:16px; margin-left:8px; color:var(--text); }
-  .job-dates { font-size:13px; color:var(--muted); margin-left:8px; }
+
   .job-desc { font-size:15px; color:#333; margin-top:8px; line-height:1.7; }
   .job-tags { margin-top:10px; display:flex; flex-wrap:wrap; gap:6px; }
   .tag { font-size:11px; background:#f3f3f3; color:#444; padding:3px 10px; border-radius:999px; }
@@ -86,7 +85,7 @@
 <div class="page" id="app"></div>
 <div class="no-print">
   <div style="max-width:820px;margin:0 auto;padding:0 32px 40px;">
-    <button class="print" onclick="window.print()" aria-label="Print or save page as PDF">Print / Save PDF</button>
+    <button class="print" type="button" onclick="window.print()" aria-label="Print or save page as PDF">Print / Save PDF</button>
   </div>
 </div>
 <script>
@@ -97,7 +96,7 @@
 
   const header = document.createElement('header');
   header.innerHTML = `
-    <img class="avatar" src="${profile.picture || './images/bryceProfile2.jpg'}" alt="Bryce DesBrisay profile photo" loading="lazy" />
+    <img class="avatar" src="${profile.picture || './images/bryceProfile2.jpg'}" alt="Bryce DesBrisay profile photo" loading="lazy" decoding="async" width="96" height="96" />
     <div>
       <h1 class="name">${profile.name || ''}</h1>
       <p class="title">${profile.title || ''}</p>
