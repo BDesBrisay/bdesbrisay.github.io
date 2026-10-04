@@ -1,0 +1,1 @@
+Polished typography, added semantic headings, lazy loading, fade-in with reduced-motion, focus rings, ARIA labels, footer credit.
