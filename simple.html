@@ -35,6 +35,7 @@
     .page { margin:0; padding:24px; max-width:100%; }
     a { color: inherit; text-decoration: none; }
     .no-print { display:none !important; }
+    .job { opacity:1 !important; transform:none !important; page-break-inside: avoid; }
   }
   header {
     display:flex; gap:24px; align-items:center; margin-bottom:32px;
@@ -79,6 +80,14 @@
   button.print:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
   a:focus-visible, button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
   :focus:not(:focus-visible) { outline:none; }
+  @media (max-width: 768px) {
+    .page { margin:16px auto; padding:24px 16px; }
+    header { flex-direction: column; align-items: flex-start; gap:16px; }
+    .avatar { width:72px; height:72px; }
+    h1.name { font-size:28px; }
+    .job { grid-template-columns: 1fr; gap:8px; }
+    .job-date { white-space:normal; padding-top:0; }
+  }
 </style>
 </head>
 <body>
