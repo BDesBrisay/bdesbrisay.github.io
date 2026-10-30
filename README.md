@@ -20,7 +20,14 @@ Prerequisites: Python 3 installed.
 Verify the loopback preview command is correctly configured and responsive:
 
 ```bash
+npm test
+```
+
+Prerequisites: Python 3 installed. The `npm test` script runs `python3 -m unittest tests.test_preview`, which reads `package.json` scripts.start, asserts explicit `--bind 127.0.0.1` binding, launches the configured Python server from the repository root, polls for HTTP 200 on http://127.0.0.1:8081/, reports an occupied preview port clearly, and always terminates the child process.
+
+Direct Python invocation also works:
+
+```bash
 python3 -m unittest discover -s tests -p test_preview.py
 ```
 
-The test reads `package.json` scripts.start, asserts explicit `--bind 127.0.0.1` binding, launches the configured Python server from the repository root, polls for HTTP 200 on http://127.0.0.1:8081/, reports an occupied preview port clearly, and always terminates the child process.
