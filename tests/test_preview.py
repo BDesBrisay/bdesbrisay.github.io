@@ -96,6 +96,15 @@ class TestLoopbackPreview(unittest.TestCase):
         self.assertIn(HOST, self.start_cmd)
         self.assertIn(str(PORT), self.start_cmd)
 
+    def test_start_command_explicit_loopback_bind(self):
+        # Focused regression: ensure start command explicitly binds to loopback
+        import re
+        # Verify --bind 127.0.0.1 appears explicitly
+        pattern = r'--bind\s+127\.0\.0\.1'
+        self.assertRegex(self.start_cmd, pattern, 'start command must explicitly bind to 127.0.0.1')
+        # Ensure it does not bind to all interfaces
+        self.assertNotIn('0.0.0.0', self.start_cmd, 'start command must not bind to 0.0.0.0')
+
     def test_root_http_200(self):
         with urllib.request.urlopen(URL, timeout=2) as resp:
             self.assertEqual(resp.status, 200)
