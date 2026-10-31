@@ -17,13 +17,19 @@ Prerequisites: Python 3 installed.
 
 ## Smoke Test
 
-Verify the loopback preview command is correctly configured and responsive:
+Automated verification of the loopback preview configuration — not a browser UI check.
+
+Prerequisites: Python 3 installed.
+
+Run from the repository root:
 
 ```bash
 npm test
 ```
 
-Prerequisites: Python 3 installed. The `npm test` script runs `python3 -m unittest tests.test_preview`, which reads `package.json` scripts.start, asserts explicit `--bind 127.0.0.1` binding, launches the configured Python server from the repository root, polls for HTTP 200 on http://127.0.0.1:8081/, reports an occupied preview port clearly, and always terminates the child process.
+This executes `python3 -m unittest tests.test_preview`. The test reads `package.json` `scripts.start`, asserts explicit `--bind 127.0.0.1` binding and port 8081, launches the configured Python server, polls http://127.0.0.1:8081/ for HTTP 200, reports an occupied preview port clearly, and always terminates the child process.
+
+This automated smoke test validates the preview command and responsiveness. Independent browser verification of page content is separate and uses the Local Preview steps above.
 
 Direct Python invocation also works:
 
