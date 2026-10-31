@@ -115,5 +115,70 @@ class TestLoopbackPreview(unittest.TestCase):
             self.assertTrue(ct.startswith('text/html') or ct == 'text/html')
 
 
+class TestLoopbackPreviewIsolated(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        import socket
+        # OS-assigned loopback port for isolation
+        s = socket.socket()
+        s.bind((HOST, 0))
+        cls.port = s.getsockname()[1]
+        s.close()
+        cls.url = f'http://{HOST}:{cls.port}/'
+        # Start documented Python HTTP server config with random port
+        cmd = f'python3 -m http.server {cls.port} --bind {HOST}'
+        cls.proc = subprocess.Popen(
+            cmd,
+            shell=True,
+            cwd=REPO_ROOT,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+        )
+        deadline = time.time() + STARTUP_TIMEOUT
+        while time.time() < deadline:
+            if cls.proc.poll() is not None:
+                out, err = cls.proc.communicate()
+                raise AssertionError(f'Preview server exited early. stderr: {err.strip() or out.strip()}')
+            try:
+                with urllib.request.urlopen(cls.url, timeout=1) as resp:
+                    if resp.status == 200:
+                        break
+            except Exception:
+                time.sleep(POLL_INTERVAL)
+        else:
+            # Cleanup
+            try:
+                cls.proc.terminate()
+                cls.proc.wait(timeout=2)
+            except Exception:
+                try:
+                    cls.proc.kill()
+                except Exception:
+                    pass
+            raise AssertionError('Isolated preview server did not respond within timeout')
+
+    @classmethod
+    def tearDownClass(cls):
+        if hasattr(cls, 'proc') and cls.proc.poll() is None:
+            try:
+                cls.proc.terminate()
+                cls.proc.wait(timeout=2)
+            except Exception:
+                try:
+                    cls.proc.kill()
+                except Exception:
+                    pass
+
+    def test_isolated_root_http_200(self):
+        with urllib.request.urlopen(self.url, timeout=2) as resp:
+            self.assertEqual(resp.status, 200)
+
+    def test_isolated_root_content_type_html(self):
+        with urllib.request.urlopen(self.url, timeout=2) as resp:
+            ct = resp.headers.get_content_type()
+            self.assertTrue(ct.startswith('text/html') or ct == 'text/html')
+
+
 if __name__ == '__main__':
     unittest.main()
