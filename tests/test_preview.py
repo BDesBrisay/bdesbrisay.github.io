@@ -133,6 +133,32 @@ class TestLoopbackPreview(unittest.TestCase):
         # Ensure Python-only option is documented
         self.assertIn('python3 -m http.server 8081 --bind 127.0.0.1', readme, 'README must document Python-only preview command')
 
+    def test_preview_command_consistency_module_port_bind(self):
+        # Focused regression: npm start script and documented Python-only command must retain matching module, port, and bind arguments
+        readme_path = os.path.join(REPO_ROOT, 'README.md')
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            readme = f.read()
+        # Extract documented Python-only command from README
+        import re
+        m = re.search(r'python3 -m http\.server\s+(\d+)\s+--bind\s+(\S+)', readme)
+        self.assertIsNotNone(m, 'README must document a python3 -m http.server command with port and --bind')
+        doc_port = m.group(1)
+        doc_bind = m.group(2)
+        # Parse start script components
+        start_parts = self.start_cmd.split()
+        self.assertGreaterEqual(len(start_parts), 5, 'start command must have enough parts')
+        self.assertEqual(start_parts[0], 'python3', 'start command module interpreter must be python3')
+        self.assertEqual(start_parts[1], '-m', 'start command must use -m')
+        self.assertEqual(start_parts[2], 'http.server', 'start command module must be http.server')
+        # Compare port and bind
+        self.assertEqual(doc_port, str(PORT), 'documented port must match configured PORT')
+        self.assertEqual(doc_bind, HOST, 'documented bind must match configured HOST')
+        # Ensure start script contains same port and bind as documented
+        self.assertIn(doc_port, self.start_cmd, 'start script port must match documented port')
+        self.assertIn(doc_bind, self.start_cmd, 'start script bind must match documented bind')
+        # Cross-check module consistency
+        self.assertIn('python3 -m http.server', self.start_cmd, 'start script must use python3 -m http.server')
+
     def test_root_http_200(self):
         with urllib.request.urlopen(URL, timeout=2) as resp:
             self.assertEqual(resp.status, 200)
