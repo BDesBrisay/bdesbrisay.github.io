@@ -233,6 +233,15 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
             ct = resp.headers.get_content_type()
             self.assertTrue(ct.startswith('text/html') or ct == 'text/html')
 
+    def test_isolated_readme_content(self):
+        readme_url = f'http://{HOST}:{self.port}/README.md'
+        with urllib.request.urlopen(readme_url, timeout=2) as resp:
+            self.assertEqual(resp.status, 200)
+            content = resp.read().decode('utf-8')
+        with open(os.path.join(REPO_ROOT, 'README.md'), 'r', encoding='utf-8') as f:
+            expected = f.read()
+        self.assertEqual(content, expected)
+
 
 if __name__ == '__main__':
     unittest.main()
