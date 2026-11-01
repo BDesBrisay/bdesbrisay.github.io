@@ -242,6 +242,21 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
             expected = f.read()
         self.assertEqual(content, expected)
 
+    def test_isolated_readme_head(self):
+        readme_url = f'http://{HOST}:{self.port}/README.md'
+        req = urllib.request.Request(readme_url, method='HEAD')
+        with urllib.request.urlopen(req, timeout=2) as resp:
+            self.assertEqual(resp.status, 200)
+            body = resp.read()
+            self.assertEqual(body, b'', 'HEAD response body must be empty')
+            content_length = resp.headers.get('Content-Length')
+            self.assertIsNotNone(content_length, 'HEAD response must include Content-Length')
+            # Verify Content-Length matches actual README bytes
+            readme_path = os.path.join(REPO_ROOT, 'README.md')
+            with open(readme_path, 'rb') as f:
+                expected_bytes = f.read()
+            self.assertEqual(int(content_length), len(expected_bytes), 'Content-Length must match README bytes')
+
 
 if __name__ == '__main__':
     unittest.main()
