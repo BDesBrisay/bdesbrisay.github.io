@@ -105,6 +105,14 @@ class TestLoopbackPreview(unittest.TestCase):
         # Ensure it does not bind to all interfaces
         self.assertNotIn('0.0.0.0', self.start_cmd, 'start command must not bind to 0.0.0.0')
 
+    def test_start_command_python_http_server(self):
+        # Configuration regression: ensure start command uses documented Python HTTP server
+        self.assertIn('python3 -m http.server', self.start_cmd, 'start command must use python3 -m http.server')
+        self.assertIn(str(PORT), self.start_cmd, f'start command must reference port {PORT}')
+        # Explicit loopback binding already checked, reaffirm
+        import re
+        self.assertRegex(self.start_cmd, r'--bind\s+127\.0\.0\.1', 'start command must explicitly bind to 127.0.0.1')
+
     def test_root_http_200(self):
         with urllib.request.urlopen(URL, timeout=2) as resp:
             self.assertEqual(resp.status, 200)
