@@ -34,6 +34,14 @@ class TestLoopbackPreview(unittest.TestCase):
         assert HOST in cls.start_cmd, f'start command must bind to {HOST}'
         # Simple port presence check
         assert str(PORT) in cls.start_cmd, f'start command must reference port {PORT}'
+        # Detect occupied port before launch to avoid false positives from pre-existing listeners
+        import socket
+        try:
+            with socket.create_connection((HOST, PORT), timeout=1):
+                raise AssertionError(f'Preview port {PORT} is already in use by an existing listener; test cannot run reliably')
+        except (ConnectionRefusedError, socket.timeout, OSError):
+            # Port is free or not listening – safe to proceed
+            pass
         # Launch server
         cls.proc = subprocess.Popen(
             cls.start_cmd,
