@@ -274,6 +274,29 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
         with urllib.request.urlopen(readme_url, timeout=2) as resp:
             self.assertEqual(resp.status, 200)
 
+    def test_isolated_url_encoded_filename(self):
+        import urllib.parse
+        filename = 'temp file with space.txt'
+        fixture_bytes = b'hello world from url encoded file'
+        file_path = os.path.join(REPO_ROOT, filename)
+        # Create temporary resource with space in name
+        try:
+            with open(file_path, 'wb') as f:
+                f.write(fixture_bytes)
+            # Request percent-encoded path
+            encoded_name = urllib.parse.quote(filename)
+            url = f'http://{HOST}:{self.port}/{encoded_name}'
+            with urllib.request.urlopen(url, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                content = resp.read()
+            self.assertEqual(content, fixture_bytes, 'Response bytes must match fixture')
+        finally:
+            # Cleanup temporary file
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+
 
 if __name__ == '__main__':
     unittest.main()
