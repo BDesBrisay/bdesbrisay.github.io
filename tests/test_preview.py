@@ -297,6 +297,50 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
             except OSError:
                 pass
 
+    def test_isolated_query_string_resource(self):
+        filename = 'temp_query_test.txt'
+        fixture_bytes = b'query string resource content'
+        file_path = os.path.join(REPO_ROOT, filename)
+        try:
+            with open(file_path, 'wb') as f:
+                f.write(fixture_bytes)
+            base_url = f'http://{HOST}:{self.port}/{filename}'
+            # GET without query string
+            with urllib.request.urlopen(base_url, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                content_no_qs = resp.read()
+            self.assertEqual(content_no_qs, fixture_bytes, 'GET without query string must return fixture')
+            # GET with query string
+            qs_url = f'{base_url}?foo=bar&baz=qux'
+            with urllib.request.urlopen(qs_url, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                content_qs = resp.read()
+            self.assertEqual(content_qs, fixture_bytes, 'GET with query string must return same content')
+            self.assertEqual(content_no_qs, content_qs, 'GET with and without query string must match')
+            # HEAD without query string
+            req_head = urllib.request.Request(base_url, method='HEAD')
+            with urllib.request.urlopen(req_head, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                body = resp.read()
+                self.assertEqual(body, b'', 'HEAD response body must be empty')
+                cl_no_qs = resp.headers.get('Content-Length')
+            self.assertIsNotNone(cl_no_qs, 'HEAD must include Content-Length')
+            # HEAD with query string
+            req_head_qs = urllib.request.Request(qs_url, method='HEAD')
+            with urllib.request.urlopen(req_head_qs, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                body_qs = resp.read()
+                self.assertEqual(body_qs, b'', 'HEAD with query string response body must be empty')
+                cl_qs = resp.headers.get('Content-Length')
+            self.assertIsNotNone(cl_qs, 'HEAD with query string must include Content-Length')
+            self.assertEqual(cl_no_qs, cl_qs, 'HEAD Content-Length must match with and without query string')
+            self.assertEqual(int(cl_qs), len(fixture_bytes), 'Content-Length must match fixture size')
+        finally:
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+
 
 if __name__ == '__main__':
     unittest.main()
