@@ -4,14 +4,21 @@
 
 ## Local Preview
 
-Prerequisites: Python 3 installed.
+Prerequisites:
+- Python 3 installed (for Python-only preview).
+- Node.js/npm installed (required for `npm start`/`npm test`).
 
 1. Open a terminal in the repository root (`bdesbrisay.github.io/`).
 2. Run the preview server:
-    ```bash
-    npm start
-    ```
-    This executes `python3 -m http.server 8081 --bind 127.0.0.1` from `package.json`, binding the server to loopback only.
+   - Using npm (requires Node.js/npm):
+     ```bash
+     npm start
+     ```
+   - Python-only (no npm required):
+     ```bash
+     python3 -m http.server 8081 --bind 127.0.0.1
+     ```
+   Both commands execute `python3 -m http.server 8081 --bind 127.0.0.1` from `package.json`, binding the server to loopback only.
 3. Open http://localhost:8081/ in your browser. The site root page should load. The server is local-only and does not expose the repository beyond 127.0.0.1.
 4. Stop the server with `Ctrl+C` in the terminal.
 
@@ -19,7 +26,9 @@ Prerequisites: Python 3 installed.
 
 Automated verification of the loopback preview configuration — not a browser UI check.
 
-Prerequisites: Python 3 installed.
+Prerequisites:
+- Python 3 installed.
+- Node.js/npm installed (required for `npm test`).
 
 Run from the repository root:
 
