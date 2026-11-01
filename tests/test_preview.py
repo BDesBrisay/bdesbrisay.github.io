@@ -362,6 +362,41 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
             except OSError:
                 pass
 
+    def test_isolated_binary_resource_head_get_match(self):
+        filename = 'temp_binary_head.bin'
+        fixture_bytes = b'\x00\xff\xfe\x00\x01\x02\x03\x80\x81\x82'
+        file_path = os.path.join(REPO_ROOT, filename)
+        try:
+            with open(file_path, 'wb') as f:
+                f.write(fixture_bytes)
+            url = f'http://{HOST}:{self.port}/{filename}'
+            # GET request
+            with urllib.request.urlopen(url, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                get_content = resp.read()
+                get_content_length = resp.headers.get('Content-Length')
+                get_content_type = resp.headers.get_content_type()
+            self.assertEqual(get_content, fixture_bytes, 'GET response bytes must match fixture')
+            self.assertIsNotNone(get_content_length, 'GET must include Content-Length')
+            self.assertEqual(int(get_content_length), len(fixture_bytes), 'GET Content-Length must match fixture size')
+            # HEAD request
+            req_head = urllib.request.Request(url, method='HEAD')
+            with urllib.request.urlopen(req_head, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                head_body = resp.read()
+                head_content_length = resp.headers.get('Content-Length')
+                head_content_type = resp.headers.get_content_type()
+            self.assertEqual(head_body, b'', 'HEAD response body must be empty')
+            self.assertIsNotNone(head_content_length, 'HEAD must include Content-Length')
+            self.assertEqual(int(head_content_length), int(get_content_length), 'HEAD Content-Length must match GET Content-Length')
+            self.assertEqual(int(head_content_length), len(fixture_bytes), 'HEAD Content-Length must match fixture size')
+            self.assertEqual(head_content_type, get_content_type, 'HEAD Content-Type must match GET Content-Type')
+        finally:
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+
 
 if __name__ == '__main__':
     unittest.main()
