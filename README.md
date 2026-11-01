@@ -40,9 +40,19 @@ This executes `python3 -m unittest tests.test_preview`. The test reads `package.
 
 This automated smoke test validates the preview command and responsiveness. Independent browser verification of page content is separate and uses the Local Preview steps above.
 
-Direct Python invocation also works:
+### Verification
+
+Run from the repository root:
 
 ```bash
-python3 -m unittest discover -s tests -p test_preview.py
+npm test
 ```
+
+or npm-free:
+
+```bash
+python3 -m unittest tests.test_preview
+```
+
+Both commands execute the same verification defined in `package.json` (`"test": "python3 -m unittest tests.test_preview"`) and `tests/test_preview.py`. The test reads `package.json` `scripts.start`, asserts explicit `--bind 127.0.0.1` binding and port 8081, and validates the loopback preview.
 
