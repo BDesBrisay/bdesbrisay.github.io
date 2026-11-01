@@ -257,6 +257,23 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
                 expected_bytes = f.read()
             self.assertEqual(int(content_length), len(expected_bytes), 'Content-Length must match README bytes')
 
+    def test_isolated_missing_resource_get_404(self):
+        missing_url = f'http://{HOST}:{self.port}/this-path-does-not-exist-12345'
+        with self.assertRaises(urllib.error.HTTPError) as cm:
+            urllib.request.urlopen(missing_url, timeout=2)
+        self.assertEqual(cm.exception.code, 404, 'GET for missing resource must return 404')
+
+    def test_isolated_missing_resource_head_404(self):
+        missing_url = f'http://{HOST}:{self.port}/this-path-does-not-exist-12345'
+        req = urllib.request.Request(missing_url, method='HEAD')
+        with self.assertRaises(urllib.error.HTTPError) as cm:
+            urllib.request.urlopen(req, timeout=2)
+        self.assertEqual(cm.exception.code, 404, 'HEAD for missing resource must return 404')
+        # Verify valid README still succeeds after 404 checks
+        readme_url = f'http://{HOST}:{self.port}/README.md'
+        with urllib.request.urlopen(readme_url, timeout=2) as resp:
+            self.assertEqual(resp.status, 200)
+
 
 if __name__ == '__main__':
     unittest.main()
