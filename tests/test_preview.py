@@ -341,6 +341,27 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
             except OSError:
                 pass
 
+    def test_isolated_binary_resource_byte_exact(self):
+        filename = 'temp_binary.bin'
+        fixture_bytes = b'\x00\xff\xfe\x00\x01\x02\x03\x80\x81\x82'
+        file_path = os.path.join(REPO_ROOT, filename)
+        try:
+            with open(file_path, 'wb') as f:
+                f.write(fixture_bytes)
+            url = f'http://{HOST}:{self.port}/{filename}'
+            with urllib.request.urlopen(url, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                content = resp.read()
+                content_length = resp.headers.get('Content-Length')
+            self.assertEqual(content, fixture_bytes, 'Response bytes must match binary fixture exactly')
+            self.assertIsNotNone(content_length, 'GET must include Content-Length')
+            self.assertEqual(int(content_length), len(fixture_bytes), 'Content-Length must match binary fixture size')
+        finally:
+            try:
+                os.remove(file_path)
+            except OSError:
+                pass
+
 
 if __name__ == '__main__':
     unittest.main()
