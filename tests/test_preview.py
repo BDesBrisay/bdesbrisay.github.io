@@ -121,6 +121,18 @@ class TestLoopbackPreview(unittest.TestCase):
         import re
         self.assertRegex(self.start_cmd, r'--bind\s+127\.0\.0\.1', 'start command must explicitly bind to 127.0.0.1')
 
+    def test_readme_documents_python_only_command_matches_package_json(self):
+        # Guard that README documents the Python-only command matching package.json start script
+        readme_path = os.path.join(REPO_ROOT, 'README.md')
+        with open(readme_path, 'r', encoding='utf-8') as f:
+            readme = f.read()
+        # The documented Python-only command must match the start script exactly
+        self.assertIn(self.start_cmd, readme, 'README must document the Python-only command matching package.json scripts.start')
+        # Ensure prerequisites mention Node.js/npm for npm usage
+        self.assertIn('Node.js/npm', readme, 'README must clarify npm requires Node.js/npm')
+        # Ensure Python-only option is documented
+        self.assertIn('python3 -m http.server 8081 --bind 127.0.0.1', readme, 'README must document Python-only preview command')
+
     def test_root_http_200(self):
         with urllib.request.urlopen(URL, timeout=2) as resp:
             self.assertEqual(resp.status, 200)
