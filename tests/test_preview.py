@@ -1,7 +1,9 @@
+import http.client
 import json
 import os
 import subprocess
 import time
+import tempfile
 import urllib.request
 import urllib.error
 import unittest
@@ -365,6 +367,34 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
                 os.remove(file_path)
             except OSError:
                 pass
+
+    def test_isolated_directory_redirect_preserves_query(self):
+        fixture_bytes = b'<html><body>Directory redirect fixture</body></html>'
+        # Keep the fixture under the existing server root and clean it on failure too.
+        with tempfile.TemporaryDirectory(prefix='preview-redirect-', dir=REPO_ROOT) as directory:
+            with open(os.path.join(directory, 'index.html'), 'wb') as f:
+                f.write(fixture_bytes)
+            path = '/' + os.path.basename(directory)
+            query = '?foo=bar&baz=two%20words&foo=again'
+            expected_location = path + '/' + query
+            # http.client exposes the original response rather than following redirects.
+            for method in ('GET', 'HEAD'):
+                with self.subTest(method=method):
+                    connection = http.client.HTTPConnection(HOST, self.port, timeout=2)
+                    try:
+                        connection.request(method, path + query)
+                        resp = connection.getresponse()
+                        self.assertEqual(resp.status, 301, 'Directory must redirect to its slash-terminated path')
+                        self.assertEqual(resp.getheader('Location'), expected_location,
+                                         'Redirect must preserve the complete query string')
+                        body = resp.read()
+                        if method == 'HEAD':
+                            self.assertEqual(body, b'', 'HEAD redirect response body must be empty')
+                    finally:
+                        connection.close()
+            with urllib.request.urlopen(self.url.rstrip('/') + expected_location, timeout=2) as resp:
+                self.assertEqual(resp.status, 200)
+                self.assertEqual(resp.read(), fixture_bytes, 'Redirect target must serve the directory index')
 
     def test_isolated_binary_resource_byte_exact(self):
         filename = 'temp_binary.bin'
