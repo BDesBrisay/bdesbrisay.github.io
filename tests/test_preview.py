@@ -274,6 +274,31 @@ class TestLoopbackPreviewIsolated(unittest.TestCase):
         with urllib.request.urlopen(readme_url, timeout=2) as resp:
             self.assertEqual(resp.status, 200)
 
+    def test_isolated_missing_resource_get_head_consistency(self):
+        missing_url = f'http://{HOST}:{self.port}/this-path-does-not-exist-12345'
+        # GET request
+        with self.assertRaises(urllib.error.HTTPError) as cm_get:
+            urllib.request.urlopen(missing_url, timeout=2)
+        self.assertEqual(cm_get.exception.code, 404, 'GET for missing resource must return 404')
+        get_headers = cm_get.exception.headers
+        get_content_type = get_headers.get_content_type() if get_headers else None
+        get_content_length = get_headers.get('Content-Length') if get_headers else None
+
+        # HEAD request
+        req_head = urllib.request.Request(missing_url, method='HEAD')
+        with self.assertRaises(urllib.error.HTTPError) as cm_head:
+            urllib.request.urlopen(req_head, timeout=2)
+        self.assertEqual(cm_head.exception.code, 404, 'HEAD for missing resource must return 404')
+        head_headers = cm_head.exception.headers
+        head_body = cm_head.exception.read()
+        self.assertEqual(head_body, b'', 'HEAD response body must be empty for missing resource')
+        head_content_type = head_headers.get_content_type() if head_headers else None
+        head_content_length = head_headers.get('Content-Length') if head_headers else None
+
+        # Representation headers should agree where appropriate
+        self.assertEqual(head_content_type, get_content_type, 'HEAD Content-Type must match GET Content-Type for missing resource')
+        self.assertEqual(head_content_length, get_content_length, 'HEAD Content-Length must match GET Content-Length for missing resource')
+
     def test_isolated_url_encoded_filename(self):
         import urllib.parse
         filename = 'temp file with space.txt'
